@@ -4,6 +4,8 @@
 /node_modules
 /.pnp
 .pnp.js
+.pnpm-store
+pnpm-debug.log*
 .yarn/install-state.gz
 
 /.idea/*
@@ -18,10 +20,14 @@
 
 # production
 /build
+/dist
+.turbo
 
 # misc
 .DS_Store
 *.pem
+Thumbs.db
+*.log
 
 # debug
 npm-debug.log*
@@ -29,7 +35,11 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
+.env
 .env*.local
+.env.development
+.env.production
+.env.*.local
 
 # vercel
 .vercel
@@ -38,8 +48,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-.env
-
+# uploads (Payload media)
 /media
 
 # Playwright

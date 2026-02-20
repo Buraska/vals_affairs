@@ -69,15 +69,30 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    category: Category;
+    Affair: Affair;
+    tag: Tag;
+    tagGroup: TagGroup;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  collectionsJoins: {};
+  collectionsJoins: {
+    category: {
+      'child categories': 'category';
+    };
+    tagGroup: {
+      tagGroup: 'tag';
+    };
+  };
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    category: CategorySelect<false> | CategorySelect<true>;
+    Affair: AffairSelect<false> | AffairSelect<true>;
+    tag: TagSelect<false> | TagSelect<true>;
+    tagGroup: TagGroupSelect<false> | TagGroupSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -86,10 +101,15 @@ export interface Config {
   db: {
     defaultIDType: string;
   };
-  fallbackLocale: null;
+  fallbackLocale:
+    | ('false' | 'none' | 'null')
+    | false
+    | null
+    | ('ee' | 'ru' | 'en' | 'fi')
+    | ('ee' | 'ru' | 'en' | 'fi')[];
   globals: {};
   globalsSelect: {};
-  locale: null;
+  locale: 'ee' | 'ru' | 'en' | 'fi';
   user: User;
   jobs: {
     tasks: unknown;
@@ -145,7 +165,7 @@ export interface User {
  */
 export interface Media {
   id: string;
-  alt: string;
+  alt?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -157,6 +177,169 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    card?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    small?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    medium?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    large?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    og?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "category".
+ */
+export interface Category {
+  id: string;
+  title: string;
+  description?: string | null;
+  image?: (string | null) | Media;
+  'parent category'?: (string | null) | Category;
+  'child categories'?: {
+    docs?: (string | Category)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Affair".
+ */
+export interface Affair {
+  id: string;
+  title: string;
+  description: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  images?:
+    | {
+        image?: (string | null) | Media;
+        id?: string | null;
+      }[]
+    | null;
+  category: string | Category;
+  price: number;
+  'total slots'?: number | null;
+  'currently slots'?: number | null;
+  'start date': string;
+  'end date'?: string | null;
+  tickets: {
+    'ticket name'?: string | null;
+    'ticket price'?: number | null;
+    id?: string | null;
+  }[];
+  'additional info'?:
+    | {
+        title?: string | null;
+        content?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        id?: string | null;
+      }[]
+    | null;
+  tags?:
+    | {
+        tag?: (string | null) | Tag;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tag".
+ */
+export interface Tag {
+  id: string;
+  name: string;
+  'tag group': string | TagGroup;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tagGroup".
+ */
+export interface TagGroup {
+  id: string;
+  name: string;
+  tagGroup?: {
+    docs?: (string | Tag)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -189,6 +372,22 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: string | Media;
+      } | null)
+    | ({
+        relationTo: 'category';
+        value: string | Category;
+      } | null)
+    | ({
+        relationTo: 'Affair';
+        value: string | Affair;
+      } | null)
+    | ({
+        relationTo: 'tag';
+        value: string | Tag;
+      } | null)
+    | ({
+        relationTo: 'tagGroup';
+        value: string | TagGroup;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -271,6 +470,145 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+  sizes?:
+    | T
+    | {
+        thumbnail?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        card?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        small?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        medium?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        large?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        og?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "category_select".
+ */
+export interface CategorySelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  image?: T;
+  'parent category'?: T;
+  'child categories'?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Affair_select".
+ */
+export interface AffairSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  images?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
+  category?: T;
+  price?: T;
+  'total slots'?: T;
+  'currently slots'?: T;
+  'start date'?: T;
+  'end date'?: T;
+  tickets?:
+    | T
+    | {
+        'ticket name'?: T;
+        'ticket price'?: T;
+        id?: T;
+      };
+  'additional info'?:
+    | T
+    | {
+        title?: T;
+        content?: T;
+        id?: T;
+      };
+  tags?:
+    | T
+    | {
+        tag?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tag_select".
+ */
+export interface TagSelect<T extends boolean = true> {
+  name?: T;
+  'tag group'?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tagGroup_select".
+ */
+export interface TagGroupSelect<T extends boolean = true> {
+  name?: T;
+  tagGroup?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -1,19 +1,29 @@
-import React from 'react'
-import './styles.css'
+import type { Metadata } from "next";
+import { Nunito_Sans } from "next/font/google";
+import "./globals.css";
+import { defaultLocale } from "@/app/lib/localization/i18n";
 
-export const metadata = {
-  description: 'A blank template using Payload in a Next.js app.',
-  title: 'Payload Blank Template',
-}
+const nunito = Nunito_Sans({
+  variable: "--font-nunito",
+  subsets: ["latin", "cyrillic"],
+  weight: ["400", "600", "700"],
+});
 
-export default async function RootLayout(props: { children: React.ReactNode }) {
-  const { children } = props
+export const metadata: Metadata = {
+  title: "Vals",
+  description: "Tours and celebrations in Estonia.",
+};
 
+export default function FrontendLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
-    <html lang="en">
-      <body>
-        <main>{children}</main>
+    <html lang={defaultLocale} className={nunito.variable} suppressHydrationWarning>
+      <body className="min-h-screen bg-white font-sans antialiased text-stone-800">
+        {children}
       </body>
     </html>
-  )
+  );
 }
