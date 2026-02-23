@@ -2,10 +2,11 @@
 import PhoneInput from 'react-phone-number-input'
 import 'react-phone-number-input/style.css'
 import { useState } from 'react'
+import Link from 'next/link'
 import { useLanguage } from '@/app/contexts/LanguageContext'
 
 export function AffairOrderForm() {
-  const { t } = useLanguage()
+  const { t, lang } = useLanguage()
   const [phone, setPhone] = useState<string | undefined>()
 
   return (
@@ -78,17 +79,25 @@ export function AffairOrderForm() {
           />
         </div>
 
-        <div className="flex items-center gap-2">
-          <input
-            id="order-agree"
-            type="checkbox"
-            name="agree"
-            required
-            className="h-4 w-4 rounded-sm border-amber-200 text-amber-600 focus:ring-amber-500"
-          />
-          <label htmlFor="order-agree" className="text-sm text-stone-700">
-            {t.order.formAgree}
-          </label>
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-2">
+            <input
+              id="order-agree"
+              type="checkbox"
+              name="agree"
+              required
+              className="h-4 w-4 rounded-sm border-amber-200 text-amber-600 focus:ring-amber-500"
+            />
+            <label htmlFor="order-agree" className="text-sm text-stone-700">
+              {t.order.formAgree}
+            </label>
+          </div>
+          <Link
+            href={`/${lang}/terms`}
+            className="text-sm text-amber-700 underline hover:text-amber-900"
+          >
+            {t.order.termsLink}
+          </Link>
         </div>
 
         <div className="flex flex-wrap gap-3 pt-2">

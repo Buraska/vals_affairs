@@ -16,7 +16,7 @@ export function AffairAdditionalInfoTabs({ tabs }: { tabs: TabItem[] }) {
   return (
     <div className="mb-10">
       <div
-        className="flex flex-wrap gap-1 border-b border-amber-200"
+        className="flex gap-1 border-b border-amber-200"
         role="tablist"
         aria-label={t.tabs.ariaLabel}
       >
@@ -29,12 +29,14 @@ export function AffairAdditionalInfoTabs({ tabs }: { tabs: TabItem[] }) {
             aria-controls={`panel-${tab.id}`}
             id={`tab-${tab.id}`}
             onClick={() => setActiveId(tab.id)}
-            className={`rounded-t-sm px-4 py-2.5 text-sm font-medium transition ${activeId === tab.id
+            className={` rounded-t-sm px-4 py-2.5 text-sm font-medium transition ${activeId === tab.id
               ? 'border border-b-0 border-amber-200 border-b-transparent bg-white text-amber-900 shadow-sm'
               : 'text-stone-600 hover:bg-amber-50 hover:text-amber-900'
               }`}
           >
+            <div className=' line-clamp-4'>
             {tab.title}
+            </div>
           </button>
         ))}
       </div>

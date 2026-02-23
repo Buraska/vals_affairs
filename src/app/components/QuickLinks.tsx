@@ -21,7 +21,7 @@ export function QuickLinks({
             >
               {item.image ? (
                 <div className="relative aspect-[4/3] w-full overflow-hidden bg-amber-100">
-                  <Media resource={item.image} size="30vw" />
+                  <Media fill resource={item.image} size="30vw" />
                 </div>
               ) : (
                 <div className="flex aspect-[4/3] w-full items-center justify-center bg-amber-100 text-4xl" role="img" aria-hidden>

@@ -88,9 +88,9 @@ export default async function AffairPage({
           </Link>
         )}
 
-        <div className="flex flex-row gap-4">
+        <div className="flex flex-col lg:flex-row gap-4">
           {firstImage && typeof firstImage === 'object' ? (
-            <div className="relative mb-4 w-1000 overflow-hidden rounded-sm">
+            <div className="relative mb-4 min-h-0 min-w-0 flex-1 overflow-hidden rounded-sm aspect-[16/10] lg:flex-[2]">
               <AffairImageCarousel
                 slides={slides}
                 coverResource={firstImage}
@@ -103,7 +103,7 @@ export default async function AffairPage({
             </div>
           )}
 
-          <div>
+          <div className="lg:flex-[1] lg:min-w-0">
             <h1 className="mb-4 text-3xl font-bold text-amber-900 sm:text-4xl">
               {affair.title}
             </h1>

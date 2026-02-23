@@ -5,15 +5,14 @@ export const Affair: CollectionConfig = {
   access: {
     read: () => true,
   },
-  admin:{
-    useAsTitle:'title',
-    defaultColumns: ['title',  'category', 'description', 'currently slots', 'total slots']
+  admin: {
+    useAsTitle: 'title',
+    defaultColumns: ['title', 'category', 'description', 'isAvailable', 'start date', 'end date'],
   },
   fields: [
     {
       name: 'title',
       type: 'text',
-      required: true,
       localized: true,
 
     },
@@ -26,6 +25,7 @@ export const Affair: CollectionConfig = {
     {
       name: 'images',
       type: 'array',
+      required: true,
       fields:[
         {
           name: 'image',
@@ -46,17 +46,10 @@ export const Affair: CollectionConfig = {
       required: true,
     },
     {
-      type: 'row',
-      fields:[
-        {
-          name: 'total slots',
-          type: 'number'
-        },
-        {
-          name: 'currently slots',
-          type: 'number',
-        },
-      ]
+      name: 'isAvailable',
+      type: 'checkbox',
+      defaultValue: true,
+      admin: { description: 'Whether this affair is available for booking.' },
     },
     {
       type: 'row',

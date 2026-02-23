@@ -1,11 +1,11 @@
 import { notFound } from 'next/navigation'
 import { getPayload, type Where } from 'payload'
 import configPromise from '@payload-config'
+import type { Tag } from '@/payload-types'
+import { AffairCard } from '@/app/components/AffairCard'
 import { CategorySortSelect } from '@/app/components/CategorySortSelect'
 import { TagFilters } from '@/app/components/TagFilters'
-import type { Affair, Tag } from '@/payload-types'
 import CategorySearch from '@/app/components/CategorySearch'
-import { AffairCard } from '@/app/components/AffairCard'
 import { getTranslations } from '@/app/lib/localization/translations'
 import type { Lang } from '@/app/lib/localization/translations'
 import { isValidLocale } from '@/app/lib/localization/i18n'
@@ -68,10 +68,16 @@ export default async function CategoryPage({
   let { docs: affairs } = await payload.find({
     collection: 'Affair',
     depth: 2,
+    locale: lang,
     where: whereClause,
     sort: sort,
     limit: 200,
   })
+
+  // Only show affairs that have a title for this locale
+  affairs = affairs.filter(
+    (affair) => affair.title != null && String(affair.title).trim() !== ''
+  )
 
   const tags = new Set<Tag>()
   affairs.forEach((affair) => {
@@ -102,6 +108,9 @@ export default async function CategoryPage({
   return (
     <main className="min-h-screen bg-white">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <h1 className="mb-6 text-2xl text-center font-semibold text-amber-900 sm:text-3xl">
+          {category.title}
+        </h1>
         <div className="flex flex-col gap-8 lg:flex-row">
           <aside className="lg:w-64 lg:shrink-0">
             <div className="top-40 space-y-6">
@@ -140,30 +149,14 @@ export default async function CategoryPage({
           </aside>
 
           <div className="min-w-0 flex-1">
-            <h1 className="mb-6 text-2xl font-semibold text-amber-900 sm:text-3xl">
-              {category.title}
-            </h1>
-
-            <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
               {affairs.length === 0 ? (
                 <p className="text-stone-600">{noResultsText}</p>
               ) : (
                 (() => {
-                  let lastMonth = ''
-                  let showMonth = false
                   return affairs.map((affair) => {
-                    if (sort === 'date') {
-                      const monthKey = getMonthKey(affair['start date'])
-                      showMonth = monthKey !== lastMonth
-                      if (showMonth) lastMonth = monthKey
-                    }
                     return (
-                      <div key={affair.id} className="flex w-2/3 flex-col gap-4">
-                        {showMonth && (
-                          <h2 className="border-b border-amber-200 pb-2 text-lg font-semibold capitalize text-black">
-                            {formatMonthLabel(affair['start date'], locale)}
-                          </h2>
-                        )}
+                      <div key={affair.id} className="flex px-4 lg:px-0  flex-col gap-4">
                         <AffairCard affair={affair} locale={locale} />
                       </div>
                     )

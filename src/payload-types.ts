@@ -73,6 +73,7 @@ export interface Config {
     Affair: Affair;
     tag: Tag;
     tagGroup: TagGroup;
+    team: Team;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -93,6 +94,7 @@ export interface Config {
     Affair: AffairSelect<false> | AffairSelect<true>;
     tag: TagSelect<false> | TagSelect<true>;
     tagGroup: TagGroupSelect<false> | TagGroupSelect<true>;
+    team: TeamSelect<false> | TeamSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -107,8 +109,16 @@ export interface Config {
     | null
     | ('ee' | 'ru' | 'en' | 'fi')
     | ('ee' | 'ru' | 'en' | 'fi')[];
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'web-info': WebInfo;
+    'user-agreements': UserAgreement;
+    'about-us': AboutUs;
+  };
+  globalsSelect: {
+    'web-info': WebInfoSelect<false> | WebInfoSelect<true>;
+    'user-agreements': UserAgreementsSelect<false> | UserAgreementsSelect<true>;
+    'about-us': AboutUsSelect<false> | AboutUsSelect<true>;
+  };
   locale: 'ee' | 'ru' | 'en' | 'fi';
   user: User;
   jobs: {
@@ -252,7 +262,7 @@ export interface Category {
  */
 export interface Affair {
   id: string;
-  title: string;
+  title?: string | null;
   description: {
     root: {
       type: string;
@@ -268,16 +278,16 @@ export interface Affair {
     };
     [k: string]: unknown;
   };
-  images?:
-    | {
-        image?: (string | null) | Media;
-        id?: string | null;
-      }[]
-    | null;
+  images: {
+    image?: (string | null) | Media;
+    id?: string | null;
+  }[];
   category: string | Category;
   price: number;
-  'total slots'?: number | null;
-  'currently slots'?: number | null;
+  /**
+   * Whether this affair is available for booking.
+   */
+  isAvailable?: boolean | null;
   'start date': string;
   'end date'?: string | null;
   tickets: {
@@ -342,6 +352,39 @@ export interface TagGroup {
   createdAt: string;
 }
 /**
+ * Team members with name, contacts, description and photo.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "team".
+ */
+export interface Team {
+  id: string;
+  name: string;
+  /**
+   * Profile or team member photo.
+   */
+  photo: string | Media;
+  /**
+   * Short bio or role description. All languages on one page.
+   */
+  description?: {
+    ee?: string | null;
+    ru?: string | null;
+    en?: string | null;
+    fi?: string | null;
+  };
+  /**
+   * e.g. +372 5555555
+   */
+  phone?: string | null;
+  /**
+   * e.g. name@example.com
+   */
+  email?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -388,6 +431,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'tagGroup';
         value: string | TagGroup;
+      } | null)
+    | ({
+        relationTo: 'team';
+        value: string | Team;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -563,8 +610,7 @@ export interface AffairSelect<T extends boolean = true> {
       };
   category?: T;
   price?: T;
-  'total slots'?: T;
-  'currently slots'?: T;
+  isAvailable?: T;
   'start date'?: T;
   'end date'?: T;
   tickets?:
@@ -612,6 +658,26 @@ export interface TagGroupSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "team_select".
+ */
+export interface TeamSelect<T extends boolean = true> {
+  name?: T;
+  photo?: T;
+  description?:
+    | T
+    | {
+        ee?: T;
+        ru?: T;
+        en?: T;
+        fi?: T;
+      };
+  phone?: T;
+  email?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -649,6 +715,236 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * Site name, description, contact and social links for the header and metadata.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "web-info".
+ */
+export interface WebInfo {
+  id: string;
+  /**
+   * The very name of the site.
+   */
+  siteName: string;
+  /**
+   * First block (e.g. intro).
+   */
+  siteDescription?: {
+    ee?: string | null;
+    ru?: string | null;
+    en?: string | null;
+    fi?: string | null;
+  };
+  /**
+   * e.g. +372 5555555
+   */
+  phone?: string | null;
+  /**
+   * e.g. info@vals.ee
+   */
+  email?: string | null;
+  /**
+   * e.g. https://instagram.com/yourpage
+   */
+  instagramUrl?: string | null;
+  /**
+   * e.g. https://facebook.com/yourpage
+   */
+  facebookUrl?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Content for the Terms of Use page. Four sections, each localized (ee, ru, en, fi).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "user-agreements".
+ */
+export interface UserAgreement {
+  id: string;
+  ee?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  ru?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  en?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  fi?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Content for the About us page. Four sections, each localized (ee, ru, en, fi).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-us".
+ */
+export interface AboutUs {
+  id: string;
+  ee?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  ru?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  en?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  fi?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "web-info_select".
+ */
+export interface WebInfoSelect<T extends boolean = true> {
+  siteName?: T;
+  siteDescription?:
+    | T
+    | {
+        ee?: T;
+        ru?: T;
+        en?: T;
+        fi?: T;
+      };
+  phone?: T;
+  email?: T;
+  instagramUrl?: T;
+  facebookUrl?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "user-agreements_select".
+ */
+export interface UserAgreementsSelect<T extends boolean = true> {
+  ee?: T;
+  ru?: T;
+  en?: T;
+  fi?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-us_select".
+ */
+export interface AboutUsSelect<T extends boolean = true> {
+  ee?: T;
+  ru?: T;
+  en?: T;
+  fi?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

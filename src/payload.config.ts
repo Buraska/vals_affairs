@@ -6,11 +6,15 @@ import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
 import { Category } from './collections/Category'
-import { Media } from './collections/Media'
-import { Users } from './collections/Users'
+import { Media } from './collections/System/Media'
+import { Users } from './collections/System/Users'
 import { Affair } from './collections/Affair'
 import { Tag } from './collections/Tag'
 import { TagGroup } from './collections/TagGroup'
+import { Team } from './collections/Team'
+import { WebInfo } from './collections/Globals/WebInfo'
+import { UserAgreements } from './collections/Globals/UserAgreements'
+import { AboutUs } from './collections/Globals/AboutUs'
 import { defaultLocale, locales } from './app/lib/localization/i18n'
 
 const filename = fileURLToPath(import.meta.url)
@@ -28,7 +32,8 @@ export default buildConfig({
     defaultLocale: defaultLocale,  
     fallback: false
   },
-  collections: [Users, Media, Category, Affair, Tag, TagGroup],
+  collections: [Users, Media, Category, Affair, Tag, TagGroup, Team],
+  globals: [WebInfo, UserAgreements, AboutUs],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

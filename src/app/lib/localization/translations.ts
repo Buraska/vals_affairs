@@ -15,9 +15,9 @@ const heroSchema = { statsTitle: '', schoolTours: '', familyTrips: '', celebrati
 const valueSchema = { title: '', variety: '', varietyDesc: '', newRoutes: '', savings: '', savingsDesc: '', quality: '', qualityDesc: '' }
 const contactSchema = { title: '', phone: '', addressLabel: '', nonProfit: '', forBusiness: '', team: '', hours: '', hoursValue: '', weekend: '' }
 const footerSchema = { more: '', schoolProjects: '', giftCards: '', charity: '', merch: '', documents: '', contract: '', privacy: '', reportError: '', aboutUs: '', philosophy: '', contacts: '', reviews: '', partners: '', press: '', account: '', tours: '', subscribe: '', subscribeSuccess: '', subscribeCta: '' }
-const commonSchema = { back: '', backToEvent: '', notFoundEvent: '', notFoundOrder: '', additional: '', photoCount: '', openGallery: '', menu: '' }
+const commonSchema = { back: '', backToEvent: '', notFoundEvent: '', notFoundOrder: '', additional: '', photoCount: '', openGallery: '', menu: '', termsPageTitle: '', aboutPageTitle: '', contentNotAdded: '' }
 const affairSchema = { scheduleTitle: '', takePlace: '', ticket: '', yourOrder: '', total: '', noTicketsNote: '', participation: '' }
-const orderSchema = { pageTitle: '', formName: '', formEmail: '', formPhone: '', formAge: '', formNotes: '', formAgree: '', submit: '', rules: '', placeholderName: '', placeholderAge: '', placeholderNotes: '' }
+const orderSchema = { pageTitle: '', formName: '', formEmail: '', formPhone: '', formAge: '', formNotes: '', formAgree: '', termsLink: '', submit: '', rules: '', placeholderName: '', placeholderAge: '', placeholderNotes: '' }
 const categorySchema = { search: '', sort: '', sortByDate: '', sortByPriceAsc: '', sortByPriceDesc: '', searchPlaceholder: '', noResultsQuery: '', noResultsCategory: '', filters: '', resetFilters: '' }
 const cardSchema = { noSlots: '', available: '', slotsCount: '' }
 const tabsSchema = { ariaLabel: '' }
@@ -109,6 +109,9 @@ export const translations: Record<Lang, TranslationsSchema> = {
       photoCount: "pilti",
       openGallery: "Ava galerii",
       menu: "Menüü",
+      termsPageTitle: "Kasutustingimused",
+      aboutPageTitle: "Meist",
+      contentNotAdded: "Sisu pole veel lisatud.",
     },
     affair: {
       scheduleTitle: "Reisi ajakava",
@@ -127,6 +130,7 @@ export const translations: Record<Lang, TranslationsSchema> = {
       formAge: "Vanus",
       formNotes: "Täiendav info",
       formAgree: "Nõustun tellimuse, isikuandmete ja kasutustingimustega",
+      termsLink: "Kasutustingimused",
       submit: "Esita tellimus",
       rules: "Reeglid: Koht broneeritakse osaleja jaoks alles ettemaksu tasumisel.",
       placeholderName: "ladina tähtedega",
@@ -228,6 +232,9 @@ export const translations: Record<Lang, TranslationsSchema> = {
       photoCount: "фото",
       openGallery: "Открыть галерею",
       menu: "Меню",
+      termsPageTitle: "Пользовательские соглашения",
+      aboutPageTitle: "О нас",
+      contentNotAdded: "Контент пока не добавлен.",
     },
     affair: {
       scheduleTitle: "Расписание путешествия",
@@ -246,6 +253,7 @@ export const translations: Record<Lang, TranslationsSchema> = {
       formAge: "Возраст",
       formNotes: "Дополнительная информация",
       formAgree: "Я согласен с условиями обработки заказа, личных данных и пользовательских соглашений",
+      termsLink: "Пользовательские соглашения",
       submit: "Оформить заявку",
       rules: "Правила: Место бронируется за участником только при внесении предоплаты.",
       placeholderName: "латинскими буквами",
@@ -345,6 +353,9 @@ export const translations: Record<Lang, TranslationsSchema> = {
       photoCount: "photos",
       openGallery: "Open gallery",
       menu: "Menu",
+      termsPageTitle: "Terms of use",
+      aboutPageTitle: "About us",
+      contentNotAdded: "Content has not been added yet.",
     },
     affair: {
       scheduleTitle: "Trip schedule",
@@ -363,6 +374,7 @@ export const translations: Record<Lang, TranslationsSchema> = {
       formAge: "Age",
       formNotes: "Additional information",
       formAgree: "I agree to the order processing, personal data and terms of use",
+      termsLink: "Terms of use",
       submit: "Submit request",
       rules: "Rules: A place is reserved only upon payment of a deposit.",
       placeholderName: "in Latin letters",
@@ -462,6 +474,9 @@ export const translations: Record<Lang, TranslationsSchema> = {
       photoCount: "kuvaa",
       openGallery: "Avaa galleria",
       menu: "Valikko",
+      termsPageTitle: "Käyttöehdot",
+      aboutPageTitle: "Meistä",
+      contentNotAdded: "Sisältöä ei ole vielä lisätty.",
     },
     affair: {
       scheduleTitle: "Matkan aikataulu",
@@ -480,6 +495,7 @@ export const translations: Record<Lang, TranslationsSchema> = {
       formAge: "Ikä",
       formNotes: "Lisätietoja",
       formAgree: "Hyväksyn tilauksen käsittelyn, henkilötietojen ja käyttöehtojen ehdot",
+      termsLink: "Käyttöehdot",
       submit: "Lähetä tilaus",
       rules: "Säännöt: Paikka varataan vasta ennakkomaksun suorittamisen jälkeen.",
       placeholderName: "latinalaisin kirjaimin",

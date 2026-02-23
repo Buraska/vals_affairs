@@ -1,4 +1,6 @@
 import { notFound } from 'next/navigation'
+import { getPayload } from 'payload'
+import configPromise from '@payload-config'
 import { LanguageProvider } from '@/app/contexts/LanguageContext'
 import { Header } from '@/app/components/Header'
 import type { Lang } from '@/app/lib/localization/translations'
@@ -16,13 +18,18 @@ export default async function LocaleLayout({
   const { locale } = await params
   if (!isValidLocale(locale)) notFound()
   const lang = locale as Lang
-  const categories = await getCategoriesForLocale(lang)
+  const [categories, webInfo] = await Promise.all([
+    getCategoriesForLocale(lang),
+    getPayload({ config: configPromise }).then((payload) =>
+      payload.findGlobal({ slug: 'web-info', depth: 0, locale: lang })
+    ),
+  ])
 
   return (
     <LanguageProvider key={locale} initialLocale={lang}>
-      <Header categories={categories} />
+      <Header categories={categories} webInfo={webInfo} />
       {children}
-      <Footer/>
+      <Footer />
     </LanguageProvider>
   )
 }

@@ -7,15 +7,12 @@ import NextImage from 'next/image'
 import { getMediaUrl } from "@/utilities/getMediaUrl"
 import { useLanguage } from "@/app/contexts/LanguageContext"
 
-export type AffairCardData = Pick<Affair, 'id' | 'images' | 'title' | 'description' | 'price' | 'total slots' | 'currently slots' | 'start date' | 'end date'>
+export type AffairCardData = Pick<Affair, 'id' | 'images' | 'title' | 'description' | 'price' | 'isAvailable' | 'start date' | 'end date'>
 
 export const AffairCard = ({ affair, locale }: { affair: AffairCardData; locale: string }) => {
   const { t } = useLanguage()
   const firstImage = affair.images?.[0].image
-  const total = affair['total slots']
-  const current = affair['currently slots']
-  if (total == null || current == null) return null
-  const slots = Math.max(0, total - current)
+  const isAvailable = affair.isAvailable !== false
 
   const cardPicture = typeof firstImage === 'object' && firstImage ? firstImage.sizes?.card : null
   const imgUrl = cardPicture?.url
@@ -32,7 +29,7 @@ export const AffairCard = ({ affair, locale }: { affair: AffairCardData; locale:
             src={getMediaUrl(imgUrl, firstImage.updatedAt)}
             fill
             sizes="(max-width: 640px) 100vw, 400px"
-            alt={firstImage.alt ?? affair.title}
+            alt={firstImage.alt ?? ""}
             className="object-cover"
           />
         ) : (
@@ -47,25 +44,17 @@ export const AffairCard = ({ affair, locale }: { affair: AffairCardData; locale:
             {formatDateRange(affair['start date'], affair['end date'])}
           </p>
           {descriptionText ? (
-            <p className="mt-1 line-clamp-2 text-sm text-stone-600" title={descriptionText}>
+            <p className="mt-1 line-clamp-2 text-sm text-stone-600">
               {descriptionText}
             </p>
           ) : null}
           <p className="mt-1 text-xl font-semibold text-amber-800">{affair.price} €</p>
         </div>
         <div className="shrink-0 text-right">
-          {slots == null ? (
-            <span className="text-sm text-stone-500">—</span>
-          ) : slots === 0 ? (
-            <span className="text-sm font-semibold text-rose-700">{t.card.noSlots}</span>
-          ) : slots > 15 ? (
+          {isAvailable ? (
             <span className="text-sm font-medium text-amber-800">{t.card.available}</span>
-          ) : slots < 10 ? (
-            <span className="bg-rose-100 px-2 py-0.5 text-sm font-semibold text-rose-700">
-              {slots} {t.card.slotsCount}
-            </span>
           ) : (
-            <span className="text-sm font-medium text-amber-800">{slots} {t.card.slotsCount}</span>
+            <span className="text-sm font-semibold text-rose-700">{t.card.noSlots}</span>
           )}
         </div>
       </div>
