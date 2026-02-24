@@ -133,7 +133,7 @@ export function AffairImageCarousel({
 
 
       <Lightbox
-        className="border border-gray-100"
+        className=""
         open={open}
         close={() => setOpen(false)}
         index={index}

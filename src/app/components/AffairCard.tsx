@@ -15,8 +15,7 @@ export const AffairCard = ({ affair, locale, className = "" }: { affair: AffairC
   const firstImage = affair.images?.[0].image
   const isAvailable = affair.isAvailable !== false
 
-  const cardPicture = typeof firstImage === 'object' && firstImage ? firstImage.sizes?.card : null
-  const imgUrl = cardPicture?.url
+  const imgUrl = firstImage && typeof firstImage === "object" && firstImage.url ? firstImage.url : ""
   const descriptionText = lexicalToPlainText(affair.description)
   const categoryTitle = typeof affair.category === 'object' && affair.category != null ? affair.category.title : null
   const tagItems = (affair.tags ?? [])
