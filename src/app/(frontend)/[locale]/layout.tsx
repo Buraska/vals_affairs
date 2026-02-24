@@ -25,9 +25,21 @@ export default async function LocaleLayout({
     ),
   ])
 
+  const headerWebInfo =
+    webInfo != null
+      ? {
+          ...webInfo,
+          siteDescription:
+            webInfo.siteDescription != null &&
+            typeof webInfo.siteDescription === 'object'
+              ? (webInfo.siteDescription[lang as keyof typeof webInfo.siteDescription])
+              : null,
+        }
+      : null
+
   return (
     <LanguageProvider key={locale} initialLocale={lang}>
-      <Header categories={categories} webInfo={webInfo} />
+      <Header categories={categories} webInfo={headerWebInfo} />
       {children}
       <Footer />
     </LanguageProvider>
