@@ -13,7 +13,7 @@ export function AffairOrderForm() {
     <section id="order" className="scroll-mt-4">
       <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
         <div>
-          <label htmlFor="order-name" className="mb-1 block text-sm font-medium text-stone-700">
+          <label htmlFor="order-name" className="mb-1 block text-sm font-medium text-[var(--dark)]">
             {t.order.formName}
           </label>
           <input
@@ -21,13 +21,13 @@ export function AffairOrderForm() {
             type="text"
             name="name"
             required
-            className="w-full max-w-md rounded-sm border border-amber-200 bg-white px-3 py-2 text-stone-800 placeholder:text-stone-400 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+            className="w-full max-w-md rounded border border-[var(--border)] bg-[var(--card-bg)] px-3 py-2 text-[var(--dark)] placeholder:text-[var(--muted)] focus:border-[var(--warm)] focus:outline-none"
             placeholder={t.order.placeholderName}
           />
         </div>
 
         <div>
-          <label htmlFor="order-email" className="mb-1 block text-sm font-medium text-stone-700">
+          <label htmlFor="order-email" className="mb-1 block text-sm font-medium text-[var(--dark)]">
             {t.order.formEmail}
           </label>
           <input
@@ -35,15 +35,15 @@ export function AffairOrderForm() {
             type="email"
             name="email"
             required
-            className="w-full max-w-md rounded-sm border border-amber-200 bg-white px-3 py-2 text-stone-800 placeholder:text-stone-400 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+            className="w-full max-w-md rounded border border-[var(--border)] bg-[var(--card-bg)] px-3 py-2 text-[var(--dark)] placeholder:text-[var(--muted)] focus:border-[var(--warm)] focus:outline-none"
           />
         </div>
 
-        <div className=''>
-          <label htmlFor="order-phone" className="mb-1 block text-sm font-medium text-stone-700">
+        <div>
+          <label htmlFor="order-phone" className="mb-1 block text-sm font-medium text-[var(--dark)]">
             {t.order.formPhone}
           </label>
-          <div className='w-full max-w-md rounded-sm border border-amber-200 bg-white px-3 py-2 text-stone-800 placeholder:text-stone-400 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500'>
+          <div className="w-full max-w-md rounded border border-[var(--border)] bg-[var(--card-bg)] px-3 py-2 text-[var(--dark)] placeholder:text-[var(--muted)] focus-within:border-[var(--warm)]">
             <PhoneInput
               name="phone"
               defaultCountry="EE"
@@ -54,27 +54,27 @@ export function AffairOrderForm() {
         </div>
 
         <div>
-          <label htmlFor="order-age" className="mb-1 block text-sm font-medium text-stone-700">
+          <label htmlFor="order-age" className="mb-1 block text-sm font-medium text-[var(--dark)]">
             {t.order.formAge}
           </label>
           <input
             id="order-age"
             type="text"
             name="age"
-            className="w-full max-w-md rounded-sm border border-amber-200 bg-white px-3 py-2 text-stone-800 placeholder:text-stone-400 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+            className="w-full max-w-md rounded border border-[var(--border)] bg-[var(--card-bg)] px-3 py-2 text-[var(--dark)] placeholder:text-[var(--muted)] focus:border-[var(--warm)] focus:outline-none"
             placeholder={t.order.placeholderAge}
           />
         </div>
 
         <div>
-          <label htmlFor="order-notes" className="mb-1 block text-sm font-medium text-stone-700">
+          <label htmlFor="order-notes" className="mb-1 block text-sm font-medium text-[var(--dark)]">
             {t.order.formNotes}
           </label>
           <textarea
             id="order-notes"
             name="notes"
             rows={3}
-            className="w-full max-w-md rounded-sm border border-amber-200 bg-white px-3 py-2 text-stone-800 placeholder:text-stone-400 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+            className="w-full max-w-md rounded border border-[var(--border)] bg-[var(--card-bg)] px-3 py-2 text-[var(--dark)] placeholder:text-[var(--muted)] focus:border-[var(--warm)] focus:outline-none"
             placeholder={t.order.placeholderNotes}
           />
         </div>
@@ -86,15 +86,15 @@ export function AffairOrderForm() {
               type="checkbox"
               name="agree"
               required
-              className="h-4 w-4 rounded-sm border-amber-200 text-amber-600 focus:ring-amber-500"
+              className="h-4 w-4 rounded border-[var(--border)] text-[var(--rust)] focus:ring-[var(--warm)]"
             />
-            <label htmlFor="order-agree" className="text-sm text-stone-700">
+            <label htmlFor="order-agree" className="text-sm text-[var(--dark)]">
               {t.order.formAgree}
             </label>
           </div>
           <Link
             href={`/${lang}/terms`}
-            className="text-sm text-amber-700 underline hover:text-amber-900"
+            className="text-sm text-[var(--rust)] underline hover:text-[var(--dark)]"
           >
             {t.order.termsLink}
           </Link>
@@ -103,13 +103,13 @@ export function AffairOrderForm() {
         <div className="flex flex-wrap gap-3 pt-2">
           <button
             type="submit"
-            className="rounded-sm bg-amber-600 px-6 py-3 font-medium text-white transition hover:bg-amber-700"
+            className="rounded bg-[var(--dark)] px-6 py-3 text-sm font-medium text-[var(--cream)] transition hover:bg-[var(--rust)]"
           >
             {t.order.submit}
           </button>
         </div>
 
-        <p className="text-sm text-stone-600">
+        <p className="text-sm text-[var(--muted)]">
           {t.order.rules}
         </p>
       </form>

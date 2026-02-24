@@ -23,7 +23,8 @@ export const Category: CollectionConfig = {
     {
       name: 'image',
       type: 'upload',
-      relationTo: 'media'
+      relationTo: 'media',
+      required: true
     },
     {
       name: 'parent category',

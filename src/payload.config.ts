@@ -17,6 +17,14 @@ import { UserAgreements } from './collections/Globals/UserAgreements'
 import { AboutUs } from './collections/Globals/AboutUs'
 import { defaultLocale, locales } from './app/lib/localization/i18n'
 
+/** Display names for locales (used in language switcher, empty-categories block, etc.) */
+export const localeLabels: Record<string, string> = {
+  ee: 'Eesti',
+  ru: 'Русский',
+  en: 'English',
+  fi: 'Suomi',
+}
+
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 

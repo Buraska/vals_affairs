@@ -11,17 +11,17 @@ const navSchema = {
   celebrations: '',
   about: '',
 }
-const heroSchema = { statsTitle: '', schoolTours: '', familyTrips: '', celebrations: '', campSessions: '' }
+const heroSchema = { statsTitle: '', schoolTours: '', familyTrips: '', celebrations: '', campSessions: '', heroTitle: '', ctaEvents: '', ctaTeam: '' }
 const valueSchema = { title: '', variety: '', varietyDesc: '', newRoutes: '', savings: '', savingsDesc: '', quality: '', qualityDesc: '' }
 const contactSchema = { title: '', phone: '', addressLabel: '', nonProfit: '', forBusiness: '', team: '', hours: '', hoursValue: '', weekend: '' }
-const footerSchema = { more: '', schoolProjects: '', giftCards: '', charity: '', merch: '', documents: '', contract: '', privacy: '', reportError: '', aboutUs: '', philosophy: '', contacts: '', reviews: '', partners: '', press: '', account: '', tours: '', subscribe: '', subscribeSuccess: '', subscribeCta: '' }
+const footerSchema = { more: '', schoolProjects: '', giftCards: '', charity: '', merch: '', documents: '', contract: '', privacy: '', reportError: '', aboutUs: '', philosophy: '', contacts: '', reviews: '', partners: '', press: '', account: '', tours: '', subscribe: '', subscribeSuccess: '', subscribeCta: '', websiteDevelopment: '' }
 const commonSchema = { back: '', backToEvent: '', notFoundEvent: '', notFoundOrder: '', additional: '', photoCount: '', openGallery: '', menu: '', termsPageTitle: '', aboutPageTitle: '', contentNotAdded: '' }
 const affairSchema = { scheduleTitle: '', takePlace: '', ticket: '', yourOrder: '', total: '', noTicketsNote: '', participation: '' }
 const orderSchema = { pageTitle: '', formName: '', formEmail: '', formPhone: '', formAge: '', formNotes: '', formAgree: '', termsLink: '', submit: '', rules: '', placeholderName: '', placeholderAge: '', placeholderNotes: '' }
-const categorySchema = { search: '', sort: '', sortByDate: '', sortByPriceAsc: '', sortByPriceDesc: '', searchPlaceholder: '', noResultsQuery: '', noResultsCategory: '', filters: '', resetFilters: '' }
+const categorySchema = { search: '', sort: '', sortByDate: '', sortByPriceAsc: '', sortByPriceDesc: '', searchPlaceholder: '', noResultsQuery: '', noResultsCategory: '', filters: '', resetFilters: '', countEvents: '', sectionLabel: '', upcomingEvents: '', eventsTitle: '', noCategoriesTitle: '', noCategoriesTryOther: '' }
 const cardSchema = { noSlots: '', available: '', slotsCount: '' }
 const tabsSchema = { ariaLabel: '' }
-const metaSchema = { siteDescription: '', tagline: '' }
+const metaSchema = { siteDescription: '', tagline: '', siteName: '' }
 
 export type TranslationsSchema = {
   nav: typeof navSchema
@@ -56,6 +56,9 @@ export const translations: Record<Lang, TranslationsSchema> = {
       familyTrips: "PEREREISE",
       celebrations: "PÜHA",
       campSessions: "LAAGRIVAHETUST",
+      heroTitle: "Ekskursioonid, tuurid ja pühad",
+      ctaEvents: "Vaata sündmusi",
+      ctaTeam: "Meie meeskond",
     },
     value: {
       title: "Miks usaldavad meie puhkust?",
@@ -99,10 +102,11 @@ export const translations: Record<Lang, TranslationsSchema> = {
       subscribe: "Telli",
       subscribeSuccess: "Suurepärane! Kontrolli e-kirja tellimuse kinnituse saamiseks",
       subscribeCta: "Uued tuurid ja ekskursioonid on veel lähemal!",
+      websiteDevelopment: "Veebi arendus",
     },
     common: {
-      back: "← Tagasi",
-      backToEvent: "← Tagasi ürituse juurde",
+      back: "Tagasi",
+      backToEvent: "Tagasi ürituse juurde",
       notFoundEvent: "Üritust ei leitud",
       notFoundOrder: "Tellimust ei leitud",
       additional: "Täiendavalt",
@@ -148,6 +152,12 @@ export const translations: Record<Lang, TranslationsSchema> = {
       noResultsCategory: "Selles kategoorias pole üritusi.",
       filters: "Filtrid",
       resetFilters: "Tühjenda filtrid",
+      countEvents: "{count} sündmust",
+      sectionLabel: "Kategooriad",
+      upcomingEvents: "Tulevased sündmused",
+      eventsTitle: "Kategooriad",
+      noCategoriesTitle: "Sellel keelel pole kategooriaid.",
+      noCategoriesTryOther: "Proovige teist keelt:",
     },
     card: {
       noSlots: "Kohti pole",
@@ -160,6 +170,7 @@ export const translations: Record<Lang, TranslationsSchema> = {
     meta: {
       siteDescription: "Ekskursioonid, meistrikursused, tuurid ja pühad lastele ja täiskasvanutele. Tallinn ja Eesti.",
       tagline: "Ekskursioonid, meistrikursused, tuurid ja pühad lastele ja täiskanutele",
+      siteName: "Vals",
     },
   },
   ru: {
@@ -179,6 +190,9 @@ export const translations: Record<Lang, TranslationsSchema> = {
       familyTrips: "ПОЕЗДОК ДЛЯ СЕМЕЙ",
       celebrations: "ПРАЗДНИКА",
       campSessions: "СМЕН ЛАГЕРЯ",
+      heroTitle: "Экскурсии, туры и праздники",
+      ctaEvents: "Смотреть события",
+      ctaTeam: "Наша команда",
     },
     value: {
       title: "Почему нам доверяют свой отдых?",
@@ -222,10 +236,11 @@ export const translations: Record<Lang, TranslationsSchema> = {
       subscribe: "Подписаться",
       subscribeSuccess: "Отлично! Скорей проверяй почту, там уже ждет подтверждение подписки",
       subscribeCta: "Новые туры и экскурсии станут ещё ближе!",
+      websiteDevelopment: "Разработка сайта",
     },
     common: {
-      back: "← Назад",
-      backToEvent: "← Назад к мероприятию",
+      back: "Назад",
+      backToEvent: "Назад к мероприятию",
       notFoundEvent: "Мероприятие не найдено",
       notFoundOrder: "Заказ не найден",
       additional: "Дополнительно",
@@ -262,6 +277,7 @@ export const translations: Record<Lang, TranslationsSchema> = {
     },
     category: {
       search: "Поиск",
+      eventsTitle: "Категории",
       sort: "Сортировка",
       sortByDate: "По дате",
       sortByPriceAsc: "По цене (сначала дешевле)",
@@ -271,6 +287,11 @@ export const translations: Record<Lang, TranslationsSchema> = {
       noResultsCategory: "В этой категории пока нет мероприятий.",
       filters: "Фильтры",
       resetFilters: "Сбросить фильтры",
+      countEvents: "{count} событий",
+      sectionLabel: "Категории",
+      upcomingEvents: "Ближайшие события",
+      noCategoriesTitle: "На этом языке категорий пока нет.",
+      noCategoriesTryOther: "Попробуйте другой язык:",
     },
     card: {
       noSlots: "Мест нет",
@@ -281,6 +302,7 @@ export const translations: Record<Lang, TranslationsSchema> = {
     meta: {
       siteDescription: "Экскурсии, мастер-классы, авторские туры, лагеря и праздники для детей и взрослых. Таллин и Эстония.",
       tagline: "Экскурсии, мастер-классы, туры и праздники для детей и взрослых",
+      siteName: "Vals",
     },
   },
   en: {
@@ -300,6 +322,9 @@ export const translations: Record<Lang, TranslationsSchema> = {
       familyTrips: "FAMILY TRIPS",
       celebrations: "CELEBRATIONS",
       campSessions: "CAMP SESSIONS",
+      heroTitle: "Tours, workshops and celebrations",
+      ctaEvents: "View events",
+      ctaTeam: "Our team",
     },
     value: {
       title: "Why do they trust us with their vacation?",
@@ -343,10 +368,11 @@ export const translations: Record<Lang, TranslationsSchema> = {
       subscribe: "Subscribe",
       subscribeSuccess: "Great! Check your email for the subscription confirmation",
       subscribeCta: "New tours and excursions will be even closer!",
+      websiteDevelopment: "Website development",
     },
     common: {
-      back: "← Back",
-      backToEvent: "← Back to event",
+      back: "Back",
+      backToEvent: "Back to event",
       notFoundEvent: "Event not found",
       notFoundOrder: "Order not found",
       additional: "Additional",
@@ -392,6 +418,12 @@ export const translations: Record<Lang, TranslationsSchema> = {
       noResultsCategory: "No events in this category yet.",
       filters: "Filters",
       resetFilters: "Reset filters",
+      countEvents: "{count} events",
+      sectionLabel: "Categories",
+      upcomingEvents: "Upcoming events",
+      eventsTitle: "Categories",
+      noCategoriesTitle: "There are no categories in this language yet.",
+      noCategoriesTryOther: "Try another language:",
     },
     card: {
       noSlots: "No places",
@@ -402,6 +434,7 @@ export const translations: Record<Lang, TranslationsSchema> = {
     meta: {
       siteDescription: "Tours, workshops, camps and celebrations for children and adults. Tallinn and Estonia.",
       tagline: "Tours, workshops, and celebrations for children and adults",
+      siteName: "Vals",
     },
   },
   fi: {
@@ -421,6 +454,9 @@ export const translations: Record<Lang, TranslationsSchema> = {
       familyTrips: "PERHEMATKAA",
       celebrations: "JUHLAa",
       campSessions: "LEIRIVUORTOA",
+      heroTitle: "Kierrokset, työpajat ja juhlat",
+      ctaEvents: "Näytä tapahtumat",
+      ctaTeam: "Tiimimme",
     },
     value: {
       title: "Miksi he luottavat lomaansa meille?",
@@ -464,10 +500,11 @@ export const translations: Record<Lang, TranslationsSchema> = {
       subscribe: "Tilaa",
       subscribeSuccess: "Loistavaa! Tarkista sähköpostisi tilauksen vahvistusta varten",
       subscribeCta: "Uudet kierrokset ja retket ovat entistä lähempänä!",
+      websiteDevelopment: "Verkkosivuston kehitys",
     },
     common: {
-      back: "← Takaisin",
-      backToEvent: "← Takaisin tapahtumaan",
+      back: "Takaisin",
+      backToEvent: "Takaisin tapahtumaan",
       notFoundEvent: "Tapahtumaa ei löydy",
       notFoundOrder: "Tilausta ei löydy",
       additional: "Lisätietoja",
@@ -513,6 +550,12 @@ export const translations: Record<Lang, TranslationsSchema> = {
       noResultsCategory: "Tässä kategoriassa ei ole tapahtumia.",
       filters: "Suodattimet",
       resetFilters: "Tyhjennä suodattimet",
+      countEvents: "{count} tapahtumaa",
+      sectionLabel: "Kategoriat",
+      upcomingEvents: "Tulevat tapahtumat",
+      eventsTitle: "Kategoriat",
+      noCategoriesTitle: "Tällä kielellä ei ole vielä kategorioita.",
+      noCategoriesTryOther: "Kokeile toista kieltä:",
     },
     card: {
       noSlots: "Ei paikkoja",
@@ -523,6 +566,7 @@ export const translations: Record<Lang, TranslationsSchema> = {
     meta: {
       siteDescription: "Kierrokset, työpajat ja juhlat lapsille ja aikuisille. Tallinna ja Viro.",
       tagline: "Kierrokset, työpajat ja juhlat lapsille ja aikuisille",
+      siteName: "Vals",
     },
   },
 } as const

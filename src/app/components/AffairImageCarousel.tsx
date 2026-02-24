@@ -37,14 +37,24 @@ export function AffairImageCarousel({
     alt: s.alt ?? "",
     width: s.width ?? 0,
     height: s.height ?? 0,
-    srcSet: s.sizes ? Object.entries(s.sizes).map((size) => {
-      return {
-        src: size[1].url ?? "",
-        width: size[1].width ?? 0,
-        height: size[1].height ?? 0
-      }
-    }) : []
+    srcSet: s.sizes
+      ? Object.entries(s.sizes)
+        .map((size) => {
+          const value = size[1]
+          if (value?.url?.trim()) {
+            return {
+              src: value.url,
+              width: value.width ?? 0,
+              height: value.height ?? 0,
+            }
+          }
+          return null
+        })
+        .filter((x): x is { src: string; width: number; height: number } => x != null)
+      : []
   }))
+
+  console.log(lightboxSlides)
 
 
   if (slides.length === 0 && !coverResource) {
@@ -60,11 +70,10 @@ export function AffairImageCarousel({
 
   return (
     <>
-
       <div className="flex flex-col-reverse">
 
         {hasMultiple && (
-          <div className=" flex-col flex-nowrap gap-2 overflow-x-auto pb-2" role="list" aria-label="Миниатюры фото">
+          <div className=" flex-col flex-nowrap gap-2 overflow-x-auto pb-2" role="list" aria-label="Small photos">
             {slides.map((media, i) => (
               <button
                 key={media.id}
@@ -89,24 +98,16 @@ export function AffairImageCarousel({
           </div>
         )}
 
-        <div
-          className={`relative mb-4 w-full overflow-hidden rounded-lg bg-amber-100 ${hasMultiple || slides.length === 1 ? 'cursor-pointer' : ''}`}
-          style={{ aspectRatio: '16/10' }}
+        <button
+          type="button"
+          disabled={lightboxSlides.length === 0}
+          className={`relative mb-4 w-full aspect-[16/10] overflow-hidden rounded-lg bg-amber-100 ${hasMultiple || slides.length === 1 ? 'cursor-pointer' : 'cursor-default'}`}
           onClick={() => {
             if (lightboxSlides.length > 0) {
               setIndex(0)
               setOpen(true)
             }
           }}
-          onKeyDown={(e) => {
-            if (lightboxSlides.length > 0 && (e.key === 'Enter' || e.key === ' ')) {
-              e.preventDefault()
-              setIndex(0)
-              setOpen(true)
-            }
-          }}
-          role={lightboxSlides.length > 0 ? 'button' : undefined}
-          tabIndex={lightboxSlides.length > 0 ? 0 : undefined}
           aria-label={title ? `${t.common.openGallery}: ${title}` : t.common.openGallery}
         >
 
@@ -116,12 +117,6 @@ export function AffairImageCarousel({
               pictureClassName="relative size-full block"
               imgClassName="object-cover object-center"
               size="1200px"
-            />
-          ) : lightboxSlides[0] ? (
-            <img
-              src={lightboxSlides[0].src}
-              alt={slides[0].alt ?? title ?? ''}
-              className="h-full w-full object-cover object-center"
             />
           ) : (
             <div className="flex aspect-[16/10] w-full items-center justify-center text-4xl text-amber-300">
@@ -133,15 +128,17 @@ export function AffairImageCarousel({
               {slides.length} {t.common.photoCount}
             </div>
           )}
-        </div>
+        </button>
       </div>
 
 
       <Lightbox
+        className="border border-gray-100"
         open={open}
         close={() => setOpen(false)}
         index={index}
         slides={lightboxSlides}
+        carousel={{ imageFit: "contain" }}
         on={{
           view: ({ index: i }) => setIndex(i),
         }}

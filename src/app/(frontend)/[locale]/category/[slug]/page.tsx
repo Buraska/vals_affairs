@@ -106,38 +106,44 @@ export default async function CategoryPage({
     : t.category.noResultsCategory
 
   return (
-    <main className="min-h-screen bg-white">
-      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        <h1 className="mb-6 text-2xl text-center font-semibold text-amber-900 sm:text-3xl">
-          {category.title}
-        </h1>
+    <main className="min-h-screen">
+      <div className="px-4 sm:px-8 lg:px-16 py-10">
+        <div className="flex items-end gap-4 mb-6 pb-4 border-b border-[var(--border)]">
+          <p className="text-xs text-[var(--muted)] font-light tracking-widest uppercase">
+            {t.category.countEvents.replace('{count}', String(affairs.length))}
+          </p>
+          <h1 className="text-2xl  mx-auto font-bold text-[var(--dark)] text-left" style={{ fontFamily: "var(--font-playfair)" }}>
+            {category.title}
+          </h1>
+        </div>
+
         <div className="flex flex-col gap-8 lg:flex-row">
-          <aside className="lg:w-64 lg:shrink-0">
-            <div className="top-40 space-y-6">
-              <div>
-                <h2 className="mb-2 text-sm font-semibold text-stone-900">
-                  {t.category.search}
-                </h2>
-                <CategorySearch
-                  baseUrl={baseUrl}
-                  sort={sort}
-                  query={query}
-                  selectedTags={selectedTagIds}
-                  options={sortOptions}
-                />
-              </div>
-              <div>
-                <h2 className="mb-2 text-sm font-semibold text-stone-900">
-                  {t.category.sort}
-                </h2>
-                <CategorySortSelect
-                  baseUrl={baseUrl}
-                  currentSort={sort}
-                  query={query}
-                  selectedTags={selectedTagIds}
-                  options={sortOptions}
-                />
-              </div>
+          <aside className="lg:w-64 lg:shrink-0 space-y-6">
+            <div>
+              <h2 className="mb-2 text-xs font-medium text-[var(--muted)] tracking-wide uppercase">
+                {t.category.search}
+              </h2>
+              <CategorySearch
+                baseUrl={baseUrl}
+                sort={sort}
+                query={query}
+                selectedTags={selectedTagIds}
+                options={sortOptions}
+              />
+            </div>
+            <div>
+              <h2 className="mb-2 text-xs font-medium text-[var(--muted)] tracking-wide uppercase">
+                {t.category.sort}
+              </h2>
+              <CategorySortSelect
+                baseUrl={baseUrl}
+                currentSort={sort}
+                query={query}
+                selectedTags={selectedTagIds}
+                options={sortOptions}
+              />
+            </div>
+            {tags.size > 0 && (
               <TagFilters
                 tags={[...tags]}
                 selectedTagIds={selectedTagIds}
@@ -145,23 +151,19 @@ export default async function CategoryPage({
                 sort={sort}
                 query={query}
               />
-            </div>
+            )}
           </aside>
 
           <div className="min-w-0 flex-1">
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-px ">
               {affairs.length === 0 ? (
-                <p className="text-stone-600">{noResultsText}</p>
+                <p className="text-[var(--muted)] py-8">{noResultsText}</p>
               ) : (
-                (() => {
-                  return affairs.map((affair) => {
-                    return (
-                      <div key={affair.id} className="flex px-4 lg:px-0  flex-col gap-4">
-                        <AffairCard affair={affair} locale={locale} />
-                      </div>
-                    )
-                  })
-                })()
+                affairs.map((affair) => (
+                  <div key={affair.id} className="bg-[var(--card-bg)]">
+                    <AffairCard affair={affair} locale={locale} className='p-5' />
+                  </div>
+                ))
               )}
             </div>
           </div>

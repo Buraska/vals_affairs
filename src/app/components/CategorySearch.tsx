@@ -48,7 +48,7 @@ export default function CategorySearch({
         name="q"
         defaultValue={query}
         placeholder={t.category.searchPlaceholder}
-        className="rounded-lg border-b border-amber-200 bg-white px-3 py-2 text-stone-800 placeholder:text-stone-400 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 sm:w-64"
+        className="w-full sm:w-64 rounded border border-[var(--border)] bg-[var(--card-bg)] px-3 py-2 text-sm text-[var(--dark)] placeholder:text-[var(--muted)] focus:border-[var(--warm)] focus:outline-none"
       />
     </form>
   )

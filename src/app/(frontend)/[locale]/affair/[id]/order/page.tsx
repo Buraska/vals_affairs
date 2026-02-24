@@ -88,16 +88,19 @@ export default async function OrderPage({
   const total = totalCents
 
   return (
-    <main className="min-h-screen bg-white">
-      <div className="mx-auto max-w-6xl px-4 py-4 sm:px-6 lg:px-8">
+    <main className="min-h-screen">
+      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-8 lg:px-16">
         <Link
           href={`/${locale}/affair/${id}`}
-          className="mb-4 inline-block text-sm font-medium text-amber-700 hover:text-amber-900"
+          className="mb-6 inline-flex items-center gap-2 text-sm text-[var(--muted)] hover:text-[var(--rust)] transition-colors"
         >
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M9 11L5 7L9 3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
           {t.common.backToEvent}
         </Link>
 
-        <h1 className="mb-6 text-2xl font-bold text-amber-900">
+        <h1 className="mb-8 text-2xl font-bold text-[var(--dark)]" style={{ fontFamily: "var(--font-playfair)" }}>
           {t.order.pageTitle}
         </h1>
 
@@ -107,28 +110,28 @@ export default async function OrderPage({
           </div>
 
           <aside className="lg:w-[380px] lg:shrink-0">
-            <section className="sticky top-[calc(var(--header-height)+1rem)] rounded-sm border border-amber-200 bg-amber-50/30 p-4">
-              <h2 className="mb-3 text-lg font-semibold text-amber-900">
+            <section className="sticky top-24 rounded border border-[var(--border)] bg-[var(--card-bg)] p-6">
+              <h2 className="mb-4 text-lg font-semibold text-[var(--dark)]" style={{ fontFamily: "var(--font-playfair)" }}>
                 {t.affair.yourOrder}
               </h2>
-              <p className="mb-1 font-medium text-stone-800">{affair.title}</p>
-              <p className="mb-3 text-sm text-stone-600">
+              <p className="mb-1 font-medium text-[var(--dark)]">{affair.title}</p>
+              <p className="mb-4 text-sm text-[var(--muted)]">
                 {formatDateRange(affair['start date'], affair['end date'], locale)}
               </p>
               {tickets.length > 0 ? (
                 <>
-                  <ul className="space-y-2 border-t border-amber-200 pt-3">
+                  <ul className="space-y-2 border-t border-[var(--border)] pt-4">
                     {lines.map((line, i) => {
                       if (line.qty === 0) return null
                       return (
                         <li
                           key={i}
-                          className="flex justify-between gap-4 text-sm text-stone-700"
+                          className="flex justify-between gap-4 text-sm text-[var(--muted)]"
                         >
                           <span>
                             {line.name} × {line.qty}
                           </span>
-                          <span className="font-medium text-amber-900">
+                          <span className="font-medium text-[var(--dark)]">
                             {line.subtotal} €
                           </span>
                         </li>
@@ -136,19 +139,19 @@ export default async function OrderPage({
                     })}
                   </ul>
                   {hasTicketSelection && (
-                    <p className="mt-2 border-t border-amber-200 pt-2 text-right font-semibold text-amber-900">
+                    <p className="mt-3 border-t border-[var(--border)] pt-3 text-right font-semibold text-[var(--dark)]">
                       {t.affair.total}: {total} €
                     </p>
                   )}
                   {!hasTicketSelection && (
-                    <p className="mt-2 text-sm text-stone-500">
+                    <p className="mt-3 text-sm text-[var(--muted)]">
                       {t.affair.noTicketsNote}
                     </p>
                   )}
                 </>
               ) : (
-                <p className="text-stone-700">
-                  {t.affair.participation}: <strong>{affair.price} €</strong>
+                <p className="text-[var(--muted)]">
+                  {t.affair.participation}: <strong className="text-[var(--dark)]">{affair.price} €</strong>
                 </p>
               )}
             </section>

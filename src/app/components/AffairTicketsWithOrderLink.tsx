@@ -38,7 +38,7 @@ export function AffairTicketsWithOrderLink({
         />
       ) : price != null ? (
         <div className="mb-4 flex items-center gap-4">
-          <span className="text-3xl font-semibold text-amber-900">
+          <span className="text-2xl font-semibold text-[var(--dark)]" style={{ fontFamily: "var(--font-playfair)" }}>
             {price} €
           </span>
         </div>
@@ -48,14 +48,14 @@ export function AffairTicketsWithOrderLink({
           <span
             role="button"
             aria-disabled="true"
-            className="inline-block cursor-not-allowed rounded-md bg-gray-400 px-6 py-3 font-medium text-white"
+            className="inline-block cursor-not-allowed rounded-sm bg-[var(--border)] px-6 py-3 text-sm font-medium text-[var(--muted)]"
           >
             {t.affair.takePlace}
           </span>
         ) : (
           <Link
             href={orderHref}
-            className="inline-block rounded-sm bg-gray-600 px-6 py-3 font-medium text-white transition hover:bg-gray-800"
+            className="inline-block rounded-sm bg-[var(--dark)] px-6 py-3 text-sm font-medium text-[var(--cream)] transition hover:bg-[var(--rust)]"
           >
             {t.affair.takePlace}
           </Link>
