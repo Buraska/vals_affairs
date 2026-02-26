@@ -14,11 +14,18 @@ const nextConfig = {
   },
   images: {
     remotePatterns: [
+      // Local dev: media via Payload API
       {
         protocol: 'http',
         hostname: 'localhost',
         port: '3000',
         pathname: '/api/media/file/**',
+      },
+      // Vercel Blob Storage (production)
+      {
+        protocol: 'https',
+        hostname: '*.public.blob.vercel-storage.com',
+        pathname: '/**',
       },
     ],
   },
