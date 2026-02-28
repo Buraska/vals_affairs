@@ -1,0 +1,25 @@
+# fly.toml app configuration file generated for vals-copy on 2026-02-28T15:38:43+02:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'vals-copy'
+primary_region = 'arn'
+
+[build]
+  # Pass PAYLOAD_SECRET so Payload can init during next build (page data collection).
+  # This is a placeholder; set the real secret at runtime: fly secrets set PAYLOAD_SECRET=your-secret
+  # args = { PAYLOAD_SECRET = "build-time-placeholder" }
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+[[vm]]
+  memory = '256mb'
+  cpus = 1
+  memory_mb = 256
