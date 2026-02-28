@@ -16,6 +16,7 @@ import { WebInfo } from './collections/Globals/WebInfo'
 import { UserAgreements } from './collections/Globals/UserAgreements'
 import { AboutUs } from './collections/Globals/AboutUs'
 import { defaultLocale, locales } from './app/lib/localization/i18n'
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 
 /** Display names for locales (used in language switcher, empty-categories block, etc.) */
 export const localeLabels: Record<string, string> = {
@@ -51,5 +52,15 @@ export default buildConfig({
     url: process.env.DATABASE_URL || '',
   }),
   sharp,
-  plugins: [],
+  plugins: [
+    vercelBlobStorage({
+      enabled: true, // Optional, defaults to true
+      // Specify which collections should use Vercel Blob
+      collections: {
+        media: true,
+      },
+      clientUploads: false,
+      token: process.env.BLOB_READ_WRITE_TOKEN,
+    })
+  ],
 })
