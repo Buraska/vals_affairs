@@ -56,7 +56,7 @@ export const translations: Record<Lang, TranslationsSchema> = {
       familyTrips: "PEREREISE",
       celebrations: "PÜHA",
       campSessions: "LAAGRIVAHETUST",
-      heroTitle: "Ekskursioonid, tuurid ja pühad",
+      heroTitle: "Sündmused Eestis",
       ctaEvents: "Vaata sündmusi",
       ctaTeam: "Meie meeskond",
     },

@@ -6,7 +6,6 @@ export const Media: CollectionConfig = {
     read: () => true
   },
   upload: {
-    // Vercel has read-only filesystem. All storage via vercelBlobStorage plugin.
     disableLocalStorage: true,
     imageSizes: [
       {

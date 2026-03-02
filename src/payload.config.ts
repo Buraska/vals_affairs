@@ -16,7 +16,7 @@ import { WebInfo } from './collections/Globals/WebInfo'
 import { UserAgreements } from './collections/Globals/UserAgreements'
 import { AboutUs } from './collections/Globals/AboutUs'
 import { defaultLocale, locales } from './app/lib/localization/i18n'
-import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
+import { s3Storage } from '@payloadcms/storage-s3'
 
 /** Display names for locales (used in language switcher, empty-categories block, etc.) */
 export const localeLabels: Record<string, string> = {
@@ -53,14 +53,23 @@ export default buildConfig({
   }),
   sharp,
   plugins: [
-    vercelBlobStorage({
-      enabled: true, // Optional, defaults to true
-      // Specify which collections should use Vercel Blob
-      collections: {
-        media: true,
-      },
-      clientUploads: false,
-      token: process.env.BLOB_READ_WRITE_TOKEN,
-    })
+    // R2: set R2_BUCKET, R2_ENDPOINT (https://<ACCOUNT_ID>.r2.cloudflarestorage.com), R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY
+    ...(process.env.R2_BUCKET
+      ? [
+          s3Storage({
+            collections: { media: true },
+            bucket: process.env.R2_BUCKET,
+            config: {
+              endpoint: process.env.R2_ENDPOINT,
+              region: 'auto',
+              forcePathStyle: true,
+              credentials: {
+                accessKeyId: process.env.R2_ACCESS_KEY_ID ?? '',
+                secretAccessKey: process.env.R2_SECRET_ACCESS_KEY ?? '',
+              },
+            },
+          }),
+        ]
+      : []),
   ],
 })

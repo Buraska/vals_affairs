@@ -9,21 +9,25 @@ const LanguageContext = createContext<{
   lang: Lang;
   setLang: (l: Lang) => void;
   t: TranslationsSchema;
+  siteDescription: string | null;
 } | null>(null);
 
 export function LanguageProvider({
   children,
   initialLocale,
+  initialSiteDescription = null,
 }: {
   children: React.ReactNode;
   initialLocale: Lang;
+  initialSiteDescription?: string | null;
 }) {
   const [lang, setLangState] = useState<Lang>(initialLocale);
   const setLang = useCallback((l: Lang) => setLangState(l), []);
   const t = translations[lang];
+  const siteDescription = initialSiteDescription ?? null;
 
   return (
-    <LanguageContext.Provider value={{ lang, setLang, t }}>
+    <LanguageContext.Provider value={{ lang, setLang, t, siteDescription }}>
       {children}
     </LanguageContext.Provider>
   );

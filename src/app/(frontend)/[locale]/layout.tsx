@@ -3,6 +3,7 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { LanguageProvider } from '@/app/contexts/LanguageContext'
 import { Header } from '@/app/components/Header'
+import { NavigationOverlay } from '@/app/components/NavigationOverlay'
 import type { Lang } from '@/app/lib/localization/translations'
 import { isValidLocale } from '@/app/lib/localization/i18n'
 import { getCategoriesForLocale } from '@/app/lib/categoriesForLocale'
@@ -38,10 +39,15 @@ export default async function LocaleLayout({
       : null
 
   return (
-    <LanguageProvider key={locale} initialLocale={lang}>
+    <LanguageProvider
+      key={locale}
+      initialLocale={lang}
+      initialSiteDescription={headerWebInfo?.siteDescription ?? null}
+    >
       <Header categories={categories} webInfo={headerWebInfo} />
       {children}
       <Footer />
+      <NavigationOverlay />
     </LanguageProvider>
   )
 }

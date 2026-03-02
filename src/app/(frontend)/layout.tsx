@@ -19,6 +19,9 @@ const onest = Onest({
 export const metadata: Metadata = {
   title: "Vals",
   description: "Tours and celebrations in Estonia.",
+  icons: {
+    icon: "/icon.svg",
+  },
 };
 
 export default function FrontendLayout({
