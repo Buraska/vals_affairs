@@ -1,3 +1,4 @@
+import { afterChangeHookCategory } from '@/app/lib/hooks/payloadHooks'
 import type { CollectionConfig } from 'payload'
 
 export const Category: CollectionConfig = {
@@ -5,6 +6,7 @@ export const Category: CollectionConfig = {
   access: {
     read: () => true,
   },
+  hooks: {afterChange: [afterChangeHookCategory]},
   admin:{
     useAsTitle:'title'
   },
@@ -36,6 +38,12 @@ export const Category: CollectionConfig = {
       type: 'join',
       collection: 'category',
       on: 'parent category'
+    },
+    {
+      name: 'affairs',
+      type: 'join',
+      collection: 'Affair',
+      on: 'category'
     }
   ],
   defaultPopulate: {

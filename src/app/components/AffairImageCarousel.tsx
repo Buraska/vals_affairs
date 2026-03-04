@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import Lightbox from 'yet-another-react-lightbox'
 import 'yet-another-react-lightbox/styles.css'
-import { Media } from '@/app/components/Media'
+import Image from 'next/image'
 import { Media as MediaType } from '@/payload-types'
 import { getMediaUrl } from '@/utilities/getMediaUrl'
 import { useLanguage } from '@/app/contexts/LanguageContext'
@@ -54,9 +54,6 @@ export function AffairImageCarousel({
       : []
   }))
 
-  console.log(lightboxSlides)
-
-
   if (slides.length === 0 && !coverResource) {
     return (
       <div className="mb-4 flex aspect-[16/10] w-full items-center justify-center rounded-lg bg-amber-100 text-4xl text-amber-300">
@@ -87,12 +84,15 @@ export function AffairImageCarousel({
                 }}
                 aria-label={`${i + 1} / ${slides.length}. ${t.common.openGallery}`}
               >
-                <img
-                  src={media.thumbnailURL ?? getMediaUrl(media.sizes?.thumbnail?.url ?? media.url, media.updatedAt) ?? ''}
-                  alt={media.alt ?? title ?? `Фото ${i + 1}`}
-                  className="h-full w-full object-cover"
-                  loading="lazy"
-                />
+                <span className="relative block size-full">
+                  <Image
+                    src={media.thumbnailURL ?? getMediaUrl(media.sizes?.thumbnail?.url ?? media.url ?? '', media.updatedAt) ?? ''}
+                    alt={media.alt ?? title ?? `Фото ${i + 1}`}
+                    fill
+                    style={{ objectFit: 'cover' }}
+                    sizes="96px"
+                  />
+                </span>
               </button>
             ))}
           </div>
@@ -111,13 +111,16 @@ export function AffairImageCarousel({
           aria-label={title ? `${t.common.openGallery}: ${title}` : t.common.openGallery}
         >
 
-          {showCover ? (
-            <Media
-              resource={coverResource}
-              pictureClassName="relative size-full block"
-              imgClassName="object-cover object-center"
-              size="1200px"
-            />
+          {showCover && coverResource ? (
+            <span className="relative block size-full">
+              <Image
+                src={coverResource.url ?? ''}
+                alt={coverResource.alt ?? title ?? ''}
+                fill
+                style={{ objectFit: 'cover' }}
+                sizes="(max-width: 768px) 50vw, 50vw"
+              />
+            </span>
           ) : (
             <div className="flex aspect-[16/10] w-full items-center justify-center text-4xl text-amber-300">
               —

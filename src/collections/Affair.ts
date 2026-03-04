@@ -1,7 +1,9 @@
+import { afterChangeHookAffair } from '@/app/lib/hooks/payloadHooks'
 import type { CollectionConfig } from 'payload'
 
 export const Affair: CollectionConfig = {
   slug: 'Affair',
+  hooks: {afterChange: [afterChangeHookAffair]},
   access: {
     read: () => true,
   },
@@ -115,6 +117,7 @@ export const Affair: CollectionConfig = {
   ],
   defaultPopulate: {
     slug: true,
-    title: true
+    title: true,
+    category: true
   }
 }

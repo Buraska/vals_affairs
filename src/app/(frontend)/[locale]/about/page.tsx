@@ -2,9 +2,15 @@ import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { lexicalToHtml } from '@/utilities/lexicalToHtml'
-import { isValidLocale } from '@/app/lib/localization/i18n'
+import { isValidLocale, locales } from '@/app/lib/localization/i18n'
 import type { Locale } from '@/app/lib/localization/i18n'
 import { getTranslations } from '@/app/lib/localization/translations'
+
+export const dynamic = 'force-static'
+
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }))
+}
 
 const richTextClass =
   'prose prose-stone max-w-none [&_p]:mb-4 [&_p]:text-[var(--muted)] [&_strong]:text-[var(--dark)] [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:space-y-1 [&_ol]:pl-6 [&_li]:text-[var(--muted)] [&_h2]:mt-8 [&_h2]:mb-4 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-[var(--dark)] [&_h3]:mt-6 [&_h3]:mb-3 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:text-[var(--dark)] [&_a]:text-[var(--rust)] [&_a]:underline [&_a]:hover:text-[var(--dark)]'

@@ -9,7 +9,20 @@ import { Media as MediaType } from '@/payload-types'
 import { AffairImageCarousel } from '@/app/components/AffairImageCarousel'
 import { getTranslations } from '@/app/lib/localization/translations'
 import type { Lang } from '@/app/lib/localization/translations'
-import { isValidLocale } from '@/app/lib/localization/i18n'
+import { isValidLocale, locales } from '@/app/lib/localization/i18n'
+
+export const dynamic = 'force-static'
+
+export async function generateStaticParams() {
+  const payload = await getPayload({ config: configPromise })
+  const { docs: affairs } = await payload.find({
+    collection: 'Affair',
+    depth: 0,
+    limit: 500,
+  })
+  const ids = affairs.map((a) => a.id)
+  return locales.flatMap((locale) => ids.map((id) => ({ locale, id })))
+}
 
 const payload = await getPayload({ config: configPromise })
 

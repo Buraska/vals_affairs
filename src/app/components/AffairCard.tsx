@@ -1,12 +1,12 @@
 'use client'
-import type { Affair } from "@/payload-types"
+import type { Affair, Media } from "@/payload-types"
 import { formatDateRange } from "@/utilities/utility"
 import { lexicalToPlainText } from "@/utilities/lexicalToPlainText"
 import Link from "next/link"
-import NextImage from 'next/image'
 import { getMediaUrl } from "@/utilities/getMediaUrl"
 import { useLanguage } from "@/app/contexts/LanguageContext"
 import clsx from 'clsx'
+import Image from "next/image"
 
 export type AffairCardData = Pick<Affair, 'id' | 'images' | 'title' | 'description' | 'price' | 'isAvailable' | 'start date' | 'end date' | 'category' | 'tags'>
 
@@ -15,7 +15,6 @@ export const AffairCard = ({ affair, locale, className = "" }: { affair: AffairC
   const firstImage = affair.images?.[0].image
   const isAvailable = affair.isAvailable !== false
 
-  const imgUrl = firstImage && typeof firstImage === "object" && firstImage.url ? firstImage.url : ""
   const descriptionText = lexicalToPlainText(affair.description)
   const categoryTitle = typeof affair.category === 'object' && affair.category != null ? affair.category.title : null
   const tagItems = (affair.tags ?? [])
@@ -27,14 +26,14 @@ export const AffairCard = ({ affair, locale, className = "" }: { affair: AffairC
       href={`/${locale}/affair/${affair.id}`}
       className={clsx(className, "group relative flex flex-col bg-[var(--card-bg)] transition hover:bg-[#FFFDF6] overflow-hidden")}
     >
-      {(firstImage && typeof firstImage !== 'string' && imgUrl) ? (
+      {(firstImage && typeof firstImage !== 'string') ? (
         <div className="relative w-full aspect-[16/9] overflow-hidden bg-[var(--border)]">
-          <NextImage
-            src={getMediaUrl(imgUrl, firstImage.updatedAt)}
-            fill
-            sizes="(max-width: 640px) 100vw, 400px"
+          <Image
+            src={firstImage.url ?? ""}
             alt={firstImage.alt ?? ""}
-            className="object-cover"
+            fill
+            style={{ objectFit: "cover" }}
+            sizes="(max-width: 768px) 50vw, 33vw"
           />
         </div>
       ) : (

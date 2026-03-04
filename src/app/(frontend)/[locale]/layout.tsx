@@ -5,9 +5,15 @@ import { LanguageProvider } from '@/app/contexts/LanguageContext'
 import { Header } from '@/app/components/Header'
 import { NavigationOverlay } from '@/app/components/NavigationOverlay'
 import type { Lang } from '@/app/lib/localization/translations'
-import { isValidLocale } from '@/app/lib/localization/i18n'
+import { isValidLocale, locales } from '@/app/lib/localization/i18n'
 import { getCategoriesForLocale } from '@/app/lib/categoriesForLocale'
 import { Footer } from '@/app/components/Footer'
+
+export const dynamic = 'force-static'
+
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }))
+}
 
 export default async function LocaleLayout({
   children,
@@ -47,7 +53,7 @@ export default async function LocaleLayout({
       <Header categories={categories} webInfo={headerWebInfo} />
       {children}
       <Footer />
-      <NavigationOverlay />
+      {/* <NavigationOverlay /> */}
     </LanguageProvider>
   )
 }

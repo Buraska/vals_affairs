@@ -1,7 +1,7 @@
 "use client";
 
 import { useLanguage } from "@/app/contexts/LanguageContext";
-import { Media } from "@/app/components/Media";
+import Image from "next/image";
 import type { Team as TeamMember } from "@/payload-types";
 import { defaultLocale, type Locale } from "@/app/lib/localization/i18n";
 
@@ -62,11 +62,13 @@ export function Team({
                 className="border border-[var(--border)] bg-[var(--cream)] p-5 transition hover:border-[var(--warm)]"
               >
                 {photo && (
-                  <div className="mb-4 aspect-square overflow-hidden bg-[var(--border)]">
-                    <Media
-                      resource={photo}
-                      size="400px"
-                      imgClassName="h-full w-full object-cover"
+                  <div className="relative mb-4 aspect-square overflow-hidden bg-[var(--border)]">
+                    <Image
+                      src={photo.url ?? ""}
+                      alt={photo.alt ?? ""}
+                      fill
+                      style={{ objectFit: "cover" }}
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
                     />
                   </div>
                 )}

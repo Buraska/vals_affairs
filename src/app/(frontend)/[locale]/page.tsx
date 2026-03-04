@@ -5,9 +5,15 @@ import { getCategoriesForLocale } from "@/app/lib/categoriesForLocale";
 import { getTranslations } from "@/app/lib/localization/translations";
 import type { Lang } from "@/app/lib/localization/translations";
 import { isValidLocale } from "@/app/lib/localization/i18n";
-import type { Locale } from "@/app/lib/localization/i18n";
+import { locales, type Locale } from "@/app/lib/localization/i18n";
 import { getPayload } from "payload";
 import configPromise from "@payload-config";
+
+export const dynamic = "force-static";
+
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }));
+}
 
 export default async function HomePage({
   params,

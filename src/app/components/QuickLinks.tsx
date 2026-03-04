@@ -1,8 +1,8 @@
 import Link from 'next/link'
-import { Media } from './Media'
-import type { Category } from '@/payload-types'
+import type { Category, Media as MediaType } from '@/payload-types'
 import { locales } from '@/app/lib/localization/i18n'
 import { localeLabels } from '@payload-config'
+import Image from 'next/image'
 
 export function QuickLinks({
   locale,
@@ -54,7 +54,13 @@ export function QuickLinks({
             >
               {item.image ? (
                 <div className="relative aspect-[4/3] w-full overflow-hidden bg-[var(--border)]">
-                  <Media fill resource={item.image} size="30vw" imgClassName="object-cover" />
+                  <Image 
+                  src={(item.image as MediaType).url ?? ""}
+                   alt={(item.image as MediaType).alt ?? ""}
+                   fill
+                   style={{objectFit: 'cover'}}
+                   sizes="(max-width: 768px) 50vw, 33vw"
+                   />
                 </div>
               ) : (
                 <div className="flex aspect-[4/3] w-full items-center justify-center bg-[var(--border)] text-2xl text-[var(--muted)]" role="img" aria-hidden>

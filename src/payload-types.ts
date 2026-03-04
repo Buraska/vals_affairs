@@ -82,6 +82,10 @@ export interface Config {
   collectionsJoins: {
     category: {
       'child categories': 'category';
+      affairs: 'Affair';
+    };
+    tag: {
+      affairs: 'Affair';
     };
     tagGroup: {
       tagGroup: 'tag';
@@ -237,6 +241,11 @@ export interface Category {
     hasNextPage?: boolean;
     totalDocs?: number;
   };
+  affairs?: {
+    docs?: (string | Affair)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -317,6 +326,11 @@ export interface Tag {
   id: string;
   name: string;
   'tag group': string | TagGroup;
+  affairs?: {
+    docs?: (string | Affair)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -556,6 +570,7 @@ export interface CategorySelect<T extends boolean = true> {
   image?: T;
   'parent category'?: T;
   'child categories'?: T;
+  affairs?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -607,6 +622,7 @@ export interface AffairSelect<T extends boolean = true> {
 export interface TagSelect<T extends boolean = true> {
   name?: T;
   'tag group'?: T;
+  affairs?: T;
   updatedAt?: T;
   createdAt?: T;
 }
