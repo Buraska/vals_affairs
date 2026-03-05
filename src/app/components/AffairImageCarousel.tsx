@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import Lightbox from 'yet-another-react-lightbox'
+import Lightbox, { SlideImage } from 'yet-another-react-lightbox'
 import 'yet-another-react-lightbox/styles.css'
 import Image from 'next/image'
 import { Media as MediaType } from '@/payload-types'
@@ -21,6 +21,16 @@ type AffairImageCarouselProps = {
   /** First slide media resource for the cover image (Next Image with fill) */
   coverResource?: MediaType
   title?: string
+}
+
+const ImageForCarousel = ({slide} : {slide: SlideImage}) => {
+  return (
+  <Image 
+  src={slide.src ?? ""}
+  alt={slide.alt ?? ""}
+  width={slide.width}
+  height={slide.height}
+  />)
 }
 
 export function AffairImageCarousel({
@@ -141,6 +151,10 @@ export function AffairImageCarousel({
         close={() => setOpen(false)}
         index={index}
         slides={lightboxSlides}
+        // render={{ slide: ({ slide }) => (<ImageForCarousel slide={slide}/>)}}
+        render={{
+          slide: ({ slide }) => <ImageForCarousel slide={slide} />
+        }}
         carousel={{ imageFit: "contain" }}
         on={{
           view: ({ index: i }) => setIndex(i),
