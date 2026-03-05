@@ -1,4 +1,4 @@
-import { afterChangeHookCategory } from '@/app/lib/hooks/payloadHooks'
+import { afterChangeHookCategory, afterDeleteHookCategory } from '@/app/lib/hooks/payloadHooks'
 import type { CollectionConfig } from 'payload'
 
 export const Category: CollectionConfig = {
@@ -6,7 +6,7 @@ export const Category: CollectionConfig = {
   access: {
     read: () => true,
   },
-  hooks: {afterChange: [afterChangeHookCategory]},
+  hooks: { afterChange: [afterChangeHookCategory], afterDelete: [afterDeleteHookCategory] },
   admin:{
     useAsTitle:'title'
   },

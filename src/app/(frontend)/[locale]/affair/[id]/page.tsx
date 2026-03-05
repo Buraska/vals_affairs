@@ -124,13 +124,17 @@ export default async function AffairPage({
               {affair.title}
             </h1>
             <div className="mb-6 border-b border-[var(--border)] pb-6">
-              <AffairTicketsWithOrderLink
-                affairId={id}
-                tickets={affair.tickets ?? []}
-                hasTickets={Boolean(affair.tickets && affair.tickets.length > 0)}
-                price={!affair.tickets?.length ? affair.price : undefined}
-                locale={locale}
-              />
+              {affair.isAvailable !== false ? (
+                <AffairTicketsWithOrderLink
+                  affairId={id}
+                  tickets={affair.tickets ?? []}
+                  hasTickets={Boolean(affair.tickets && affair.tickets.length > 0)}
+                  price={!affair.tickets?.length ? affair.price : undefined}
+                  locale={locale}
+                />
+              ) : (
+                <p className="text-[var(--muted)] font-medium">{t.affair.notAvailable}</p>
+              )}
             </div>
             <div>
               <section className="mb-6">

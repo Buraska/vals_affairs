@@ -3,10 +3,11 @@
 import { useState } from 'react'
 import Lightbox, { SlideImage } from 'yet-another-react-lightbox'
 import 'yet-another-react-lightbox/styles.css'
-import Image from 'next/image'
+import ShimmerImage from '@/app/components/ShimmerImage'
 import { Media as MediaType } from '@/payload-types'
 import { getMediaUrl } from '@/utilities/getMediaUrl'
 import { useLanguage } from '@/app/contexts/LanguageContext'
+import Image from 'next/image'
 
 type LightboxSlide = {
   src: string
@@ -23,15 +24,15 @@ type AffairImageCarouselProps = {
   title?: string
 }
 
-const ImageForCarousel = ({slide} : {slide: SlideImage}) => {
-  return (
-  <Image 
-  src={slide.src ?? ""}
-  alt={slide.alt ?? ""}
-  width={slide.width}
-  height={slide.height}
-  />)
-}
+const ImageForCarousel = ({ slide }: { slide: SlideImage }) => (
+  <Image
+    src={slide.src ?? ''}
+    alt={slide.alt ?? ''}
+    fill
+    style={{objectFit: "contain"}}
+  />
+
+)
 
 export function AffairImageCarousel({
   slides,
@@ -95,7 +96,7 @@ export function AffairImageCarousel({
                 aria-label={`${i + 1} / ${slides.length}. ${t.common.openGallery}`}
               >
                 <span className="relative block size-full">
-                  <Image
+                  <ShimmerImage
                     src={media.thumbnailURL ?? getMediaUrl(media.sizes?.thumbnail?.url ?? media.url ?? '', media.updatedAt) ?? ''}
                     alt={media.alt ?? title ?? `Фото ${i + 1}`}
                     fill
@@ -123,7 +124,7 @@ export function AffairImageCarousel({
 
           {showCover && coverResource ? (
             <span className="relative block size-full">
-              <Image
+              <ShimmerImage
                 src={coverResource.url ?? ''}
                 alt={coverResource.alt ?? title ?? ''}
                 fill
@@ -153,7 +154,7 @@ export function AffairImageCarousel({
         slides={lightboxSlides}
         // render={{ slide: ({ slide }) => (<ImageForCarousel slide={slide}/>)}}
         render={{
-          slide: ({ slide }) => <ImageForCarousel slide={slide} />
+          slide: ({ slide }) => {console.log(slide); return(<ImageForCarousel slide={slide} />)}
         }}
         carousel={{ imageFit: "contain" }}
         on={{

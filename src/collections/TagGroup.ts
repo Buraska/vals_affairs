@@ -1,9 +1,9 @@
 import type { CollectionConfig } from 'payload'
-import { afterChangeHookTagGroup } from '@/app/lib/hooks/payloadHooks'
+import { afterChangeHookTagGroup, afterDeleteHookTagGroup } from '@/app/lib/hooks/payloadHooks'
 
 export const TagGroup: CollectionConfig = {
   slug: 'tagGroup',
-  hooks: { afterChange: [afterChangeHookTagGroup] },
+  hooks: { afterChange: [afterChangeHookTagGroup], afterDelete: [afterDeleteHookTagGroup] },
   access: {
     read: () => true,
   },

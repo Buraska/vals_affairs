@@ -1,7 +1,7 @@
 "use client";
 
 import { useLanguage } from "@/app/contexts/LanguageContext";
-import Image from "next/image";
+import ShimmerImage from "@/app/components/ShimmerImage";
 import type { Team as TeamMember } from "@/payload-types";
 import { defaultLocale, type Locale } from "@/app/lib/localization/i18n";
 
@@ -63,7 +63,7 @@ export function Team({
               >
                 {photo && (
                   <div className="relative mb-4 aspect-square overflow-hidden bg-[var(--border)]">
-                    <Image
+                    <ShimmerImage
                       src={photo.url ?? ""}
                       alt={photo.alt ?? ""}
                       fill

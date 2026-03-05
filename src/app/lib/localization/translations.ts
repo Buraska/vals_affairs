@@ -16,7 +16,7 @@ const valueSchema = { title: '', variety: '', varietyDesc: '', newRoutes: '', sa
 const contactSchema = { title: '', phone: '', addressLabel: '', nonProfit: '', forBusiness: '', team: '', hours: '', hoursValue: '', weekend: '' }
 const footerSchema = { more: '', schoolProjects: '', giftCards: '', charity: '', merch: '', documents: '', contract: '', privacy: '', reportError: '', aboutUs: '', philosophy: '', contacts: '', reviews: '', partners: '', press: '', account: '', tours: '', subscribe: '', subscribeSuccess: '', subscribeCta: '', websiteDevelopment: '' }
 const commonSchema = { back: '', backToEvent: '', notFoundEvent: '', notFoundOrder: '', additional: '', photoCount: '', openGallery: '', menu: '', termsPageTitle: '', aboutPageTitle: '', contentNotAdded: '' }
-const affairSchema = { scheduleTitle: '', takePlace: '', ticket: '', yourOrder: '', total: '', noTicketsNote: '', participation: '' }
+const affairSchema = { scheduleTitle: '', takePlace: '', ticket: '', yourOrder: '', total: '', noTicketsNote: '', participation: '', notAvailable: '' }
 const orderSchema = { pageTitle: '', formName: '', formEmail: '', formPhone: '', formAge: '', formNotes: '', formAgree: '', termsLink: '', submit: '', rules: '', placeholderName: '', placeholderAge: '', placeholderNotes: '' }
 const categorySchema = { search: '', sort: '', sortByDate: '', sortByPriceAsc: '', sortByPriceDesc: '', searchPlaceholder: '', noResultsQuery: '', noResultsCategory: '', filters: '', resetFilters: '', countEvents: '', sectionLabel: '', upcomingEvents: '', eventsTitle: '', noCategoriesTitle: '', noCategoriesTryOther: '' }
 const cardSchema = { noSlots: '', available: '', slotsCount: '' }
@@ -125,6 +125,7 @@ export const translations: Record<Lang, TranslationsSchema> = {
       total: "Kokku",
       noTicketsNote: "Piletite arv pole märgitud. Saate valida ürituse lehel.",
       participation: "Osalemine",
+      notAvailable: "See üritus pole praegu broneerimiseks saadaval.",
     },
     order: {
       pageTitle: "Esita tellimus",
@@ -259,6 +260,7 @@ export const translations: Record<Lang, TranslationsSchema> = {
       total: "Итого",
       noTicketsNote: "Количество билетов не указано. Можно выбрать на странице мероприятия.",
       participation: "Участие",
+      notAvailable: "Это мероприятие сейчас недоступно для бронирования.",
     },
     order: {
       pageTitle: "Оформить заявку",
@@ -391,6 +393,7 @@ export const translations: Record<Lang, TranslationsSchema> = {
       total: "Total",
       noTicketsNote: "No ticket quantity selected. You can select on the event page.",
       participation: "Participation",
+      notAvailable: "This event is not available for booking at the moment.",
     },
     order: {
       pageTitle: "Submit request",
@@ -523,6 +526,7 @@ export const translations: Record<Lang, TranslationsSchema> = {
       total: "Yhteensä",
       noTicketsNote: "Lippumäärää ei ole valittu. Voit valita tapahtumasivulla.",
       participation: "Osallistuminen",
+      notAvailable: "Tämä tapahtuma ei ole tällä hetkellä varattavissa.",
     },
     order: {
       pageTitle: "Lähetä tilaus",

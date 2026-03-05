@@ -6,7 +6,7 @@ import Link from "next/link"
 import { getMediaUrl } from "@/utilities/getMediaUrl"
 import { useLanguage } from "@/app/contexts/LanguageContext"
 import clsx from 'clsx'
-import Image from "next/image"
+import ShimmerImage from "@/app/components/ShimmerImage"
 
 export type AffairCardData = Pick<Affair, 'id' | 'images' | 'title' | 'description' | 'price' | 'isAvailable' | 'start date' | 'end date' | 'category' | 'tags'>
 
@@ -27,13 +27,13 @@ export const AffairCard = ({ affair, locale, className = "" }: { affair: AffairC
       className={clsx(className, "group relative flex flex-col bg-[var(--card-bg)] transition hover:bg-[#FFFDF6] overflow-hidden")}
     >
       {(firstImage && typeof firstImage !== 'string') ? (
-        <div className="relative w-full aspect-[16/9] overflow-hidden bg-[var(--border)]">
-          <Image
+        <div className="relative w-full aspect-[4/3] overflow-hidden bg-[var(--border)]">
+          <ShimmerImage
             src={firstImage.url ?? ""}
             alt={firstImage.alt ?? ""}
             fill
             style={{ objectFit: "cover" }}
-            sizes="(max-width: 768px) 50vw, 33vw"
+            sizes="40vw"
           />
         </div>
       ) : (

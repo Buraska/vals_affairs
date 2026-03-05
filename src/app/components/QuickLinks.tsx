@@ -2,7 +2,7 @@ import Link from 'next/link'
 import type { Category, Media as MediaType } from '@/payload-types'
 import { locales } from '@/app/lib/localization/i18n'
 import { localeLabels } from '@payload-config'
-import Image from 'next/image'
+import ShimmerImage from '@/app/components/ShimmerImage'
 
 export function QuickLinks({
   locale,
@@ -54,13 +54,13 @@ export function QuickLinks({
             >
               {item.image ? (
                 <div className="relative aspect-[4/3] w-full overflow-hidden bg-[var(--border)]">
-                  <Image 
-                  src={(item.image as MediaType).url ?? ""}
-                   alt={(item.image as MediaType).alt ?? ""}
-                   fill
-                   style={{objectFit: 'cover'}}
-                   sizes="(max-width: 768px) 50vw, 33vw"
-                   />
+                  <ShimmerImage
+                    src={(item.image as MediaType).url ?? ""}
+                    alt={(item.image as MediaType).alt ?? ""}
+                    fill
+                    style={{ objectFit: 'cover' }}
+                    sizes="(max-width: 768px) 33vw, 50vw"
+                  />
                 </div>
               ) : (
                 <div className="flex aspect-[4/3] w-full items-center justify-center bg-[var(--border)] text-2xl text-[var(--muted)]" role="img" aria-hidden>
