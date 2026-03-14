@@ -14,9 +14,9 @@ export function AffairAdditionalInfoTabs({ tabs }: { tabs: TabItem[] }) {
   const activeTab = tabs.find((tab) => tab.id === activeId) ?? tabs[0]
 
   return (
-    <div className="mb-10">
+    <div className="mb-10 mt-8 pt-8 border-t border-[var(--border)]">
       <div
-        className="flex gap-1 border-b border-amber-200"
+        className="flex gap-1 border-b border-[var(--border)]"
         role="tablist"
         aria-label={t.tabs.ariaLabel}
       >
@@ -29,14 +29,12 @@ export function AffairAdditionalInfoTabs({ tabs }: { tabs: TabItem[] }) {
             aria-controls={`panel-${tab.id}`}
             id={`tab-${tab.id}`}
             onClick={() => setActiveId(tab.id)}
-            className={` rounded-t-sm px-4 py-2.5 text-sm font-medium transition ${activeId === tab.id
-              ? 'border border-b-0 border-amber-200 border-b-transparent bg-white text-amber-900 shadow-sm'
-              : 'text-stone-600 hover:bg-amber-50 hover:text-amber-900'
+            className={`rounded-t-sm px-4 py-2.5 text-sm font-medium transition ${activeId === tab.id
+              ? "border border-b-0 border-[var(--border)] border-b-transparent bg-[var(--card-bg)] text-[var(--dark)]"
+              : "text-[var(--muted)] hover:bg-[var(--cream)] hover:text-[var(--dark)]"
               }`}
           >
-            <div className=' line-clamp-4'>
-            {tab.title}
-            </div>
+            <div className="line-clamp-2">{tab.title}</div>
           </button>
         ))}
       </div>
@@ -44,10 +42,10 @@ export function AffairAdditionalInfoTabs({ tabs }: { tabs: TabItem[] }) {
         id={`panel-${activeTab.id}`}
         role="tabpanel"
         aria-labelledby={`tab-${activeTab.id}`}
-        className="bg-white pt-4 pr-4 pb-4 pl-0"
+        className="bg-[var(--card-bg)] pt-4 pr-4 pb-4 pl-0"
       >
         <div
-          className="affair-rich-text [&_p]:mb-4 [&_p]:text-stone-700 [&_strong]:text-amber-900 [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_li]:text-stone-700 [&_h2]:mt-4 [&_h2]:mb-4 [&_h2]:text-lg [&_h2]:font-semibold [&_a]:text-amber-700 [&_a]:underline"
+          className="affair-rich-text px-5 [&_p]:mb-4 [&_p]:text-[var(--muted)] [&_strong]:text-[var(--dark)] [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_li]:text-[var(--muted)] [&_h2]:mt-4 [&_h2]:mb-4 [&_h2]:text-lg [&_h2]:font-semibold [&_a]:text-[var(--rust)] [&_a]:underline"
           dangerouslySetInnerHTML={{ __html: activeTab.contentHtml }}
         />
       </div>

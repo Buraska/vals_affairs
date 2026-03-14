@@ -12,7 +12,7 @@ type LexicalData = {
 export function lexicalToHtml(data: LexicalData | null | undefined): string {
   if (!data?.root?.children?.length) return ''
   return convertLexicalToHTML({
-    data: data as Parameters<typeof convertLexicalToHTML>[0]['data'],
+    data: data as unknown as Parameters<typeof convertLexicalToHTML>[0]['data'],
     disableContainer: true,
   })
 }

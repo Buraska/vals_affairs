@@ -1,13 +1,19 @@
 import { QuickLinks } from "@/app/components/QuickLinks";
 import { Title } from "@/app/components/Title";
-import { ValueProps } from "@/app/components/ValueProps";
-import { Contact } from "@/app/components/Contact";
 import { Team } from "@/app/components/Team";
 import { getCategoriesForLocale } from "@/app/lib/categoriesForLocale";
+import { getTranslations } from "@/app/lib/localization/translations";
+import type { Lang } from "@/app/lib/localization/translations";
 import { isValidLocale } from "@/app/lib/localization/i18n";
-import type { Locale } from "@/app/lib/localization/i18n";
+import { locales, type Locale } from "@/app/lib/localization/i18n";
 import { getPayload } from "payload";
 import configPromise from "@payload-config";
+
+export const dynamic = "force-static";
+
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }));
+}
 
 export default async function HomePage({
   params,
@@ -16,6 +22,7 @@ export default async function HomePage({
 }) {
   const { locale } = await params;
   const lang = (isValidLocale(locale) ? locale : "ee") as Locale;
+  const t = getTranslations(lang as Lang);
   const [categories, teamResult] = await Promise.all([
     getCategoriesForLocale(lang),
     getPayload({ config: configPromise }).then((payload) =>
@@ -32,7 +39,13 @@ export default async function HomePage({
   return (
     <main>
       <Title />
-      <QuickLinks locale={locale} categories={categories} />
+      <QuickLinks
+        locale={locale}
+        categories={categories}
+        eventsTitle={t.category.eventsTitle}
+        noCategoriesTitle={t.category.noCategoriesTitle}
+        noCategoriesTryOther={t.category.noCategoriesTryOther}
+      />
       <Team members={teamMembers} locale={lang} />
     </main>
   );

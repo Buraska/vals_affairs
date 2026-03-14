@@ -71,210 +71,136 @@ export function Header({
   const { lang, t } = useLanguage();
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  const siteName = webInfo?.siteName ?? t.meta.siteName;
+
   return (
-    <header className="sticky top-0 z-50 border-b border-amber-200/50 bg-white shadow-sm">
-      {/* Row 1: Social | Phone + Email | Languages */}
-      <div className="border-b border-stone-100 bg-stone-50/80">
-        <div className="relative mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:py-2 sm:px-6 lg:px-8">
-          <div className="flex shrink-0 items-center gap-4 lg:flex-1 lg:min-w-0">
-            <button
-              type="button"
-              onClick={() => setMobileOpen((o) => !o)}
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-stone-200 text-stone-600 lg:hidden"
-              aria-label="Menu"
-            >
-              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {mobileOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                )}
-              </svg>
-            </button>
-            <Link href={`/${lang}`} className="hidden shrink-0 lg:block">
-              <span className="text-xl font-bold tracking-tight text-amber-800 sm:text-4xl">
-                {webInfo?.siteName ?? 'Vals'}
-              </span>
-            </Link>
-
-            <div className="hidden gap-4 lg:flex">
-              {webInfo?.instagramUrl ? (
-                <a
-                  href={webInfo.instagramUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-stone-500 transition hover:text-amber-600"
-                  aria-label="Instagram"
-                >
-                  {instagramIcon}
-                </a>
-              ) : null}
-              {webInfo?.facebookUrl ? (
-                <a
-                  href={webInfo.facebookUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-stone-500 transition hover:text-amber-600 "
-                  aria-label="Facebook"
-                >
-                  {facebookIcon}
-                </a>
-              ) : null}
-            </div>
-          </div>
-
-          <Link
-            href={`/${lang}`}
-            className="absolute left-0 right-0 flex justify-center px-4 pointer-events-none lg:hidden"
-          >
-            <span className="pointer-events-auto text-4xl font-bold tracking-tight text-amber-800">
-              {webInfo?.siteName ?? 'Vals'}
-            </span>
-          </Link>
-
-          <div className="flex shrink-0 items-center justify-end gap-4 lg:flex-1 lg:min-w-0">
-            {webInfo?.phone ? (
-              <a
-                href={`tel:${webInfo.phone.replace(/\s/g, '')}`}
-                className="lg:block hidden  text-sm font-medium text-stone-600 hover:text-amber-700"
-              >
-                {webInfo.phone}
-              </a>
-            ) : null}
-            {webInfo?.email ? (
-              <a
-                href={`mailto:${webInfo.email}`}
-                className="lg:block hidden text-sm font-medium text-stone-600 hover:text-amber-700"
-              >
-                {webInfo.email}
-              </a>
-            ) : null}
-            <div className="flex rounded-md border border-stone-200 bg-white p-0.5">
-              {locales.map((l) => (
-                <Link
-                  key={l}
-                  href={`/${l}`}
-                  className={`rounded px-2.5 py-1 text-xs font-medium transition ${lang === l
-                    ? "bg-amber-600 text-white"
-                    : "text-stone-600 hover:bg-amber-50 hover:text-amber-800"
-                    }`}
-                  prefetch={false}
-                >
-                  {langLabels[l]}
-                </Link>
-              ))}
-            </div>
-          </div>
+    <header
+      className="sticky top-0 z-50 h-[72px] flex items-center justify-between px-4 sm:px-8 lg:px-16 border-b border-[var(--border)]"
+      style={{ background: "rgba(245, 240, 232, 0.92)", backdropFilter: "blur(12px)" }}
+    >
+      <div className="flex items-center gap-4 min-w-0">
+        <button
+          type="button"
+          onClick={() => setMobileOpen((o) => !o)}
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded border border-[var(--border)] text-[var(--muted)] lg:hidden"
+          aria-label={t.common.menu}
+        >
+          <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            {mobileOpen ? (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+            ) : (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" />
+            )}
+          </svg>
+        </button>
+        <Link href={`/${lang}`} className="shrink-0">
+          <span className="font-serif italic text-4xl  tracking-tight text-[var(--dark)]" style={{ fontFamily: "var(--font-playfair)" }}>
+            {siteName}
+          </span>
+        </Link>
+        <div className="hidden lg:flex items-center gap-3 ml-4">
+          {webInfo?.instagramUrl ? (
+            <a href={webInfo.instagramUrl} target="_blank" rel="noopener noreferrer" className="text-[var(--muted)] hover:text-[var(--dark)] transition" aria-label="Instagram">
+              {instagramIcon}
+            </a>
+          ) : null}
+          {webInfo?.facebookUrl ? (
+            <a href={webInfo.facebookUrl} target="_blank" rel="noopener noreferrer" className="text-[var(--muted)] hover:text-[var(--dark)] transition" aria-label="Facebook">
+              {facebookIcon}
+            </a>
+          ) : null}
         </div>
       </div>
 
-      {/* Row 2: Logo | Nav links */}
-      <div className="bg-white lg:block hidden">
+      <nav className="hidden lg:flex items-center gap-8">
+        <NavItems items={navItemsHead.map(({ key, href }) => ({ name: t.nav[key], href: `/${lang}${href}` }))} />
+        <NavItems items={categories.map(({ id, title }) => ({ name: title, href: `/${lang}/category/${id}` }))} />
+        <NavItems items={navItemsTail.map(({ key, href }) => ({ name: t.nav[key], href: `/${lang}${href}` }))} />
+        <div className="flex items-center gap-3 pl-2">
+          {webInfo?.phone ? (
+            <a href={`tel:${webInfo.phone.replace(/\s/g, "")}`} className="text-sm text-[var(--muted)] hover:text-[var(--dark)] transition">
+              {webInfo.phone}
+            </a>
+          ) : null}
+          {webInfo?.email ? (
+            <a href={`mailto:${webInfo.email}`} className="text-sm text-[var(--muted)] hover:text-[var(--dark)] transition">
+              {webInfo.email}
+            </a>
+          ) : null}
+          <div className="flex rounded border border-[var(--border)] p-0.5">
+            {locales.map((l) => (
+              <Link
+                key={l}
+                href={`/${l}`}
+                className={`rounded px-2.5 py-1 text-xs font-medium transition ${lang === l ? "bg-[var(--dark)] text-[var(--cream)]" : "text-[var(--muted)] hover:text-[var(--dark)]"}`}
+                prefetch={false}
+              >
+                {langLabels[l]}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </nav>
 
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
-          <div></div>
-
-          {/* <Link href="/" className="shrink-0">
-            <span className="text-xl font-bold tracking-tight text-amber-800 sm:text-2xl">
-              Vals
-            </span>
-          </Link> */}
-
-          <nav className="hidden items-center gap-0.5 lg:flex">
-            <NavItems items={navItemsHead.map(({ key, href }) => ({ name: t.nav[key], href: `/${lang}${href}` }))} />
-
-            <NavItems items={categories.map(({ id, title }) => ({ name: title, href: `/${lang}/category/${id}` }))} />
-
-            <NavItems items={navItemsTail.map(({ key, href }) => ({ name: t.nav[key], href: `/${lang}${href}` }))} />
-          </nav>
-
-
-          <div></div>
-
+      <div className="flex items-center gap-2 lg:hidden">
+        <div className="flex rounded border border-[var(--border)] p-0.5">
+          {locales.map((l) => (
+            <Link
+              key={l}
+              href={`/${l}`}
+              className={`rounded px-2 py-1 text-xs font-medium ${lang === l ? "bg-[var(--dark)] text-[var(--cream)]" : "text-[var(--muted)]"}`}
+              prefetch={false}
+            >
+              {langLabels[l]}
+            </Link>
+          ))}
         </div>
       </div>
 
       {mobileOpen && (
-        <div className="border-t border-amber-100 bg-white px-4 py-4 lg:hidden">
+        <div className="absolute top-full left-0 right-0 border-t border-[var(--border)] bg-[var(--card-bg)] px-4 py-4 lg:hidden shadow-lg">
           <nav className="flex flex-col gap-1">
             {navItemsHead.map(({ key, href }) => (
-              <Link
-                key={key}
-                href={`/${lang}${href}`}
-                onClick={() => setMobileOpen(false)}
-                className="rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 hover:bg-amber-50"
-              >
+              <Link key={key} href={`/${lang}${href}`} onClick={() => setMobileOpen(false)} className="nav-link-mobile py-2.5 text-sm text-[var(--muted)] hover:text-[var(--dark)]">
                 {t.nav[key]}
               </Link>
             ))}
             {categories.map((cat) => (
-              <Link
-                key={cat.id}
-                href={`/${lang}/category/${cat.id}`}
-                onClick={() => setMobileOpen(false)}
-                className="rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 hover:bg-amber-50"
-              >
+              <Link key={cat.id} href={`/${lang}/category/${cat.id}`} onClick={() => setMobileOpen(false)} className="py-2.5 text-sm text-[var(--muted)] hover:text-[var(--dark)]">
                 {cat.title}
               </Link>
             ))}
             {navItemsTail.map(({ key, href }) => (
-              <Link
-                key={key}
-                href={`/${lang}${href}`}
-                onClick={() => setMobileOpen(false)}
-                className="rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 hover:bg-amber-50"
-              >
+              <Link key={key} href={`/${lang}${href}`} onClick={() => setMobileOpen(false)} className="py-2.5 text-sm text-[var(--muted)] hover:text-[var(--dark)]">
                 {t.nav[key]}
               </Link>
             ))}
             {webInfo?.phone ? (
-              <a
-                href={`tel:${webInfo.phone.replace(/\s/g, '')}`}
-                onClick={() => setMobileOpen(false)}
-                className="mt-2 rounded-lg px-3 py-2.5 text-sm font-medium text-amber-700 hover:bg-amber-50"
-              >
+              <a href={`tel:${webInfo.phone.replace(/\s/g, "")}`} onClick={() => setMobileOpen(false)} className="mt-2 py-2 text-sm text-[var(--rust)]">
                 {webInfo.phone}
               </a>
             ) : null}
             {webInfo?.email ? (
-              <a
-                href={`mailto:${webInfo.email}`}
-                onClick={() => setMobileOpen(false)}
-                className="rounded-lg px-3 py-2.5 text-sm font-medium text-amber-700 hover:bg-amber-50"
-              >
+              <a href={`mailto:${webInfo.email}`} onClick={() => setMobileOpen(false)} className="py-2 text-sm text-[var(--rust)]">
                 {webInfo.email}
               </a>
             ) : null}
-            {(webInfo?.facebookUrl || webInfo?.instagramUrl) ? (
-              <div className="mt-2 flex flex-wrap gap-2 border-t border-stone-100 pt-3">
+            {(webInfo?.facebookUrl || webInfo?.instagramUrl) && (
+              <div className="mt-3 pt-3 border-t border-[var(--border)] flex gap-3">
                 {webInfo?.instagramUrl ? (
-                  <a
-                    href={webInfo.instagramUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setMobileOpen(false)}
-                    className="inline-flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 hover:bg-amber-50"
-                    aria-label="Instagram"
-                  >
+                  <a href={webInfo.instagramUrl} target="_blank" rel="noopener noreferrer" onClick={() => setMobileOpen(false)} className="flex items-center gap-2 text-sm text-[var(--muted)]" aria-label="Instagram">
                     {instagramIcon}
                     Instagram
                   </a>
                 ) : null}
                 {webInfo?.facebookUrl ? (
-                  <a
-                    href={webInfo.facebookUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setMobileOpen(false)}
-                    className="inline-flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 hover:bg-amber-50"
-                    aria-label="Facebook"
-                  >
+                  <a href={webInfo.facebookUrl} target="_blank" rel="noopener noreferrer" onClick={() => setMobileOpen(false)} className="flex items-center gap-2 text-sm text-[var(--muted)]" aria-label="Facebook">
                     {facebookIcon}
                     Facebook
                   </a>
                 ) : null}
               </div>
-            ) : null}
+            )}
           </nav>
         </div>
       )}

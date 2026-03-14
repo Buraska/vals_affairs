@@ -1,12 +1,22 @@
-export function formatDate(dateStr: string | null | undefined): string {
-    if (!dateStr) return '—'
-    const d = new Date(dateStr)
-    return d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })
-  }
-  
-  export function formatDateRange(start: string, end: string | null | undefined): string {
-    const startF = formatDate(start)
-    if (!end || end === start) return startF
-    return `${startF} – ${formatDate(end)}`
-  }
+/** Locale for date formatting: 'et' for ee, 'en-US' for en, etc. */
+function getLocaleForDate(locale: string): string {
+  if (locale === 'ee') return 'et-EE'
+  if (locale === 'en') return 'en-GB'
+  if (locale === 'fi') return 'fi-FI'
+  return 'ru-RU'
+}
+
+/** Numeric date (dd.mm.yyyy), no month names. Pass locale (e.g. from page). */
+export function formatDate(dateStr: string | null | undefined, locale?: string): string {
+  if (!dateStr) return '—'
+  const d = new Date(dateStr)
+  const loc = locale ? getLocaleForDate(locale) : 'et-EE'
+  return d.toLocaleDateString(loc, { day: '2-digit', month: '2-digit', year: 'numeric' })
+}
+
+export function formatDateRange(start: string, end: string | null | undefined, locale?: string): string {
+  const startF = formatDate(start, locale)
+  if (!end || end === start) return startF
+  return `${startF} – ${formatDate(end, locale)}`
+}
   

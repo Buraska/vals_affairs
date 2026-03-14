@@ -6,24 +6,26 @@ import { translations } from "@/app/lib/localization/translations";
 import { defaultLocale } from "@/app/lib/localization/i18n";
 
 const LanguageContext = createContext<{
-  lang: Lang;
-  setLang: (l: Lang) => void;
   t: TranslationsSchema;
+  lang: Lang;
+  siteDescription: string | null;
 } | null>(null);
 
 export function LanguageProvider({
   children,
   initialLocale,
+  initialSiteDescription = null,
 }: {
   children: React.ReactNode;
   initialLocale: Lang;
+  initialSiteDescription?: string | null;
 }) {
-  const [lang, setLangState] = useState<Lang>(initialLocale);
-  const setLang = useCallback((l: Lang) => setLangState(l), []);
-  const t = translations[lang];
+  const t = translations[initialLocale];
+  const lang = initialLocale ?? defaultLocale
+  const siteDescription = initialSiteDescription ?? null;
 
   return (
-    <LanguageContext.Provider value={{ lang, setLang, t }}>
+    <LanguageContext.Provider value={{t, lang, siteDescription }}>
       {children}
     </LanguageContext.Provider>
   );

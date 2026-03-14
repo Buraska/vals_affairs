@@ -1,11 +1,26 @@
 import Link from 'next/link'
+import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { AffairOrderForm } from '@/app/components/AffairOrderForm'
+import { AffairOrderSummary } from '@/app/components/AffairOrderSummary'
 import { getTranslations } from '@/app/lib/localization/translations'
 import type { Lang } from '@/app/lib/localization/translations'
-import { isValidLocale } from '@/app/lib/localization/i18n'
+import { isValidLocale, locales } from '@/app/lib/localization/i18n'
+
+export const dynamic = 'force-static'
+
+export async function generateStaticParams() {
+  const payload = await getPayload({ config: configPromise })
+  const { docs: affairs } = await payload.find({
+    collection: 'Affair',
+    depth: 0,
+    limit: 500,
+  })
+  const ids = affairs.map((a) => a.id)
+  return locales.flatMap((locale) => ids.map((id) => ({ locale, id })))
+}
 
 const payload = await getPayload({ config: configPromise })
 
@@ -44,13 +59,10 @@ export async function generateMetadata({
 
 export default async function OrderPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ locale: string; id: string }>
-  searchParams: Promise<{ q?: string }>
 }) {
   const { locale, id } = await params
-  const { q: qParam } = await searchParams
   const lang = (isValidLocale(locale) ? locale : 'ee') as Lang
   const t = getTranslations(lang)
 
@@ -64,40 +76,23 @@ export default async function OrderPage({
 
   if (!affair) notFound()
 
-  const quantities = qParam
-    ? qParam.split(',').map((s) => Math.max(0, parseInt(s, 10) || 0))
-    : affair.tickets?.map(() => 0) ?? []
-
   const tickets = affair.tickets ?? []
-  const paddedQuantities = tickets.map((_, i) => quantities[i] ?? 0)
-
-  let totalCents = 0
-  const lines = tickets.map((ticket, i) => {
-    const qty = paddedQuantities[i] ?? 0
-    const price = ticket['ticket price'] ?? 0
-    const subtotal = qty * price
-    totalCents += subtotal
-    return {
-      name: ticket['ticket name'] ?? '—',
-      qty,
-      price,
-      subtotal,
-    }
-  })
-  const hasTicketSelection = lines.some((l) => l.qty > 0)
-  const total = totalCents
+  const dateRangeText = formatDateRange(affair['start date'], affair['end date'], locale)
 
   return (
-    <main className="min-h-screen bg-white">
-      <div className="mx-auto max-w-6xl px-4 py-4 sm:px-6 lg:px-8">
+    <main className="min-h-screen">
+      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-8 lg:px-16">
         <Link
           href={`/${locale}/affair/${id}`}
-          className="mb-4 inline-block text-sm font-medium text-amber-700 hover:text-amber-900"
+          className="mb-6 inline-flex items-center gap-2 text-sm text-[var(--muted)] hover:text-[var(--rust)] transition-colors"
         >
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M9 11L5 7L9 3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
           {t.common.backToEvent}
         </Link>
 
-        <h1 className="mb-6 text-2xl font-bold text-amber-900">
+        <h1 className="mb-8 text-2xl font-bold text-[var(--dark)]" style={{ fontFamily: "var(--font-playfair)" }}>
           {t.order.pageTitle}
         </h1>
 
@@ -107,50 +102,18 @@ export default async function OrderPage({
           </div>
 
           <aside className="lg:w-[380px] lg:shrink-0">
-            <section className="sticky top-[calc(var(--header-height)+1rem)] rounded-sm border border-amber-200 bg-amber-50/30 p-4">
-              <h2 className="mb-3 text-lg font-semibold text-amber-900">
+            <section className="sticky top-24 rounded border border-[var(--border)] bg-[var(--card-bg)] p-6">
+              <h2 className="mb-4 text-lg font-semibold text-[var(--dark)]" style={{ fontFamily: "var(--font-playfair)" }}>
                 {t.affair.yourOrder}
               </h2>
-              <p className="mb-1 font-medium text-stone-800">{affair.title}</p>
-              <p className="mb-3 text-sm text-stone-600">
-                {formatDateRange(affair['start date'], affair['end date'], locale)}
-              </p>
-              {tickets.length > 0 ? (
-                <>
-                  <ul className="space-y-2 border-t border-amber-200 pt-3">
-                    {lines.map((line, i) => {
-                      if (line.qty === 0) return null
-                      return (
-                        <li
-                          key={i}
-                          className="flex justify-between gap-4 text-sm text-stone-700"
-                        >
-                          <span>
-                            {line.name} × {line.qty}
-                          </span>
-                          <span className="font-medium text-amber-900">
-                            {line.subtotal} €
-                          </span>
-                        </li>
-                      )
-                    })}
-                  </ul>
-                  {hasTicketSelection && (
-                    <p className="mt-2 border-t border-amber-200 pt-2 text-right font-semibold text-amber-900">
-                      {t.affair.total}: {total} €
-                    </p>
-                  )}
-                  {!hasTicketSelection && (
-                    <p className="mt-2 text-sm text-stone-500">
-                      {t.affair.noTicketsNote}
-                    </p>
-                  )}
-                </>
-              ) : (
-                <p className="text-stone-700">
-                  {t.affair.participation}: <strong>{affair.price} €</strong>
-                </p>
-              )}
+              <Suspense fallback={<p className="text-[var(--muted)]">{t.affair.noTicketsNote}</p>}>
+                <AffairOrderSummary
+                  affairTitle={affair.title}
+                  affairPrice={affair.price}
+                  dateRangeText={dateRangeText}
+                  tickets={tickets}
+                />
+              </Suspense>
             </section>
           </aside>
         </div>

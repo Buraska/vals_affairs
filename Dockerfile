@@ -9,13 +9,14 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Install dependencies based on the preferred package manager
+# Install dependencies based on the preferred package manager (include lockfile in build context; do not add pnpm-lock.yaml to .dockerignore)
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
+RUN corepack enable && corepack prepare pnpm@latest --activate
 RUN \
   if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
   elif [ -f package-lock.json ]; then npm ci; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
-  else echo "Lockfile not found." && exit 1; \
+  elif [ -f pnpm-lock.yaml ]; then pnpm i --frozen-lockfile; \
+  else pnpm install; \
   fi
 
 
@@ -25,17 +26,26 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Next.js collects completely anonymous telemetry data about general usage.
-# Learn more here: https://nextjs.org/telemetry
-# Uncomment the following line in case you want to disable telemetry during the build.
-# ENV NEXT_TELEMETRY_DISABLED 1
+# Ensure public exists so runner COPY does not fail (Next.js may have no public folder)
 
-RUN \
-  if [ -f yarn.lock ]; then yarn run build; \
-  elif [ -f package-lock.json ]; then npm run build; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+# Payload needs PAYLOAD_SECRET at build time (Next.js collects page data and inits Payload).
+# Use a placeholder here; set the real secret at runtime via fly secrets set PAYLOAD_SECRET=...
+# ARG PAYLOAD_SECRET=build-time-placeholder
+# ENV PAYLOAD_SECRET=$PAYLOAD_SECRET
+
+# ARG DATABASE_URL=build-time-placeholder
+# ENV DATABASE_URL=$DATABASE_URL
+
+# Build with secrets from: fly deploy --build-secret PAYLOAD_SECRET --build-secret DATABASE_URL
+RUN --mount=type=secret,id=PAYLOAD_SECRET \
+    --mount=type=secret,id=DATABASE_URL \
+    export PAYLOAD_SECRET="$(cat /run/secrets/PAYLOAD_SECRET)" && \
+    export DATABASE_URL="$(cat /run/secrets/DATABASE_URL)" && \
+    corepack enable && corepack prepare pnpm@latest --activate && \
+    if [ -f yarn.lock ]; then yarn run build; \
+    elif [ -f package-lock.json ]; then npm run build; \
+    else pnpm run build; fi
+
 
 # Production image, copy all the files and run next
 FROM base AS runner
@@ -49,7 +59,7 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 # Remove this line if you do not have this folder
-COPY --from=builder /app/public ./public
+# COPY --from=builder /app .
 
 # Set the correct permission for prerender cache
 RUN mkdir .next
@@ -68,4 +78,6 @@ ENV PORT 3000
 
 # server.js is created by next build from the standalone output
 # https://nextjs.org/docs/pages/api-reference/next-config-js/output
-CMD HOSTNAME="0.0.0.0" node server.js
+# Bind to 0.0.0.0 so Fly.io (and any external client) can reach the app
+ENV HOSTNAME=0.0.0.0
+CMD ["node", "server.js"]

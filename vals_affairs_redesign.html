@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Val's Affairs — Мероприятия в Эстонии</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Onest:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5F0E8;
+    --dark: #1A1A18;
+    --warm: #C8A96E;
+    --rust: #C4522A;
+    --sage: #6B8C6B;
+    --muted: #8A8278;
+    --card-bg: #FDFAF4;
+    --border: #E2D9C8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--cream);
+    color: var(--dark);
+    font-family: 'Onest', sans-serif;
+    font-weight: 400;
+    overflow-x: hidden;
+  }
+
+  /* ─── NOISE TEXTURE ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    padding: 0 4rem;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: rgba(245, 240, 232, 0.92);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+  }
+
+  .logo {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .logo-val {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.5rem;
+    color: var(--dark);
+    letter-spacing: -0.02em;
+  }
+
+  .logo-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--rust);
+    border-radius: 50%;
+    display: inline-block;
+    margin-bottom: 4px;
+  }
+
+  .logo-affairs {
+    font-family: 'Onest', sans-serif;
+    font-weight: 300;
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  nav {
+    display: flex;
+    gap: 2.5rem;
+    align-items: center;
+  }
+
+  nav a {
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 0.875rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    transition: color 0.2s;
+    position: relative;
+  }
+
+  nav a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--rust);
+    transition: width 0.3s ease;
+  }
+
+  nav a:hover { color: var(--dark); }
+  nav a:hover::after { width: 100%; }
+
+  .nav-cta {
+    background: var(--dark);
+    color: var(--cream) !important;
+    padding: 0.5rem 1.25rem;
+    border-radius: 2px;
+    font-size: 0.8rem !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: background 0.2s !important;
+  }
+  .nav-cta:hover { background: var(--rust) !important; }
+  .nav-cta::after { display: none !important; }
+
+  /* ─── HERO ─── */
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: calc(100vh - 72px);
+    max-height: 800px;
+  }
+
+  .hero-left {
+    padding: 5rem 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-right: 1px solid var(--border);
+  }
+
+  .hero-eyebrow {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--rust);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 2rem;
+    height: 1px;
+    background: var(--rust);
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 5vw, 4.5rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 2rem;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--rust);
+  }
+
+  .hero-desc {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--muted);
+    max-width: 420px;
+    margin-bottom: 3rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .btn-primary {
+    background: var(--dark);
+    color: var(--cream);
+    padding: 0.875rem 2rem;
+    border: none;
+    border-radius: 2px;
+    font-family: 'Onest', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: var(--rust); }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--dark);
+    padding: 0.875rem 2rem;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    font-family: 'Onest', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--muted);
+  }
+  .btn-outline:hover { border-color: var(--dark); color: var(--dark); }
+
+  .hero-right {
+    position: relative;
+    overflow: hidden;
+    background: var(--dark);
+  }
+
+  .hero-visual {
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse at 30% 70%, rgba(200, 169, 110, 0.15) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(196, 82, 42, 0.1) 0%, transparent 50%),
+      linear-gradient(135deg, #1A1A18 0%, #2A2820 100%);
+  }
+
+  /* Estonia-inspired geometric pattern */
+  .hero-pattern {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(200,169,110,0.06) 59px, rgba(200,169,110,0.06) 60px),
+      repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(200,169,110,0.06) 59px, rgba(200,169,110,0.06) 60px);
+  }
+
+  .hero-featured {
+    position: absolute;
+    bottom: 3rem;
+    left: 3rem;
+    right: 3rem;
+  }
+
+  .featured-label {
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--warm);
+    margin-bottom: 1rem;
+  }
+
+  .featured-card {
+    background: rgba(245, 240, 232, 0.06);
+    border: 1px solid rgba(200, 169, 110, 0.2);
+    border-radius: 4px;
+    padding: 1.75rem;
+    backdrop-filter: blur(8px);
+  }
+
+  .featured-cat {
+    display: inline-block;
+    background: var(--rust);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.625rem;
+    border-radius: 2px;
+    margin-bottom: 0.875rem;
+  }
+
+  .featured-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: var(--cream);
+    line-height: 1.3;
+    margin-bottom: 1rem;
+  }
+
+  .featured-meta {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    color: rgba(245, 240, 232, 0.5);
+  }
+
+  .meta-icon {
+    width: 14px;
+    height: 14px;
+    opacity: 0.6;
+  }
+
+  /* ─── STATS BAR ─── */
+  .stats-bar {
+    border-bottom: 1px solid var(--border);
+    padding: 1.25rem 4rem;
+    display: flex;
+    gap: 3rem;
+    align-items: center;
+    background: var(--card-bg);
+  }
+
+  .stat {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--dark);
+    letter-spacing: -0.03em;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-weight: 300;
+    letter-spacing: 0.05em;
+  }
+
+  .stat-sep {
+    width: 1px;
+    height: 32px;
+    background: var(--border);
+  }
+
+  .stats-marquee {
+    flex: 1;
+    overflow: hidden;
+    mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+  }
+
+  .marquee-track {
+    display: flex;
+    gap: 3rem;
+    animation: marquee 20s linear infinite;
+    white-space: nowrap;
+  }
+
+  .marquee-item {
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .marquee-dot {
+    width: 4px;
+    height: 4px;
+    background: var(--warm);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ─── MAIN CONTENT ─── */
+  main {
+    padding: 4rem;
+  }
+
+  /* ─── SECTION HEADER ─── */
+  .section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .section-count {
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+  }
+
+  /* ─── FILTERS / CATEGORIES ─── */
+  .filters {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border);
+    background: transparent;
+    border-radius: 2px;
+    font-family: 'Onest', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .filter-btn:hover {
+    border-color: var(--dark);
+    color: var(--dark);
+  }
+
+  .filter-btn.active {
+    background: var(--dark);
+    color: var(--cream);
+    border-color: var(--dark);
+  }
+
+  .filter-btn[data-cat="estonia"].active { background: var(--sage); border-color: var(--sage); }
+  .filter-btn[data-cat="world"].active { background: var(--warm); border-color: var(--warm); color: var(--dark); }
+  .filter-btn[data-cat="events"].active { background: var(--rust); border-color: var(--rust); }
+  .filter-btn[data-cat="learning"].active { background: #5A7A9A; border-color: #5A7A9A; }
+  .filter-btn[data-cat="contests"].active { background: #8B6B9A; border-color: #8B6B9A; }
+
+  /* ─── EVENTS GRID ─── */
+  .events-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .event-card {
+    background: var(--card-bg);
+    padding: 2rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .event-card::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 0;
+    background: var(--rust);
+    opacity: 0.06;
+    transition: height 0.3s ease;
+  }
+
+  .event-card:hover { background: #FFFDF6; }
+  .event-card:hover::before { height: 100%; }
+
+  .event-card.featured-event {
+    grid-column: span 2;
+    background: var(--dark);
+    color: var(--cream);
+  }
+
+  .event-card.featured-event:hover {
+    background: #222220;
+  }
+
+  .card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+
+  .cat-tag {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.625rem;
+    border-radius: 2px;
+  }
+
+  .cat-estonia { background: rgba(107, 140, 107, 0.15); color: var(--sage); }
+  .cat-world { background: rgba(200, 169, 110, 0.15); color: #9A7B3A; }
+  .cat-events { background: rgba(196, 82, 42, 0.12); color: var(--rust); }
+  .cat-learning { background: rgba(90, 122, 154, 0.12); color: #5A7A9A; }
+  .cat-contests { background: rgba(139, 107, 154, 0.12); color: #8B6B9A; }
+
+  .featured-event .cat-tag {
+    background: rgba(200, 169, 110, 0.2);
+    color: var(--warm);
+  }
+
+  .card-date {
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-weight: 300;
+    letter-spacing: 0.05em;
+  }
+
+  .featured-event .card-date { color: rgba(245, 240, 232, 0.4); }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.01em;
+  }
+
+  .featured-event .card-title {
+    font-size: 1.75rem;
+    color: var(--cream);
+  }
+
+  .card-desc {
+    font-size: 0.875rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    font-weight: 300;
+  }
+
+  .featured-event .card-desc { color: rgba(245, 240, 232, 0.55); }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-location {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-weight: 300;
+  }
+
+  .featured-event .card-location { color: rgba(245, 240, 232, 0.45); }
+
+  .card-arrow {
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+
+  .event-card:hover .card-arrow {
+    background: var(--dark);
+    border-color: var(--dark);
+  }
+
+  .event-card:hover .card-arrow svg path {
+    stroke: var(--cream);
+  }
+
+  .featured-event .card-arrow {
+    border-color: rgba(200, 169, 110, 0.3);
+  }
+
+  .featured-event:hover .card-arrow {
+    background: var(--warm);
+    border-color: var(--warm);
+  }
+
+  /* ─── CALENDAR STRIP ─── */
+  .calendar-section {
+    margin-top: 4rem;
+    padding-top: 3rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 2rem;
+  }
+
+  .calendar-nav {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .cal-btn {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--border);
+    background: transparent;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .cal-btn:hover {
+    background: var(--dark);
+    border-color: var(--dark);
+  }
+
+  .cal-btn:hover svg path { stroke: var(--cream); }
+
+  .month-strip {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+  }
+
+  .day-cell {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    border: 1px solid transparent;
+  }
+
+  .day-cell:hover { background: var(--card-bg); border-color: var(--border); }
+
+  .day-cell.has-event::after {
+    content: '';
+    position: absolute;
+    bottom: 6px;
+    width: 4px;
+    height: 4px;
+    background: var(--rust);
+    border-radius: 50%;
+  }
+
+  .day-cell.today {
+    background: var(--dark);
+  }
+
+  .day-name {
+    font-size: 0.6rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+    font-weight: 400;
+  }
+
+  .day-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--dark);
+  }
+
+  .day-cell.today .day-name { color: rgba(245,240,232,0.5); }
+  .day-cell.today .day-num { color: var(--cream); }
+
+  /* ─── NEWSLETTER ─── */
+  .newsletter {
+    margin-top: 4rem;
+    background: var(--dark);
+    padding: 4rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .newsletter::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(200,169,110,0.1) 0%, transparent 70%);
+  }
+
+  .newsletter-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: var(--cream);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  .newsletter-title em {
+    color: var(--warm);
+    font-style: italic;
+  }
+
+  .newsletter-sub {
+    font-size: 0.875rem;
+    color: rgba(245, 240, 232, 0.5);
+    line-height: 1.6;
+    margin-top: 1rem;
+    font-weight: 300;
+  }
+
+  .newsletter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .newsletter-input {
+    background: rgba(245, 240, 232, 0.07);
+    border: 1px solid rgba(200, 169, 110, 0.2);
+    padding: 1rem 1.25rem;
+    color: var(--cream);
+    font-family: 'Onest', sans-serif;
+    font-size: 0.875rem;
+    border-radius: 2px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .newsletter-input::placeholder { color: rgba(245,240,232,0.3); }
+  .newsletter-input:focus { border-color: var(--warm); }
+
+  .newsletter-submit {
+    background: var(--warm);
+    color: var(--dark);
+    border: none;
+    padding: 1rem 2rem;
+    font-family: 'Onest', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .newsletter-submit:hover { background: #D4B87A; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    padding: 2.5rem 4rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--card-bg);
+  }
+
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.25rem;
+    color: var(--muted);
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 2rem;
+  }
+
+  .footer-links a {
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--dark); }
+
+  .footer-copy {
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-weight: 300;
+    letter-spacing: 0.02em;
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate {
+    animation: fadeUp 0.6s ease forwards;
+    opacity: 0;
+  }
+
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+  .delay-3 { animation-delay: 0.3s; }
+  .delay-4 { animation-delay: 0.4s; }
+  .delay-5 { animation-delay: 0.5s; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 1024px) {
+    .hero { grid-template-columns: 1fr; max-height: none; }
+    .hero-right { display: none; }
+    .events-grid { grid-template-columns: 1fr 1fr; }
+    .event-card.featured-event { grid-column: span 2; }
+  }
+
+  @media (max-width: 768px) {
+    header { padding: 0 1.5rem; }
+    nav { gap: 1rem; }
+    .hero-left { padding: 3rem 1.5rem; }
+    main { padding: 2rem 1.5rem; }
+    .events-grid { grid-template-columns: 1fr; }
+    .event-card.featured-event { grid-column: span 1; }
+    .newsletter { grid-template-columns: 1fr; gap: 2rem; padding: 2.5rem 1.5rem; }
+    footer { flex-direction: column; gap: 1.5rem; text-align: center; padding: 2rem 1.5rem; }
+    .stats-bar { padding: 1rem 1.5rem; gap: 1.5rem; flex-wrap: wrap; }
+    .month-strip { grid-template-columns: repeat(7, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <span class="logo-val">Val's</span>
+    <span class="logo-dot"></span>
+    <span class="logo-affairs">Affairs</span>
+  </div>
+  <nav>
+    <a href="#">Мероприятия</a>
+    <a href="#">Обучения</a>
+    <a href="#">Конкурсы</a>
+    <a href="#">О нас</a>
+    <a href="#" class="nav-cta">Добавить событие</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow animate">Таллин • Эстония • 2025</div>
+    <h1 class="hero-title animate delay-1">
+      Открывайте<br>
+      <em>события</em> рядом
+    </h1>
+    <p class="hero-desc animate delay-2">
+      Мероприятия, обучения и конкурсы для всех, кто живёт, учится и растёт в Эстонии.
+    </p>
+    <div class="hero-actions animate delay-3">
+      <a href="#" class="btn-primary">Смотреть все события</a>
+      <a href="#" class="btn-outline">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <rect x="1" y="2" width="14" height="13" rx="2" stroke="currentColor" stroke-width="1.2"/>
+          <path d="M5 1V3M11 1V3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+          <path d="M1 6H15" stroke="currentColor" stroke-width="1.2"/>
+        </svg>
+        Календарь
+      </a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-visual"></div>
+    <div class="hero-pattern"></div>
+    <div class="hero-featured">
+      <div class="featured-label">⟡ Избранное сегодня</div>
+      <div class="featured-card">
+        <div class="featured-cat">Изучаем Эстонию</div>
+        <div class="featured-title">Экскурсия по Старому городу Таллина — история через улицы</div>
+        <div class="featured-meta">
+          <div class="meta-item">
+            <svg class="meta-icon" viewBox="0 0 14 14" fill="none"><rect x="1" y="2" width="12" height="11" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M1 5H13" stroke="currentColor" stroke-width="1.2"/><path d="M4.5 8H5.5M7 8H8M9.5 8H10.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+            15 марта 2025
+          </div>
+          <div class="meta-item">
+            <svg class="meta-icon" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="6" r="3" stroke="currentColor" stroke-width="1.2"/><path d="M7 13C7 13 2 9.5 2 6C2 3.24 4.24 1 7 1C9.76 1 12 3.24 12 6C12 9.5 7 13 7 13Z" stroke="currentColor" stroke-width="1.2"/></svg>
+            Вабадузе пл., 1
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat">
+    <span class="stat-number">124</span>
+    <span class="stat-label">событий</span>
+  </div>
+  <div class="stat-sep"></div>
+  <div class="stat">
+    <span class="stat-number">5</span>
+    <span class="stat-label">категорий</span>
+  </div>
+  <div class="stat-sep"></div>
+  <div class="stat">
+    <span class="stat-number">47</span>
+    <span class="stat-label">в этом месяце</span>
+  </div>
+  <div class="stat-sep"></div>
+  <div class="stats-marquee">
+    <div class="marquee-track" id="marquee">
+      <span class="marquee-item"><span class="marquee-dot"></span>Таллин</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Тарту</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Нарва</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Пярну</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Вильянди</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Изучаем Эстонию</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Изучаем мир</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Обучения</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Конкурсы</span>
+      <!-- duplicate for seamless loop -->
+      <span class="marquee-item"><span class="marquee-dot"></span>Таллин</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Тарту</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Нарва</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Пярну</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Вильянди</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Изучаем Эстонию</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Изучаем мир</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Обучения</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Конкурсы</span>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+  <!-- Section header -->
+  <div class="section-header animate">
+    <div>
+      <div class="section-count">47 событий в марте 2025</div>
+      <h2 class="section-title">Ближайшие события</h2>
+    </div>
+    <a href="#" class="btn-outline" style="font-size:0.75rem">Смотреть все →</a>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters animate delay-1">
+    <button class="filter-btn active" onclick="filterCards(this, 'all')">Все</button>
+    <button class="filter-btn" data-cat="estonia" onclick="filterCards(this, 'estonia')">Изучаем Эстонию</button>
+    <button class="filter-btn" data-cat="world" onclick="filterCards(this, 'world')">Изучаем мир</button>
+    <button class="filter-btn" data-cat="events" onclick="filterCards(this, 'events')">Мероприятия</button>
+    <button class="filter-btn" data-cat="learning" onclick="filterCards(this, 'learning')">Обучения</button>
+    <button class="filter-btn" data-cat="contests" onclick="filterCards(this, 'contests')">Конкурсы</button>
+  </div>
+
+  <!-- Events Grid -->
+  <div class="events-grid animate delay-2">
+
+    <!-- Featured card -->
+    <div class="event-card featured-event" data-cat="estonia">
+      <div class="card-top">
+        <div class="cat-tag">✦ Изучаем Эстонию</div>
+        <div class="card-date">15 марта</div>
+      </div>
+      <div class="card-title">Путешествие на остров Сааремаа — природа и история Эстонии</div>
+      <div class="card-desc">Однодневная экскурсия с гидом. Замок Курессааре, ветряные мельницы, местная кухня и живописные берега Балтийского моря.</div>
+      <div class="card-footer">
+        <div class="card-location">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="5" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M6 11C6 11 1.5 8 1.5 5C1.5 2.51 3.51 0.5 6 0.5C8.49 0.5 10.5 2.51 10.5 5C10.5 8 6 11 6 11Z" stroke="currentColor" stroke-width="1.2"/></svg>
+          Отправление из Таллина
+        </div>
+        <div class="card-arrow">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7H12M8 3L12 7L8 11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="event-card" data-cat="learning">
+      <div class="card-top">
+        <div class="cat-tag cat-learning">Обучения</div>
+        <div class="card-date">18 марта</div>
+      </div>
+      <div class="card-title">Эстонский язык для начинающих: первый шаг</div>
+      <div class="card-desc">Бесплатный интенсив для новых жителей. Базовые фразы, произношение, практика.</div>
+      <div class="card-footer">
+        <div class="card-location">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="5" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M6 11C6 11 1.5 8 1.5 5C1.5 2.51 3.51 0.5 6 0.5C8.49 0.5 10.5 2.51 10.5 5C10.5 8 6 11 6 11Z" stroke="currentColor" stroke-width="1.2"/></svg>
+          Таллин, онлайн
+        </div>
+        <div class="card-arrow">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7H12M8 3L12 7L8 11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="event-card" data-cat="world">
+      <div class="card-top">
+        <div class="cat-tag cat-world">Изучаем мир</div>
+        <div class="card-date">20 марта</div>
+      </div>
+      <div class="card-title">Япония: культура чайной церемонии</div>
+      <div class="card-desc">Лекция и мастер-класс с приглашённым гостем из Токио. Традиции, история, дегустация.</div>
+      <div class="card-footer">
+        <div class="card-location">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="5" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M6 11C6 11 1.5 8 1.5 5C1.5 2.51 3.51 0.5 6 0.5C8.49 0.5 10.5 2.51 10.5 5C10.5 8 6 11 6 11Z" stroke="currentColor" stroke-width="1.2"/></svg>
+          Культурный центр, Таллин
+        </div>
+        <div class="card-arrow">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7H12M8 3L12 7L8 11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="event-card" data-cat="contests">
+      <div class="card-top">
+        <div class="cat-tag cat-contests">Конкурсы</div>
+        <div class="card-date">22 марта</div>
+      </div>
+      <div class="card-title">Конкурс молодых художников «Весенние краски»</div>
+      <div class="card-desc">Открытый конкурс для детей 7–16 лет. Тема: природа Эстонии весной. Призовой фонд 500 €.</div>
+      <div class="card-footer">
+        <div class="card-location">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="5" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M6 11C6 11 1.5 8 1.5 5C1.5 2.51 3.51 0.5 6 0.5C8.49 0.5 10.5 2.51 10.5 5C10.5 8 6 11 6 11Z" stroke="currentColor" stroke-width="1.2"/></svg>
+          Художественный музей
+        </div>
+        <div class="card-arrow">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7H12M8 3L12 7L8 11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 5 -->
+    <div class="event-card" data-cat="events">
+      <div class="card-top">
+        <div class="cat-tag cat-events">Мероприятия</div>
+        <div class="card-date">25 марта</div>
+      </div>
+      <div class="card-title">Весенний фестиваль интеграции 2025</div>
+      <div class="card-desc">Большой праздник для всей семьи: музыка, еда, мастер-классы, знакомства с новыми людьми.</div>
+      <div class="card-footer">
+        <div class="card-location">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="5" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M6 11C6 11 1.5 8 1.5 5C1.5 2.51 3.51 0.5 6 0.5C8.49 0.5 10.5 2.51 10.5 5C10.5 8 6 11 6 11Z" stroke="currentColor" stroke-width="1.2"/></svg>
+          Тартуское шоссе, парк
+        </div>
+        <div class="card-arrow">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7H12M8 3L12 7L8 11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 6 -->
+    <div class="event-card" data-cat="estonia">
+      <div class="card-top">
+        <div class="cat-tag cat-estonia">Изучаем Эстонию</div>
+        <div class="card-date">28 марта</div>
+      </div>
+      <div class="card-title">Эстонские народные песни и танцы — живые традиции</div>
+      <div class="card-desc">Встреча с ансамблем народной музыки. История певческих праздников и возможность попробовать себя.</div>
+      <div class="card-footer">
+        <div class="card-location">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="5" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M6 11C6 11 1.5 8 1.5 5C1.5 2.51 3.51 0.5 6 0.5C8.49 0.5 10.5 2.51 10.5 5C10.5 8 6 11 6 11Z" stroke="currentColor" stroke-width="1.2"/></svg>
+          Певческое поле, Таллин
+        </div>
+        <div class="card-arrow">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7H12M8 3L12 7L8 11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Calendar -->
+  <div class="calendar-section">
+    <div class="calendar-header">
+      <div>
+        <div class="section-count">Март 2025</div>
+        <h3 class="section-title" style="font-size:1.5rem">Календарь событий</h3>
+      </div>
+      <div class="calendar-nav">
+        <button class="cal-btn">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 11L5 7L9 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="cal-btn">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 11L9 7L5 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="month-strip" id="calendar"></div>
+  </div>
+</main>
+
+<!-- NEWSLETTER -->
+<div class="newsletter">
+  <div>
+    <h2 class="newsletter-title">Не пропускайте<br><em>важные события</em></h2>
+    <p class="newsletter-sub">Подпишитесь на еженедельный дайджест — только самое интересное из Эстонии и мира.</p>
+  </div>
+  <div class="newsletter-form">
+    <input class="newsletter-input" type="text" placeholder="Ваше имя">
+    <input class="newsletter-input" type="email" placeholder="Email адрес">
+    <button class="newsletter-submit">Подписаться на дайджест →</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Val's Affairs</div>
+  <div class="footer-links">
+    <a href="#">О проекте</a>
+    <a href="#">Контакты</a>
+    <a href="#">Добавить событие</a>
+    <a href="#">Партнёры</a>
+  </div>
+  <div class="footer-copy">© 2025 Val's Affairs. Таллин, Эстония</div>
+</footer>
+
+<script>
+// Filter logic
+function filterCards(btn, cat) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.event-card').forEach(card => {
+    if (cat === 'all' || card.dataset.cat === cat) {
+      card.style.display = '';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+
+// Generate mini calendar
+const days = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+const eventDays = [3, 8, 12, 15, 18, 20, 22, 25, 28];
+const calendar = document.getElementById('calendar');
+const today = 14;
+
+// Day headers
+days.forEach(d => {
+  const cell = document.createElement('div');
+  cell.style.cssText = 'text-align:center;padding:0.5rem 0;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:Onest,sans-serif;';
+  cell.textContent = d;
+  calendar.appendChild(cell);
+});
+
+// Day cells (march 2025 starts on saturday = offset 5)
+const offset = 5;
+for (let i = 0; i < 35; i++) {
+  const cell = document.createElement('div');
+  cell.className = 'day-cell';
+  const dayNum = i - offset + 1;
+  if (dayNum > 0 && dayNum <= 31) {
+    cell.innerHTML = `<span class="day-num">${dayNum}</span>`;
+    if (dayNum === today) cell.classList.add('today');
+    if (eventDays.includes(dayNum)) cell.classList.add('has-event');
+  }
+  calendar.appendChild(cell);
+}
+</script>
+
+</body>
+</html>

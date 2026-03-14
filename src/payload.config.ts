@@ -16,6 +16,15 @@ import { WebInfo } from './collections/Globals/WebInfo'
 import { UserAgreements } from './collections/Globals/UserAgreements'
 import { AboutUs } from './collections/Globals/AboutUs'
 import { defaultLocale, locales } from './app/lib/localization/i18n'
+import { s3Storage } from '@payloadcms/storage-s3'
+
+/** Display names for locales (used in language switcher, empty-categories block, etc.) */
+export const localeLabels: Record<string, string> = {
+  ee: 'Eesti',
+  ru: 'Русский',
+  en: 'English',
+  fi: 'Suomi',
+}
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -43,5 +52,24 @@ export default buildConfig({
     url: process.env.DATABASE_URL || '',
   }),
   sharp,
-  plugins: [],
+  plugins: [
+    // R2: set R2_BUCKET, R2_ENDPOINT (https://<ACCOUNT_ID>.r2.cloudflarestorage.com), R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY
+    ...(process.env.R2_BUCKET
+      ? [
+          s3Storage({
+            collections: { media: true },
+            bucket: process.env.R2_BUCKET,
+            config: {
+              endpoint: process.env.R2_ENDPOINT,
+              region: 'auto',
+              forcePathStyle: true,
+              credentials: {
+                accessKeyId: process.env.R2_ACCESS_KEY_ID ?? '',
+                secretAccessKey: process.env.R2_SECRET_ACCESS_KEY ?? '',
+              },
+            },
+          }),
+        ]
+      : []),
+  ],
 })

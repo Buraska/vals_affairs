@@ -1,9 +1,10 @@
 import type { CollectionConfig } from 'payload'
 import { locales } from '../app/lib/localization/i18n'
-
+import { afterChangeHookTeam, afterDeleteHookTeam } from '@/app/lib/hooks/payloadHooks'
 
 export const Team: CollectionConfig = {
   slug: 'team',
+  hooks: { afterChange: [afterChangeHookTeam], afterDelete: [afterDeleteHookTeam] },
   access: {
     read: () => true,
   },

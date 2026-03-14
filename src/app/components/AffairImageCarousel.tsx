@@ -1,12 +1,13 @@
 'use client'
 
-import { useState, useMemo } from 'react'
-import Lightbox from 'yet-another-react-lightbox'
+import { useState } from 'react'
+import Lightbox, { SlideImage } from 'yet-another-react-lightbox'
 import 'yet-another-react-lightbox/styles.css'
-import { Media } from '@/app/components/Media'
+import ShimmerImage from '@/app/components/ShimmerImage'
 import { Media as MediaType } from '@/payload-types'
 import { getMediaUrl } from '@/utilities/getMediaUrl'
 import { useLanguage } from '@/app/contexts/LanguageContext'
+import Image from 'next/image'
 
 type LightboxSlide = {
   src: string
@@ -23,6 +24,16 @@ type AffairImageCarouselProps = {
   title?: string
 }
 
+const ImageForCarousel = ({ slide }: { slide: SlideImage }) => (
+  <Image
+    src={slide.src ?? ''}
+    alt={slide.alt ?? ''}
+    fill
+    style={{objectFit: "contain"}}
+  />
+
+)
+
 export function AffairImageCarousel({
   slides,
   coverResource,
@@ -36,15 +47,22 @@ export function AffairImageCarousel({
     alt: s.alt ?? "",
     width: s.width ?? 0,
     height: s.height ?? 0,
-    srcSet: s.sizes ? Object.entries(s.sizes).map((size) => {
-      return {
-        src: size[1].url ?? "",
-        width: size[1].width ?? 0,
-        height: size[1].height ?? 0
-      }
-    }) : []
+    srcSet: s.sizes
+      ? Object.entries(s.sizes)
+        .map((size) => {
+          const value = size[1]
+          if (value?.url?.trim()) {
+            return {
+              src: value.url,
+              width: value.width ?? 0,
+              height: value.height ?? 0,
+            }
+          }
+          return null
+        })
+        .filter((x): x is { src: string; width: number; height: number } => x != null)
+      : []
   }))
-
 
   if (slides.length === 0 && !coverResource) {
     return (
@@ -59,7 +77,6 @@ export function AffairImageCarousel({
 
   return (
     <>
-
       <div className="flex flex-col-reverse">
 
         {hasMultiple && (
@@ -77,19 +94,24 @@ export function AffairImageCarousel({
                 }}
                 aria-label={`${i + 1} / ${slides.length}. ${t.common.openGallery}`}
               >
-                <img
-                  src={media.thumbnailURL ?? getMediaUrl(media.sizes?.thumbnail?.url ?? media.url, media.updatedAt) ?? ''}
-                  alt={media.alt ?? title ?? `Фото ${i + 1}`}
-                  className="h-full w-full object-cover"
-                  loading="lazy"
-                />
+                <span className="relative block size-full">
+                  <ShimmerImage
+                    src={media.thumbnailURL ?? getMediaUrl(media.sizes?.thumbnail?.url ?? media.url ?? '', media.updatedAt) ?? ''}
+                    alt={media.alt ?? title ?? `Фото ${i + 1}`}
+                    fill
+                    style={{ objectFit: 'cover' }}
+                    sizes="96px"
+                  />
+                </span>
               </button>
             ))}
           </div>
         )}
 
         <button
-          className={`relative aspect-[16/10] mb-4 w-full overflow-hidden rounded-lg bg-amber-100 ${hasMultiple || slides.length === 1 ? 'cursor-pointer' : ''}`}
+          type="button"
+          disabled={lightboxSlides.length === 0}
+          className={`relative mb-4 w-full aspect-[16/10] overflow-hidden rounded-lg bg-amber-100 ${hasMultiple || slides.length === 1 ? 'cursor-pointer' : 'cursor-default'}`}
           onClick={() => {
             if (lightboxSlides.length > 0) {
               setIndex(0)
@@ -99,19 +121,16 @@ export function AffairImageCarousel({
           aria-label={title ? `${t.common.openGallery}: ${title}` : t.common.openGallery}
         >
 
-          {showCover ? (
-            <Media
-              resource={coverResource}
-              pictureClassName="relative size-full block"
-              imgClassName="object-cover object-center"
-              size="1200px"
-            />
-          ) : lightboxSlides[0] ? (
-            <img
-              src={lightboxSlides[0].src}
-              alt={slides[0].alt ?? title ?? ''}
-              className="h-full w-full object-cover object-center"
-            />
+          {showCover && coverResource ? (
+            <span className="relative block size-full">
+              <ShimmerImage
+                src={coverResource.url ?? ''}
+                alt={coverResource.alt ?? title ?? ''}
+                fill
+                style={{ objectFit: 'cover' }}
+                sizes="(max-width: 768px) 50vw, 50vw"
+              />
+            </span>
           ) : (
             <div className="flex aspect-[16/10] w-full items-center justify-center text-4xl text-amber-300">
               —
@@ -127,10 +146,16 @@ export function AffairImageCarousel({
 
 
       <Lightbox
+        className=""
         open={open}
         close={() => setOpen(false)}
         index={index}
         slides={lightboxSlides}
+        // render={{ slide: ({ slide }) => (<ImageForCarousel slide={slide}/>)}}
+        render={{
+          slide: ({ slide }) => {console.log(slide); return(<ImageForCarousel slide={slide} />)}
+        }}
+        carousel={{ imageFit: "contain" }}
         on={{
           view: ({ index: i }) => setIndex(i),
         }}

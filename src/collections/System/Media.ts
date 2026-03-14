@@ -6,17 +6,11 @@ export const Media: CollectionConfig = {
     read: () => true
   },
   upload: {
-    staticDir: 'media',
+    disableLocalStorage: true,
     imageSizes: [
       {
         name: 'thumbnail',
         width: 300,
-      },
-      {
-        name: 'card',
-        width: 600,
-        height: 400,
-        crop: 'center',
       },
       {
         name: 'small',
@@ -31,12 +25,7 @@ export const Media: CollectionConfig = {
         width: 1200,
       },
 
-      {
-        name: 'og',
-        width: 1200,
-        height: 630,
-        crop: 'center',
-      },
+
     ],
     adminThumbnail: 'thumbnail',
     mimeTypes: ['image/*'],

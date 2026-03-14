@@ -2,19 +2,15 @@ import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { lexicalToHtml } from '@/utilities/lexicalToHtml'
-import { isValidLocale } from '@/app/lib/localization/i18n'
+import { isValidLocale, locales } from '@/app/lib/localization/i18n'
 import type { Locale } from '@/app/lib/localization/i18n'
 import { getTranslations } from '@/app/lib/localization/translations'
 
-type UserAgreementsData = {
-  section1?: unknown
-  section2?: unknown
-  section3?: unknown
-  section4?: unknown
-}
+export const dynamic = 'force-static'
 
-const richTextClass =
-  'prose prose-stone max-w-none [&_p]:mb-4 [&_p]:text-stone-700 [&_strong]:text-amber-900 [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:space-y-1 [&_ol]:pl-6 [&_li]:text-stone-700 [&_h2]:mt-8 [&_h2]:mb-4 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-amber-900 [&_h3]:mt-6 [&_h3]:mb-3 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:text-amber-900 [&_a]:text-amber-700 [&_a]:underline [&_a]:hover:text-amber-900'
+export function generateStaticParams() {
+    return locales.map((locale) => ({ locale }));
+  }
 
 export async function generateMetadata({
   params,
@@ -41,15 +37,14 @@ export default async function TermsPage({
     slug: 'user-agreements',
     depth: 0,
     locale: lang,
-  })) as UserAgreementsData | null
+  })) 
+
+  const content = data[lang as keyof typeof data]
+  const html = content ? lexicalToHtml(content as Parameters<typeof lexicalToHtml>[0]) : ''
+
   const t = getTranslations(lang)
 
-  const sections = [
-    data?.section1,
-    data?.section2,
-    data?.section3,
-    data?.section4,
-  ].filter(Boolean)
+
 
   return (
     <main className="min-h-screen bg-white">
@@ -58,21 +53,11 @@ export default async function TermsPage({
           {t.common.termsPageTitle}
         </h1>
         <div className="space-y-10">
-          {sections.map((section, i) => {
-            const html = lexicalToHtml(section as Parameters<typeof lexicalToHtml>[0])
-            if (!html) return null
-            return (
-              <section
-                key={i}
-                className={`${richTextClass}`}
-                dangerouslySetInnerHTML={{ __html: html }}
-              />
-            )
-          })}
+          <section
+            className="prose prose-stone max-w-none [&_p]:mb-4 [&_p]:text-stone-700 [&_strong]:text-amber-900 [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:space-y-1 [&_ol]:pl-6 [&_li]:text-stone-700 [&_h2]:mt-8 [&_h2]:mb-4 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-amber-900 [&_h3]:mt-6 [&_h3]:mb-3 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:text-amber-900 [&_a]:text-amber-700 [&_a]:underline [&_a]:hover:text-amber-900"
+            dangerouslySetInnerHTML={{ __html: html }}
+          />
         </div>
-        {sections.length === 0 && (
-          <p className="text-stone-500">{t.common.contentNotAdded}</p>
-        )}
       </div>
     </main>
   )

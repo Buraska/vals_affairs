@@ -18,16 +18,21 @@
     "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts"
   },
   "dependencies": {
-    "@payloadcms/db-mongodb": "3.76.0",
-    "@payloadcms/next": "3.76.0",
-    "@payloadcms/richtext-lexical": "3.76.0",
-    "@payloadcms/ui": "3.76.0",
+    "@aws-sdk/client-s3": "^3.1000.0",
+    "@payloadcms/db-mongodb": "3.77.0",
+    "@payloadcms/next": "3.77.0",
+    "@payloadcms/richtext-lexical": "3.77.0",
+    "@payloadcms/storage-s3": "3.77.0",
+    "@payloadcms/storage-vercel-blob": "3.77.0",
+    "@payloadcms/ui": "3.77.0",
     "@tailwindcss/postcss": "^4.0.0",
+    "clsx": "^2.1.1",
     "cross-env": "^7.0.3",
     "dotenv": "16.4.7",
     "graphql": "^16.8.1",
-    "next": "15.4.11",
-    "payload": "3.76.0",
+    "next": "16.1.6",
+    "payload": "3.77.0",
+    "pnpm": "^10.30.3",
     "postcss": "^8.4.49",
     "react": "19.2.1",
     "react-dom": "19.2.1",
@@ -35,6 +40,7 @@
     "sharp": "0.34.2",
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.0.0",
+    "vercel": "^50.25.0",
     "yet-another-react-lightbox": "^3.29.1"
   },
   "devDependencies": {
@@ -46,7 +52,7 @@
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "4.5.2",
     "eslint": "^9.16.0",
-    "eslint-config-next": "15.4.11",
+    "eslint-config-next": "16.1.6",
     "jsdom": "28.0.0",
     "playwright": "1.56.1",
     "playwright-core": "1.56.1",
@@ -65,7 +71,11 @@
       "sharp",
       "esbuild",
       "unrs-resolver"
-    ]
+    ],
+    "overrides": {
+      "@payloadcms/ui": "3.77.0",
+      "@payloadcms/storage-s3": "3.77.0"
+    }
   },
   "packageManager": "pnpm@10.30.0+sha512.2b5753de015d480eeb88f5b5b61e0051f05b4301808a82ec8b840c9d2adf7748eb352c83f5c1593ca703ff1017295bc3fdd3119abb9686efc96b9fcb18200937"
 }

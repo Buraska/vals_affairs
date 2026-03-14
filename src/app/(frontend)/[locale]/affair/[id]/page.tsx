@@ -9,7 +9,20 @@ import { Media as MediaType } from '@/payload-types'
 import { AffairImageCarousel } from '@/app/components/AffairImageCarousel'
 import { getTranslations } from '@/app/lib/localization/translations'
 import type { Lang } from '@/app/lib/localization/translations'
-import { isValidLocale } from '@/app/lib/localization/i18n'
+import { isValidLocale, locales } from '@/app/lib/localization/i18n'
+
+export const dynamic = 'force-static'
+
+export async function generateStaticParams() {
+  const payload = await getPayload({ config: configPromise })
+  const { docs: affairs } = await payload.find({
+    collection: 'Affair',
+    depth: 0,
+    limit: 500,
+  })
+  const ids = affairs.map((a) => a.id)
+  return locales.flatMap((locale) => ids.map((id) => ({ locale, id })))
+}
 
 const payload = await getPayload({ config: configPromise })
 
@@ -70,27 +83,30 @@ export default async function AffairPage({
   const firstImage = affair.images?.[0]?.image
   const descriptionHtml = lexicalToHtml(affair.description)
   const richTextClass =
-    'affair-rich-text [&_p]:mb-4 [&_p]:text-stone-700 [&_strong]:text-amber-900 [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:space-y-1 [&_ol]:pl-6 [&_li]:text-stone-700 [&_h2]:mt-4 [&_h2]:mb-4 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-amber-900 [&_h3]:mt-4 [&_h3]:mb-4 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:text-amber-900 [&_a]:text-amber-700 [&_a]:underline [&_a]:hover:text-amber-900'
+    'affair-rich-text [&_p]:mb-4 [&_p]:text-[var(--muted)] [&_strong]:text-[var(--dark)] [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:space-y-1 [&_ol]:pl-6 [&_li]:text-[var(--muted)] [&_h2]:mt-4 [&_h2]:mb-4 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-[var(--dark)] [&_h3]:mt-4 [&_h3]:mb-4 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:text-[var(--dark)] [&_a]:text-[var(--rust)] [&_a]:underline [&_a]:hover:text-[var(--dark)]'
 
   const slides: MediaType[] = affair.images
     ? affair.images.map((i) => i.image).filter((i): i is MediaType => i != null && typeof i !== 'string')
     : []
 
   return (
-    <main className="min-h-screen bg-white">
-      <div className="mx-auto max-w-6xl px-4 py-4 sm:px-6 lg:px-8">
+    <main className="min-h-screen">
+      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-8 lg:px-16">
         {categoryId && (
           <Link
             href={`/${locale}/category/${categoryId}`}
-            className="mb-4 inline-block text-sm font-medium text-amber-700 hover:text-amber-900"
+            className="mb-6 inline-flex items-center gap-2 text-sm text-[var(--muted)] hover:text-[var(--rust)] transition-colors"
           >
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M9 11L5 7L9 3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
             {t.common.back}
           </Link>
         )}
 
-        <div className="flex flex-col lg:flex-row gap-4">
+        <div className="flex flex-col lg:flex-row gap-8">
           {firstImage && typeof firstImage === 'object' ? (
-            <div className="relative mb-4 min-h-0 min-w-0 flex-1 overflow-hidden rounded-sm aspect-[16/10] lg:flex-[2]">
+            <div className="relative min-h-0 min-w-0 flex-1 overflow-hidden  lg:flex-[2]">
               <AffairImageCarousel
                 slides={slides}
                 coverResource={firstImage}
@@ -98,39 +114,41 @@ export default async function AffairPage({
               />
             </div>
           ) : (
-            <div className="mb-4 flex aspect-[16/10] w-full items-center justify-center rounded-sm bg-amber-100 text-4xl text-amber-300">
+            <div className="flex aspect-[16/10] w-full items-center justify-center bg-[var(--border)] text-2xl text-[var(--muted)]">
               —
             </div>
           )}
 
           <div className="lg:flex-[1] lg:min-w-0">
-            <h1 className="mb-4 text-3xl font-bold text-amber-900 sm:text-4xl">
+            <h1 className="mb-6 text-3xl font-bold text-[var(--dark)] sm:text-4xl" style={{ fontFamily: "var(--font-playfair)" }}>
               {affair.title}
             </h1>
-            <div className="mb-4 border-b border-amber-200 pb-4">
-              <AffairTicketsWithOrderLink
-                affairId={id}
-                tickets={affair.tickets ?? []}
-                hasTickets={Boolean(affair.tickets && affair.tickets.length > 0)}
-                price={!affair.tickets?.length ? affair.price : undefined}
-                locale={locale}
-              />
+            <div className="mb-6 border-b border-[var(--border)] pb-6">
+              {affair.isAvailable !== false ? (
+                <AffairTicketsWithOrderLink
+                  affairId={id}
+                  tickets={affair.tickets ?? []}
+                  hasTickets={Boolean(affair.tickets && affair.tickets.length > 0)}
+                  price={!affair.tickets?.length ? affair.price : undefined}
+                  locale={locale}
+                />
+              ) : (
+                <p className="text-[var(--muted)] font-medium">{t.affair.notAvailable}</p>
+              )}
             </div>
             <div>
-              <section className="mb-4">
-                <h2 className="mb-4 text-lg font-semibold text-amber-900">
+              <section className="mb-6">
+                <h2 className="mb-2 text-xs font-medium text-[var(--muted)] tracking-widest uppercase">
                   {t.affair.scheduleTitle}
                 </h2>
-                <p className="text-stone-700">
-                  <strong>
-                    {formatDateRange(affair['start date'], affair['end date'], locale)}
-                  </strong>
+                <p className="text-[var(--dark)] font-medium">
+                  {formatDateRange(affair['start date'], affair['end date'], locale)}
                 </p>
               </section>
 
               {descriptionHtml && (
                 <section
-                  className={`mb-4  ${richTextClass}`}
+                  className={`mb-6 ${richTextClass}`}
                   dangerouslySetInnerHTML={{ __html: descriptionHtml }}
                 />
               )}

@@ -1,38 +1,35 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { useLanguage } from "@/app/contexts/LanguageContext";
 
 export function Footer() {
   const { t, lang } = useLanguage();
-  const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email) setSubmitted(true);
-  };
 
   return (
-    <footer className="border-t border-stone-200 bg-stone-100 text-stone-700">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid gap-10 lg:grid-cols-4">
-          <div>
-            <h3 className="font-semibold text-stone-900">{t.footer.documents}</h3>
-            <ul className="mt-3 space-y-2 text-sm">
-              <li>
-                <Link href={`/${lang}/terms`} className="hover:text-amber-700">
-                  {t.footer.contract}
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="mt-12 border-t border-stone-200 pt-8 text-center text-sm text-stone-500">
-          © {new Date().getFullYear()} Vals
-        </div>
+    <footer className="border-t border-[var(--border)] bg-[var(--card-bg)] px-4 sm:px-8 lg:px-16 py-10 flex flex-col sm:flex-row items-center justify-between gap-6 flex-wrap">
+      <span className="font-serif italic text-lg text-[var(--muted)]" style={{ fontFamily: "var(--font-playfair)" }}>
+        {t.meta.siteName}
+      </span>
+      <div className="flex gap-8">
+        <Link href={`/${lang}/terms`} className="text-xs text-[var(--muted)] tracking-wide hover:text-[var(--dark)] transition-colors">
+          {t.footer.contract}
+        </Link>
       </div>
+      <span className="text-xs text-[var(--muted)] font-light tracking-wide">
+        © {new Date().getFullYear()} {t.meta.siteName}
+      </span>
+      <span className="text-xs text-[var(--muted)] font-light tracking-wide sm:ml-auto">
+        {t.footer.websiteDevelopment}{" "}
+        <a
+          href="https://www.linkedin.com/in/vadim-buraska/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[var(--rust)] hover:underline"
+        >
+          Vadim Zolotarenko
+        </a>
+      </span>
     </footer>
   );
 }

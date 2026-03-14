@@ -1,7 +1,9 @@
 import type { CollectionConfig } from 'payload'
+import { afterChangeHookTag, afterDeleteHookTag } from '@/app/lib/hooks/payloadHooks'
 
 export const Tag: CollectionConfig = {
   slug: 'tag',
+  hooks: { afterChange: [afterChangeHookTag], afterDelete: [afterDeleteHookTag] },
   access: {
     read: () => true,
   },
@@ -21,5 +23,11 @@ export const Tag: CollectionConfig = {
       relationTo: 'tagGroup',
       required: true
     },
+    {
+      name: 'affairs',
+      type: 'join',
+      collection: 'Affair',
+      on: 'tags.tag'
+    }
   ],
 }

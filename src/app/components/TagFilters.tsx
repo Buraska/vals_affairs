@@ -55,14 +55,14 @@ export function TagFilters({
   // let tagGroups = tags.map((tag) => tag.taggroup)
 
   return (
-    <div className="rounded-lg border border-stone-200 bg-stone-50/50 p-4">
-      <h2 className="mb-4 text-sm font-semibold text-stone-900">Фильтры</h2>
+    <div className="rounded border border-[var(--border)] bg-[var(--card-bg)] p-4">
+      <h2 className="mb-4 text-xs font-medium text-[var(--muted)] tracking-widest uppercase">{t.category.filters}</h2>
       <div className="space-y-6">
         {[...tagDict.keys()].map((groupName) => {
           const groupTags = tagDict.get(groupName) ?? []
           return (
             <div key={groupName}>
-              <h3 className="mb-2 text-xs font-medium uppercase tracking-wide text-stone-500">
+              <h3 className="mb-2 text-xs font-medium uppercase tracking-wide text-[var(--muted)]">
                 {groupName}
               </h3>
               <div className="space-y-1.5">
@@ -71,13 +71,13 @@ export function TagFilters({
                   return (
                     <label
                       key={tag.id}
-                      className="flex cursor-pointer items-center gap-2 text-sm text-stone-700 hover:text-stone-900"
+                      className="flex cursor-pointer items-center gap-2 text-sm text-[var(--dark)] hover:text-[var(--rust)]"
                     >
                       <input
                         type="checkbox"
                         checked={isChecked}
                         onChange={() => toggleTag(tag.id)}
-                        className="h-4 w-4 rounded border-stone-300 text-amber-600 focus:ring-amber-500"
+                        className="h-4 w-4 rounded border-[var(--border)] text-[var(--rust)] focus:ring-[var(--warm)]"
                       />
                       <span>{tag.name}</span>
                     </label>
@@ -96,7 +96,7 @@ export function TagFilters({
             if (query) params.set('q', query)
             router.replace(`${baseUrl}${params.toString() ? `?${params.toString()}` : ''}`)
           }}
-          className="mt-4 text-xs text-stone-500 underline hover:text-stone-700"
+          className="mt-4 text-xs text-[var(--muted)] underline hover:text-[var(--dark)]"
         >
           {t.category.resetFilters}
         </button>

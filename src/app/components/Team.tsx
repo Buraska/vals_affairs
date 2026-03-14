@@ -1,7 +1,7 @@
 "use client";
 
 import { useLanguage } from "@/app/contexts/LanguageContext";
-import { Media } from "@/app/components/Media";
+import ShimmerImage from "@/app/components/ShimmerImage";
 import type { Team as TeamMember } from "@/payload-types";
 import { defaultLocale, type Locale } from "@/app/lib/localization/i18n";
 
@@ -26,58 +26,77 @@ export function Team({
   const hasMembers = members.length > 0;
 
   return (
-    <section id='about' className="border-t bg-amber-50 border-amber-100 py-16 sm:py-20">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <h2 className="text-center text-2xl font-bold text-stone-800 sm:text-3xl">
+    <section id="about" className="relative overflow-hidden border-t border-[var(--border)] py-16 sm:py-20 px-4 sm:px-8 lg:px-16" style={{ background: "var(--dark)" }}>
+      {/* Тот же градиент, что и в Title */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: `
+            radial-gradient(ellipse 90% 70% at 50% 80%, rgba(255, 132, 159, 0.25) 0%, rgba(230, 154, 123, 0.12) 40%, transparent 70%),
+            radial-gradient(ellipse 70% 50% at 75% 30%, rgba(255, 165, 80, 0.2) 0%, transparent 50%),
+            radial-gradient(ellipse 60% 40% at 20% 50%, rgba(255, 255, 255, 0.15) 0%, transparent 45%),
+            linear-gradient(180deg,rgb(170, 126, 91) 0%,rgb(200, 155, 115) 50%,rgb(255, 184, 136) 100%)
+          `,
+        }}
+      />
+      <div
+        className="absolute inset-0 pointer-events-none"
+      />
+      <div className="relative z-10 mb-10 pb-4 border-b border-[var(--cream)]/30">
+        <h2 className="text-2xl font-bold text-[var(--cream)]" style={{ fontFamily: "var(--font-playfair)" }}>
           {t.contact.team}
         </h2>
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {hasMembers &&
-            members.map((person) => {
-              const photo =
-                typeof person.photo === "object" && person.photo != null
-                  ? person.photo
-                  : null;
-              const roleText = getDescriptionForLocale(person.description, locale);
+      </div>
+      <div className="relative z-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {hasMembers &&
+          members.map((person) => {
+            const photo =
+              typeof person.photo === "object" && person.photo != null
+                ? person.photo
+                : null;
+            const roleText = getDescriptionForLocale(person.description, locale);
 
-              return (
-                <div
-                  key={person.id}
-                  className="rounded-xl border border-stone-100 bg-stone-50/50 p-5 transition hover:border-amber-200 hover:shadow-md"
-                >
-                  {photo && (
-                    <div className="mb-3 aspect-square overflow-hidden rounded-lg bg-stone-100">
-                      <Media
-                        resource={photo}
-                        size="400px"
-                        imgClassName="h-full w-full object-cover"
-                      />
-                    </div>
-                  )}
-                  <h3 className="font-semibold text-amber-900">{person.name}</h3>
-                  {roleText && (
-                    <p className="mt-1 text-sm text-stone-600">{roleText}</p>
-                  )}
-                  {person.phone && (
-                    <a
-                      href={`tel:${person.phone.replace(/\s/g, "")}`}
-                      className="mt-2 block text-sm text-amber-700 hover:underline"
-                    >
-                      {person.phone}
-                    </a>
-                  )}
-                  {person.email && (
-                    <a
-                      href={`mailto:${person.email}`}
-                      className="mt-0.5 block text-sm text-amber-700 hover:underline"
-                    >
-                      {person.email}
-                    </a>
-                  )}
-                </div>
-              );
-            })}
-        </div>
+            return (
+              <div
+                key={person.id}
+                className="border border-[var(--border)] bg-[var(--cream)] p-5 transition hover:border-[var(--warm)]"
+              >
+                {photo && (
+                  <div className="relative mb-4 aspect-square overflow-hidden bg-[var(--border)]">
+                    <ShimmerImage
+                      src={photo.url ?? ""}
+                      alt={photo.alt ?? ""}
+                      fill
+                      style={{ objectFit: "cover" }}
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
+                    />
+                  </div>
+                )}
+                <h3 className="font-semibold text-[var(--dark)]" style={{ fontFamily: "var(--font-playfair)" }}>
+                  {person.name}
+                </h3>
+                {roleText && (
+                  <p className="mt-1 text-sm text-[var(--muted)] font-light">{roleText}</p>
+                )}
+                {person.phone && (
+                  <a
+                    href={`tel:${person.phone.replace(/\s/g, "")}`}
+                    className="mt-2 block text-sm text-[var(--rust)] hover:underline"
+                  >
+                    {person.phone}
+                  </a>
+                )}
+                {person.email && (
+                  <a
+                    href={`mailto:${person.email}`}
+                    className="mt-0.5 block text-sm text-[var(--rust)] hover:underline"
+                  >
+                    {person.email}
+                  </a>
+                )}
+              </div>
+            );
+          })}
       </div>
     </section>
   );

@@ -3,10 +3,17 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { LanguageProvider } from '@/app/contexts/LanguageContext'
 import { Header } from '@/app/components/Header'
+import { NavigationOverlay } from '@/app/components/NavigationOverlay'
 import type { Lang } from '@/app/lib/localization/translations'
-import { isValidLocale } from '@/app/lib/localization/i18n'
+import { isValidLocale, locales } from '@/app/lib/localization/i18n'
 import { getCategoriesForLocale } from '@/app/lib/categoriesForLocale'
 import { Footer } from '@/app/components/Footer'
+
+export const dynamic = 'force-static'
+
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }))
+}
 
 export default async function LocaleLayout({
   children,
@@ -25,11 +32,28 @@ export default async function LocaleLayout({
     ),
   ])
 
+  const headerWebInfo =
+    webInfo != null
+      ? {
+          ...webInfo,
+          siteDescription:
+            webInfo.siteDescription != null &&
+            typeof webInfo.siteDescription === 'object'
+              ? (webInfo.siteDescription[lang as keyof typeof webInfo.siteDescription])
+              : null,
+        }
+      : null
+
   return (
-    <LanguageProvider key={locale} initialLocale={lang}>
-      <Header categories={categories} webInfo={webInfo} />
+    <LanguageProvider
+      key={locale}
+      initialLocale={lang}
+      initialSiteDescription={headerWebInfo?.siteDescription ?? null}
+    >
+      <Header categories={categories} webInfo={headerWebInfo} />
       {children}
       <Footer />
+      {/* <NavigationOverlay /> */}
     </LanguageProvider>
   )
 }

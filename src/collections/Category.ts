@@ -1,3 +1,4 @@
+import { afterChangeHookCategory, afterDeleteHookCategory } from '@/app/lib/hooks/payloadHooks'
 import type { CollectionConfig } from 'payload'
 
 export const Category: CollectionConfig = {
@@ -5,6 +6,7 @@ export const Category: CollectionConfig = {
   access: {
     read: () => true,
   },
+  hooks: { afterChange: [afterChangeHookCategory], afterDelete: [afterDeleteHookCategory] },
   admin:{
     useAsTitle:'title'
   },
@@ -23,7 +25,8 @@ export const Category: CollectionConfig = {
     {
       name: 'image',
       type: 'upload',
-      relationTo: 'media'
+      relationTo: 'media',
+      required: true
     },
     {
       name: 'parent category',
@@ -35,6 +38,12 @@ export const Category: CollectionConfig = {
       type: 'join',
       collection: 'category',
       on: 'parent category'
+    },
+    {
+      name: 'affairs',
+      type: 'join',
+      collection: 'Affair',
+      on: 'category'
     }
   ],
   defaultPopulate: {

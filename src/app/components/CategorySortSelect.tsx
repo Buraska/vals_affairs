@@ -36,7 +36,7 @@ export function CategorySortSelect({
       value={currentSort}
       onChange={handleChange}
       aria-label={t.category.sort}
-      className="rounded border border-stone-200 bg-stone-50/50 px-2.5 py-1.5 text-sm text-stone-700 focus:border-stone-400 focus:bg-white focus:outline-none"
+      className="w-full rounded border border-[var(--border)] bg-[var(--card-bg)] px-2.5 py-1.5 text-sm text-[var(--dark)] focus:border-[var(--warm)] focus:outline-none"
     >
       {options.map((opt) => (
         <option key={opt.value} value={opt.value}>

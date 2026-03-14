@@ -59,3 +59,5 @@ node_modules/
 /playwright/.cache/
 .vscode
 .cursor
+
+pnpm-lock.yaml
