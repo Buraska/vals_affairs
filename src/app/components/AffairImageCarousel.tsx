@@ -31,7 +31,6 @@ export function AffairImageCarousel({
   const { t } = useLanguage()
   const [open, setOpen] = useState(false)
   const [index, setIndex] = useState(0)
-
   const lightboxSlides = slides.map((s) => ({
     src: s.url ?? "",
     alt: s.alt ?? "",
@@ -64,7 +63,7 @@ export function AffairImageCarousel({
       <div className="flex flex-col-reverse">
 
         {hasMultiple && (
-          <div className=" flex-col flex-nowrap gap-2 overflow-x-auto pb-2" role="list" aria-label="Миниатюры фото">
+          <div className=" flex-col flex-nowrap gap-2 overflow-x-auto pb-2" role="list" aria-label="Small photos">
             {slides.map((media, i) => (
               <button
                 key={media.id}
@@ -89,24 +88,14 @@ export function AffairImageCarousel({
           </div>
         )}
 
-        <div
-          className={`relative mb-4 w-full overflow-hidden rounded-lg bg-amber-100 ${hasMultiple || slides.length === 1 ? 'cursor-pointer' : ''}`}
-          style={{ aspectRatio: '16/10' }}
+        <button
+          className={`relative aspect-[16/10] mb-4 w-full overflow-hidden rounded-lg bg-amber-100 ${hasMultiple || slides.length === 1 ? 'cursor-pointer' : ''}`}
           onClick={() => {
             if (lightboxSlides.length > 0) {
               setIndex(0)
               setOpen(true)
             }
           }}
-          onKeyDown={(e) => {
-            if (lightboxSlides.length > 0 && (e.key === 'Enter' || e.key === ' ')) {
-              e.preventDefault()
-              setIndex(0)
-              setOpen(true)
-            }
-          }}
-          role={lightboxSlides.length > 0 ? 'button' : undefined}
-          tabIndex={lightboxSlides.length > 0 ? 0 : undefined}
           aria-label={title ? `${t.common.openGallery}: ${title}` : t.common.openGallery}
         >
 
@@ -133,7 +122,7 @@ export function AffairImageCarousel({
               {slides.length} {t.common.photoCount}
             </div>
           )}
-        </div>
+        </button>
       </div>
 
 
