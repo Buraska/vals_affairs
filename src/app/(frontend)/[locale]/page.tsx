@@ -9,7 +9,6 @@ import { locales, type Locale } from "@/app/lib/localization/i18n";
 import { getPayload } from "payload";
 import configPromise from "@payload-config";
 
-export const dynamic = "force-static";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -23,18 +22,13 @@ export default async function HomePage({
   const { locale } = await params;
   const lang = (isValidLocale(locale) ? locale : "ee") as Locale;
   const t = getTranslations(lang as Lang);
-  const [categories, teamResult] = await Promise.all([
+  const [categories, teamGlobal] = await Promise.all([
     getCategoriesForLocale(lang),
     getPayload({ config: configPromise }).then((payload) =>
-      payload.find({
-        collection: "team",
-        depth: 1,
-        limit: 50,
-        sort: "createdAt",
-      })
+      payload.findGlobal({ slug: "team", depth: 1 })
     ),
   ]);
-  const teamMembers = teamResult.docs ?? [];
+  const teamMembers = teamGlobal?.members ?? [];
 
   return (
     <main>

@@ -3,8 +3,9 @@
 import { useSearchParams } from 'next/navigation'
 import { useMemo } from 'react'
 import { useLanguage } from '@/app/contexts/LanguageContext'
+import { Affair } from '@/payload-types'
 
-type Ticket = { 'ticket name'?: string | null; 'ticket price'?: number | null }
+type Ticket = Affair['tickets'][0]
 
 export function AffairOrderSummary({
   affairTitle,

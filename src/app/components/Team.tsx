@@ -2,9 +2,10 @@
 
 import { useLanguage } from "@/app/contexts/LanguageContext";
 import ShimmerImage from "@/app/components/ShimmerImage";
-import type { Team as TeamMember } from "@/payload-types";
+import type { Team } from "@/payload-types";
 import { defaultLocale, type Locale } from "@/app/lib/localization/i18n";
 
+type TeamMember = NonNullable<Team["members"]>[number];
 
 function getDescriptionForLocale(
   description: TeamMember["description"],
@@ -49,7 +50,7 @@ export function Team({
       </div>
       <div className="relative z-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {hasMembers &&
-          members.map((person) => {
+          members.map((person, index) => {
             const photo =
               typeof person.photo === "object" && person.photo != null
                 ? person.photo
@@ -58,7 +59,7 @@ export function Team({
 
             return (
               <div
-                key={person.id}
+                key={person.id ?? `member-${index}`}
                 className="border border-[var(--border)] bg-[var(--cream)] p-5 transition hover:border-[var(--warm)]"
               >
                 {photo && (

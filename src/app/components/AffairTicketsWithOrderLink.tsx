@@ -2,20 +2,16 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { AffairTicketsBlock, type TicketItem } from './AffairTicketsBlock'
+import { AffairTicketsBlock, type Ticket } from './AffairTicketsBlock'
 import { useLanguage } from '@/app/contexts/LanguageContext'
 
 export function AffairTicketsWithOrderLink({
   affairId,
   tickets,
-  hasTickets,
-  price,
   locale,
 }: {
   affairId: string
-  tickets: TicketItem[]
-  hasTickets: boolean
-  price?: number
+  tickets: Ticket[]
   locale: string
 }) {
   const { t } = useLanguage()
@@ -23,27 +19,20 @@ export function AffairTicketsWithOrderLink({
 
   const hasAnyTickets = quantities.some((q) => q > 0)
   const orderHref =
-    hasTickets && hasAnyTickets
+     hasAnyTickets
       ? `/${locale}/affair/${affairId}/order?q=${quantities.join(',')}`
       : `/${locale}/affair/${affairId}/order`
-  const isDisabled = hasTickets && !hasAnyTickets
+  const isDisabled = !hasAnyTickets
 
   return (
     <>
-      {hasTickets ? (
+      
         <AffairTicketsBlock
           tickets={tickets}
           quantities={quantities}
           setQuantities={setQuantities}
-        />
-      ) : price != null ? (
-        <div className="mb-4 flex items-center gap-4">
-          <span className="text-2xl font-semibold text-[var(--dark)]" style={{ fontFamily: "var(--font-playfair)" }}>
-            {price} €
-          </span>
-        </div>
-      ) : null}
-      <div className={hasTickets ? 'mt-4' : ''}>
+        />  
+      <div className={'mt-4'}>
         {isDisabled ? (
           <span
             role="button"

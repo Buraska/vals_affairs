@@ -73,7 +73,6 @@ export interface Config {
     Affair: Affair;
     tag: Tag;
     tagGroup: TagGroup;
-    team: Team;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -98,7 +97,6 @@ export interface Config {
     Affair: AffairSelect<false> | AffairSelect<true>;
     tag: TagSelect<false> | TagSelect<true>;
     tagGroup: TagGroupSelect<false> | TagGroupSelect<true>;
-    team: TeamSelect<false> | TeamSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -117,11 +115,13 @@ export interface Config {
     'web-info': WebInfo;
     'user-agreements': UserAgreement;
     'about-us': AboutUs;
+    team: Team;
   };
   globalsSelect: {
     'web-info': WebInfoSelect<false> | WebInfoSelect<true>;
     'user-agreements': UserAgreementsSelect<false> | UserAgreementsSelect<true>;
     'about-us': AboutUsSelect<false> | AboutUsSelect<true>;
+    team: TeamSelect<false> | TeamSelect<true>;
   };
   locale: 'ee' | 'ru' | 'en' | 'fi';
   user: User;
@@ -350,39 +350,6 @@ export interface TagGroup {
   createdAt: string;
 }
 /**
- * Team members with name, contacts, description and photo.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "team".
- */
-export interface Team {
-  id: string;
-  name: string;
-  /**
-   * Profile or team member photo.
-   */
-  photo: string | Media;
-  /**
-   * Short bio or role description. All languages on one page.
-   */
-  description?: {
-    ee?: string | null;
-    ru?: string | null;
-    en?: string | null;
-    fi?: string | null;
-  };
-  /**
-   * e.g. +372 5555555
-   */
-  phone?: string | null;
-  /**
-   * e.g. name@example.com
-   */
-  email?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -429,10 +396,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'tagGroup';
         value: string | TagGroup;
-      } | null)
-    | ({
-        relationTo: 'team';
-        value: string | Team;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -633,26 +596,6 @@ export interface TagSelect<T extends boolean = true> {
 export interface TagGroupSelect<T extends boolean = true> {
   name?: T;
   tagGroup?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "team_select".
- */
-export interface TeamSelect<T extends boolean = true> {
-  name?: T;
-  photo?: T;
-  description?:
-    | T
-    | {
-        ee?: T;
-        ru?: T;
-        en?: T;
-        fi?: T;
-      };
-  phone?: T;
-  email?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -879,6 +822,47 @@ export interface AboutUs {
   createdAt?: string | null;
 }
 /**
+ * Team members with name, contacts, description and photo.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "team".
+ */
+export interface Team {
+  id: string;
+  /**
+   * Team members with name, contacts, description and photo.
+   */
+  members?:
+    | {
+        name: string;
+        /**
+         * Profile or team member photo.
+         */
+        photo: string | Media;
+        /**
+         * Short bio or role description. All languages on one page.
+         */
+        description?: {
+          ee?: string | null;
+          ru?: string | null;
+          en?: string | null;
+          fi?: string | null;
+        };
+        /**
+         * e.g. +372 5555555
+         */
+        phone?: string | null;
+        /**
+         * e.g. name@example.com
+         */
+        email?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "web-info_select".
  */
@@ -922,6 +906,32 @@ export interface AboutUsSelect<T extends boolean = true> {
   ru?: T;
   en?: T;
   fi?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "team_select".
+ */
+export interface TeamSelect<T extends boolean = true> {
+  members?:
+    | T
+    | {
+        name?: T;
+        photo?: T;
+        description?:
+          | T
+          | {
+              ee?: T;
+              ru?: T;
+              en?: T;
+              fi?: T;
+            };
+        phone?: T;
+        email?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

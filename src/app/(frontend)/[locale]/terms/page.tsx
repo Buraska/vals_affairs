@@ -6,8 +6,6 @@ import { isValidLocale, locales } from '@/app/lib/localization/i18n'
 import type { Locale } from '@/app/lib/localization/i18n'
 import { getTranslations } from '@/app/lib/localization/translations'
 
-export const dynamic = 'force-static'
-
 export function generateStaticParams() {
     return locales.map((locale) => ({ locale }));
   }

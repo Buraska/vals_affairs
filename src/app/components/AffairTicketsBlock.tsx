@@ -1,18 +1,16 @@
 'use client'
 import { useLanguage } from '@/app/contexts/LanguageContext'
 
-export type TicketItem = {
-  id?: string | null
-  'ticket name'?: string | null
-  'ticket price'?: number | null
-}
+import { Affair } from '@/payload-types'
+
+export type Ticket = Affair['tickets'][0]
 
 export function AffairTicketsBlock({
   tickets,
   quantities,
   setQuantities,
 }: {
-  tickets: TicketItem[]
+  tickets: Ticket[]
   quantities: number[]
   setQuantities: React.Dispatch<React.SetStateAction<number[]>>
 }) {

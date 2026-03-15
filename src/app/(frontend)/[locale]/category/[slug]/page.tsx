@@ -6,12 +6,12 @@ import type { Tag } from '@/payload-types'
 import { CategoryPageClient } from '@/app/components/CategoryPageClient'
 import { getTranslations } from '@/app/lib/localization/translations'
 import type { Lang } from '@/app/lib/localization/translations'
-import { isValidLocale, locales } from '@/app/lib/localization/i18n'
+import { isValidLocale, Locale, locales } from '@/app/lib/localization/i18n'
+import { cacheLife, cacheTag } from 'next/cache'
 
-export const dynamic = 'force-static'
+const payload = await getPayload({ config: configPromise })
 
 export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
   const { docs: categories } = await payload.find({
     collection: 'category',
     depth: 0,
@@ -21,9 +21,36 @@ export async function generateStaticParams() {
   return locales.flatMap((locale) => slugs.map((slug) => ({ locale, slug })))
 }
 
-const payload = await getPayload({ config: configPromise })
+async function getCategory(lang:Locale, categoryId: string|number){
+  // "use cache"
+  // cacheLife('max')
+  // cacheTag(`${lang}-category-${categoryId}`)
 
-const SORT_VALUES = ['date', 'price', '-price'] as const
+  const category = await payload
+  .findByID({
+    collection: 'category',
+    id: categoryId,
+    depth: 0,
+    locale: lang
+  })
+  .catch(() => notFound())
+  return category
+}
+
+async function getAffairs(lang:Locale, whereClause: Where | undefined) {
+  const affairs = (await payload.find({
+    collection: 'Affair',
+    depth: 1,
+    locale: lang,
+    where: whereClause,
+    sort: 'date',
+    limit: 200,
+  })).docs
+  return affairs.filter(
+    (affair) => affair.title != null && String(affair.title).trim() !== ''
+  )
+  
+}
 
 export default async function CategoryPage({
   params,
@@ -33,6 +60,10 @@ export default async function CategoryPage({
   const { locale, slug: categoryId } = await params
   const lang = (isValidLocale(locale) ? locale : 'ee') as Lang
   const t = getTranslations(lang)
+  const category = await getCategory(lang, categoryId)
+  const whereClause: Where = { category: { equals: categoryId } }
+  let affairs = await getAffairs(lang, whereClause)
+
 
   const sortOptions = [
     { value: 'date', label: t.category.sortByDate },
@@ -40,31 +71,8 @@ export default async function CategoryPage({
     { value: '-price', label: t.category.sortByPriceDesc },
   ] as const
 
-  const category = await payload
-    .findByID({
-      collection: 'category',
-      id: categoryId,
-      depth: 0,
-    })
-    .catch(() => notFound())
-
-  const whereClause: Where = { category: { equals: categoryId } }
-  let { docs: initialAffairs } = await payload.find({
-    collection: 'Affair',
-    depth: 2,
-    locale: lang,
-    where: whereClause,
-    sort: 'date',
-    limit: 200,
-  })
-
-
-  initialAffairs = initialAffairs.filter(
-    (affair) => affair.title != null && String(affair.title).trim() !== ''
-  )
-
   const tagsSet = new Set<Tag>()
-  initialAffairs.forEach((affair) => {
+  affairs.forEach((affair) => {
     if (affair.tags) {
       affair.tags.forEach((ref) => {
         const tag = ref.tag as Tag
@@ -89,25 +97,11 @@ export default async function CategoryPage({
 
         <Suspense fallback={<div className="min-h-[40vh] flex items-center justify-center text-[var(--muted)]">Loading…</div>}>
           <CategoryPageClient
-            initialAffairs={initialAffairs}
+            initialAffairs={affairs}
             tags={[...tagsSet]}
-            categoryTitle={category.title ?? ''}
             baseUrl={baseUrl}
             locale={locale}
             sortOptions={sortOptions}
-            tCategory={{
-              search: t.category.search,
-              sort: t.category.sort,
-              sortByDate: t.category.sortByDate,
-              sortByPriceAsc: t.category.sortByPriceAsc,
-              sortByPriceDesc: t.category.sortByPriceDesc,
-              searchPlaceholder: t.category.searchPlaceholder,
-              noResultsQuery: t.category.noResultsQuery,
-              noResultsCategory: t.category.noResultsCategory,
-              filters: t.category.filters,
-              resetFilters: t.category.resetFilters,
-              countEvents: t.category.countEvents,
-            }}
           />
         </Suspense>
       </div>

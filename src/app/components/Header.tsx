@@ -127,7 +127,7 @@ export function Header({
               {webInfo.email}
             </a>
           ) : null}
-          <div className="flex rounded border border-[var(--border)] p-0.5">
+          <div className="hidden lg:flex flex rounded border border-[var(--border)] p-0.5">
             {locales.map((l) => (
               <Link
                 key={l}
@@ -142,20 +142,8 @@ export function Header({
         </div>
       </nav>
 
-      <div className="flex items-center gap-2 lg:hidden">
-        <div className="flex rounded border border-[var(--border)] p-0.5">
-          {locales.map((l) => (
-            <Link
-              key={l}
-              href={`/${l}`}
-              className={`rounded px-2 py-1 text-xs font-medium ${lang === l ? "bg-[var(--dark)] text-[var(--cream)]" : "text-[var(--muted)]"}`}
-              prefetch={false}
-            >
-              {langLabels[l]}
-            </Link>
-          ))}
-        </div>
-      </div>
+
+      
 
       {mobileOpen && (
         <div className="absolute top-full left-0 right-0 border-t border-[var(--border)] bg-[var(--card-bg)] px-4 py-4 lg:hidden shadow-lg">
@@ -175,6 +163,19 @@ export function Header({
                 {t.nav[key]}
               </Link>
             ))}
+            <div className="mt-3 pt-3 border-t border-[var(--border)] flex flex-wrap gap-2">
+              {locales.map((l) => (
+                <Link
+                  key={l}
+                  href={`/${l}`}
+                  onClick={() => setMobileOpen(false)}
+                  className={`rounded border border-[var(--border)] px-2.5 py-1.5 text-xs font-medium transition ${lang === l ? "bg-[var(--dark)] text-[var(--cream)]" : "text-[var(--muted)] hover:text-[var(--dark)]"}`}
+                  prefetch={false}
+                >
+                  {langLabels[l]}
+                </Link>
+              ))}
+            </div>
             {webInfo?.phone ? (
               <a href={`tel:${webInfo.phone.replace(/\s/g, "")}`} onClick={() => setMobileOpen(false)} className="mt-2 py-2 text-sm text-[var(--rust)]">
                 {webInfo.phone}

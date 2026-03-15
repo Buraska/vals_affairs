@@ -7,22 +7,10 @@ import { AffairCard } from '@/app/components/AffairCard'
 import { CategorySortSelect } from '@/app/components/CategorySortSelect'
 import { TagFilters } from '@/app/components/TagFilters'
 import CategorySearch from '@/app/components/CategorySearch'
+import { useLanguage } from '../contexts/LanguageContext'
 
 type SortOption = { value: string; label: string }
 
-type CategoryTranslations = {
-  search: string
-  sort: string
-  sortByDate: string
-  sortByPriceAsc: string
-  sortByPriceDesc: string
-  searchPlaceholder: string
-  noResultsQuery: string
-  noResultsCategory: string
-  filters: string
-  resetFilters: string
-  countEvents: string
-}
 
 const DEFAULT_SORT = 'date'
 
@@ -47,20 +35,17 @@ function compareAffairs(a: Affair, b: Affair, sort: string): number {
 export function CategoryPageClient({
   initialAffairs,
   tags,
-  categoryTitle,
   baseUrl,
   locale,
   sortOptions,
-  tCategory,
 }: {
   initialAffairs: Affair[]
   tags: Tag[]
-  categoryTitle: string
   baseUrl: string
   locale: string
   sortOptions: readonly SortOption[]
-  tCategory: CategoryTranslations
 }) {
+  const {t} = useLanguage()
   const searchParams = useSearchParams()
   const sort = searchParams.get('sort') ?? DEFAULT_SORT
   const query = (searchParams.get('q') ?? '').trim()
@@ -83,15 +68,15 @@ export function CategoryPageClient({
   }, [initialAffairs, query, selectedTagIds.join(','), sort])
 
   const noResultsText = query.trim()
-    ? tCategory.noResultsQuery.replace('{query}', query)
-    : tCategory.noResultsCategory
+    ? t.category.noResultsQuery.replace('{query}', query)
+    : t.category.noResultsCategory
 
   return (
     <div className="flex flex-col gap-8 lg:flex-row">
       <aside className="lg:w-64 lg:shrink-0 space-y-6">
         <div>
           <h2 className="mb-2 text-xs font-medium text-[var(--muted)] tracking-wide uppercase">
-            {tCategory.search}
+            {t.category.search}
           </h2>
           <CategorySearch
             baseUrl={baseUrl}
@@ -103,7 +88,7 @@ export function CategoryPageClient({
         </div>
         <div>
           <h2 className="mb-2 text-xs font-medium text-[var(--muted)] tracking-wide uppercase">
-            {tCategory.sort}
+            {t.category.sort}
           </h2>
           <CategorySortSelect
             baseUrl={baseUrl}
@@ -126,7 +111,7 @@ export function CategoryPageClient({
 
       <div className="min-w-0 flex-1">
         <p className="text-xs text-[var(--muted)] font-light tracking-widest uppercase mb-4">
-          {tCategory.countEvents.replace('{count}', String(affairs.length))}
+          {t.category.countEvents.replace('{count}', String(affairs.length))}
         </p>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-px">
           {affairs.length === 0 ? (

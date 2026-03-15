@@ -1,9 +1,11 @@
 import type { GlobalConfig } from 'payload'
 import { locales } from '@/app/lib/localization/i18n'
+import { afterChangeHookWebInfo } from '@/app/lib/hooks/payloadHooks'
 
 export const WebInfo: GlobalConfig = {
   slug: 'web-info',
   label: 'Web info',
+  hooks: { afterChange: [afterChangeHookWebInfo]},
   admin: {
     description: 'Site name, description, contact and social links for the header and metadata.',
   },

@@ -12,6 +12,7 @@ const nextConfig = {
 
     return webpackConfig
   },
+  // cacheComponents: true,
   images: {
     remotePatterns: [
       // Local dev: media via Payload API

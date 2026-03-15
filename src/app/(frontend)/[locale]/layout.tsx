@@ -9,8 +9,6 @@ import { isValidLocale, locales } from '@/app/lib/localization/i18n'
 import { getCategoriesForLocale } from '@/app/lib/categoriesForLocale'
 import { Footer } from '@/app/components/Footer'
 
-export const dynamic = 'force-static'
-
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }))
 }

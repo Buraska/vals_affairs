@@ -1,16 +1,14 @@
 'use client'
-import type { Affair, Media } from "@/payload-types"
+import type { Affair} from "@/payload-types"
 import { formatDateRange } from "@/utilities/utility"
 import { lexicalToPlainText } from "@/utilities/lexicalToPlainText"
 import Link from "next/link"
-import { getMediaUrl } from "@/utilities/getMediaUrl"
 import { useLanguage } from "@/app/contexts/LanguageContext"
 import clsx from 'clsx'
 import ShimmerImage from "@/app/components/ShimmerImage"
 
-export type AffairCardData = Pick<Affair, 'id' | 'images' | 'title' | 'description' | 'price' | 'isAvailable' | 'start date' | 'end date' | 'category' | 'tags'>
 
-export const AffairCard = ({ affair, locale, className = "" }: { affair: AffairCardData; locale: string, className: string }) => {
+export const AffairCard = ({ affair, locale, className = "" }: { affair: Affair; locale: string, className: string }) => {
   const { t } = useLanguage()
   const firstImage = affair.images?.[0].image
   const isAvailable = affair.isAvailable !== false

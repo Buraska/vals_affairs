@@ -7,12 +7,12 @@ import { AffairOrderForm } from '@/app/components/AffairOrderForm'
 import { AffairOrderSummary } from '@/app/components/AffairOrderSummary'
 import { getTranslations } from '@/app/lib/localization/translations'
 import type { Lang } from '@/app/lib/localization/translations'
-import { isValidLocale, locales } from '@/app/lib/localization/i18n'
+import { isValidLocale, Locale, locales } from '@/app/lib/localization/i18n'
+import { formatDateRange } from '@/utilities/utility'
 
-export const dynamic = 'force-static'
+const payload = await getPayload({ config: configPromise })
 
 export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
   const { docs: affairs } = await payload.find({
     collection: 'Affair',
     depth: 0,
@@ -22,33 +22,15 @@ export async function generateStaticParams() {
   return locales.flatMap((locale) => ids.map((id) => ({ locale, id })))
 }
 
-const payload = await getPayload({ config: configPromise })
-
-function formatDate(dateStr: string | null | undefined, locale: string): string {
-  if (!dateStr) return '—'
-  return new Date(dateStr).toLocaleDateString(`${locale === 'ee' ? 'et' : locale}-${locale === 'en' ? 'US' : locale.toUpperCase()}`, {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  })
-}
-
-function formatDateRange(start: string, end: string | null | undefined, locale: string): string {
-  const a = formatDate(start, locale)
-  if (!end || end === start) return a
-  return `${a} – ${formatDate(end, locale)}`
-}
-
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string; id: string }>
+  params: Promise<{ locale: Locale; id: string }>
 }) {
   const { locale, id } = await params
-  const t = isValidLocale(locale) ? getTranslations(locale as Lang) : getTranslations('ee')
-  const payloadInstance = await getPayload({ config: configPromise })
-  const affair = await payloadInstance
-    .findByID({ collection: 'Affair', id, depth: 0 })
+  const t = getTranslations(locale as Lang)
+  const affair = await payload
+    .findByID({ collection: 'Affair', id, depth: 0, locale: locale})
     .catch(() => null)
   if (!affair) return { title: t.common.notFoundOrder }
   return {
@@ -71,10 +53,12 @@ export default async function OrderPage({
       collection: 'Affair',
       id,
       depth: 1,
+      locale: lang
     })
     .catch(() => null)
 
   if (!affair) notFound()
+  if (!affair.title) notFound()
 
   const tickets = affair.tickets ?? []
   const dateRangeText = formatDateRange(affair['start date'], affair['end date'], locale)

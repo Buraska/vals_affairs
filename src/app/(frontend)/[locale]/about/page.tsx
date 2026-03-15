@@ -5,15 +5,26 @@ import { lexicalToHtml } from '@/utilities/lexicalToHtml'
 import { isValidLocale, locales } from '@/app/lib/localization/i18n'
 import type { Locale } from '@/app/lib/localization/i18n'
 import { getTranslations } from '@/app/lib/localization/translations'
+import { cacheLife, cacheTag } from 'next/cache'
 
-export const dynamic = 'force-static'
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }))
 }
 
-const richTextClass =
-  'prose prose-stone max-w-none [&_p]:mb-4 [&_p]:text-[var(--muted)] [&_strong]:text-[var(--dark)] [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:space-y-1 [&_ol]:pl-6 [&_li]:text-[var(--muted)] [&_h2]:mt-8 [&_h2]:mb-4 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-[var(--dark)] [&_h3]:mt-6 [&_h3]:mb-3 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:text-[var(--dark)] [&_a]:text-[var(--rust)] [&_a]:underline [&_a]:hover:text-[var(--dark)]'
+async function getAboutUs(lang: Locale){
+  // 'use cache'
+  // cacheTag(`${lang}-about-us`)
+  // cacheLife("max")
+
+  const payload = await getPayload({ config: configPromise })
+  const data = await payload.findGlobal({
+    slug: 'about-us',
+    depth: 0,
+    locale: lang,
+  })
+  return data
+}
 
 export async function generateMetadata({
   params,
@@ -35,12 +46,7 @@ export default async function AboutPage({
   if (!isValidLocale(locale)) notFound()
   const lang = locale as Locale
 
-  const payload = await getPayload({ config: configPromise })
-  const data = await payload.findGlobal({
-    slug: 'about-us',
-    depth: 0,
-    locale: lang,
-  })
+  const data = await getAboutUs(lang) 
 
   const content = data[lang as keyof typeof data]
   const html = content ? lexicalToHtml(content as Parameters<typeof lexicalToHtml>[0]) : ''
@@ -53,7 +59,7 @@ export default async function AboutPage({
           {t.common.aboutPageTitle}
         </h1>
         {html ? (
-          <section className={richTextClass} dangerouslySetInnerHTML={{ __html: html }} />
+          <section className="prose prose-stone max-w-none [&_p]:mb-4 [&_p]:text-[var(--muted)] [&_strong]:text-[var(--dark)] [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:space-y-1 [&_ol]:pl-6 [&_li]:text-[var(--muted)] [&_h2]:mt-8 [&_h2]:mb-4 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-[var(--dark)] [&_h3]:mt-6 [&_h3]:mb-3 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:text-[var(--dark)] [&_a]:text-[var(--rust)] [&_a]:underline [&_a]:hover:text-[var(--dark)]" dangerouslySetInnerHTML={{ __html: html }} />
         ) : (
           <p className="text-[var(--muted)]">{t.common.contentNotAdded}</p>
         )}
