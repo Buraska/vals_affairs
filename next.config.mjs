@@ -14,6 +14,7 @@ const nextConfig = {
   },
   // cacheComponents: true,
   images: {
+    qualities: [5, 10, 25, 50, 75],
     remotePatterns: [
       // Local dev: media via Payload API
       {

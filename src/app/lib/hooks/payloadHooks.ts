@@ -1,4 +1,4 @@
-import { Affair, Category, Tag, TagGroup } from "@/payload-types";
+import { Affair, Category, Tag, TagGroup, Ticket } from "@/payload-types";
 import { revalidatePath, revalidateTag } from "next/cache";
 import type { CollectionAfterChangeHook, CollectionAfterDeleteHook, GlobalAfterChangeHook } from "payload";
 import { defaultLocale } from "@/app/lib/localization/i18n";
@@ -11,6 +11,7 @@ import {
   revalidateCategoryPaths,
   revalidateAllLocaleRoots,
 } from "./hookUtility";
+import { Console } from "console";
 
 // Globals
 export const afterChangeHookTeam: GlobalAfterChangeHook = async () => {
@@ -38,7 +39,7 @@ export const afterChangeHookAffair: CollectionAfterChangeHook<Affair> = async ({
   req,
 }) => {
   const locale = req.locale ?? defaultLocale;
-  revalidateAffairPaths(locale, doc.id, doc.category);
+  revalidateAffairPaths(doc.id, doc.category);
   const prevCat = previousDoc?.category;
   if (prevCat !== undefined && prevCat !== doc.category) {
     const prevCatId = getCategoryIdFromRef(prevCat);
@@ -47,8 +48,25 @@ export const afterChangeHookAffair: CollectionAfterChangeHook<Affair> = async ({
 };
 
 export const afterDeleteHookAffair: CollectionAfterDeleteHook<Affair> = async ({ doc, req }) => {
-  revalidateAffairPaths(req.locale ?? defaultLocale, doc.id, doc.category);
+  revalidateAffairPaths(doc.id, doc.category);
 };
+
+export const afterChangeHookTicket: CollectionAfterChangeHook<Ticket> = async ({doc, previousDoc, req}) => {
+  const affairDocs = (doc.affairs?.docs ?? []).concat(previousDoc?.affairs?.docs ?? []);
+
+  affairDocs.forEach((affairId) => {
+    
+    if (typeof(affairId) === 'string' && req.locale) revalidateAffairPaths(affairId, null)
+    else console.log("afterChangeHookTicket error.")
+  })
+};
+
+export const afterDeleteHookTicket: CollectionAfterDeleteHook<Ticket> = async ({doc, req}) => {
+  doc.affairs?.docs?.forEach((affairId) => {
+
+    if (typeof(affairId) === 'string' && req.locale) revalidateAffairPaths(affairId, null)
+    else console.log("afterChangeHookTicket error.")})
+}
 
 export const afterChangeHookCategory: CollectionAfterChangeHook<Category> = async ({
   doc,

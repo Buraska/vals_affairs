@@ -31,7 +31,6 @@ export const AffairCard = ({ affair, locale, className = "" }: { affair: Affair;
             alt={firstImage.alt ?? ""}
             fill
             style={{ objectFit: "cover" }}
-            sizes="40vw"
           />
         </div>
       ) : (

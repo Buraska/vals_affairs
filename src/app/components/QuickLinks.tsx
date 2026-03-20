@@ -59,7 +59,6 @@ export function QuickLinks({
                     alt={(item.image as MediaType).alt ?? ""}
                     fill
                     style={{ objectFit: 'cover' }}
-                    sizes="(max-width: 768px) 33vw, 50vw"
                   />
                 </div>
               ) : (

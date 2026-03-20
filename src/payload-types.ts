@@ -73,6 +73,7 @@ export interface Config {
     Affair: Affair;
     tag: Tag;
     tagGroup: TagGroup;
+    ticket: Ticket;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -89,6 +90,9 @@ export interface Config {
     tagGroup: {
       tagGroup: 'tag';
     };
+    ticket: {
+      affairs: 'Affair';
+    };
   };
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
@@ -97,6 +101,7 @@ export interface Config {
     Affair: AffairSelect<false> | AffairSelect<true>;
     tag: TagSelect<false> | TagSelect<true>;
     tagGroup: TagGroupSelect<false> | TagGroupSelect<true>;
+    ticket: TicketSelect<false> | TicketSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -284,8 +289,8 @@ export interface Affair {
   'start date': string;
   'end date'?: string | null;
   tickets: {
-    'ticket name'?: string | null;
-    'ticket price'?: number | null;
+    ticket: string | Ticket;
+    'ticket price': number;
     id?: string | null;
   }[];
   'additional info'?:
@@ -315,6 +320,23 @@ export interface Affair {
         id?: string | null;
       }[]
     | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Ticket name.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ticket".
+ */
+export interface Ticket {
+  id: string;
+  name: string;
+  affairs?: {
+    docs?: (string | Affair)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -396,6 +418,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'tagGroup';
         value: string | TagGroup;
+      } | null)
+    | ({
+        relationTo: 'ticket';
+        value: string | Ticket;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -558,7 +584,7 @@ export interface AffairSelect<T extends boolean = true> {
   tickets?:
     | T
     | {
-        'ticket name'?: T;
+        ticket?: T;
         'ticket price'?: T;
         id?: T;
       };
@@ -596,6 +622,16 @@ export interface TagSelect<T extends boolean = true> {
 export interface TagGroupSelect<T extends boolean = true> {
   name?: T;
   tagGroup?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ticket_select".
+ */
+export interface TicketSelect<T extends boolean = true> {
+  name?: T;
+  affairs?: T;
   updatedAt?: T;
   createdAt?: T;
 }

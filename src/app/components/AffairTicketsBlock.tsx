@@ -60,7 +60,7 @@ export function AffairTicketsBlock({
           </div>
           <div>
             <span className="font-medium text-amber-900">
-              {ticket['ticket name'] ?? t.affair.ticket}
+              {typeof ticket.ticket === 'string' ? t.affair.ticket : ticket.ticket.name}
             </span>
             {ticket['ticket price'] != null && (
               <span className="ml-2 text-amber-800">

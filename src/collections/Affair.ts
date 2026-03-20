@@ -75,14 +75,16 @@ export const Affair: CollectionConfig = {
       fields:
       [
         {
-        name: "ticket name",
-        type: "text",
-        localized: true,
-
+        name: "ticket",
+        type: "relationship",
+        relationTo: "ticket",
+        required: true,
         },
         {
           name: "ticket price",
           type: "number",
+        required: true,
+
         },
       ]
     },

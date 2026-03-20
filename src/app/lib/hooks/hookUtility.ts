@@ -68,11 +68,13 @@ export function getCategoryIdFromRef(ref: string | Category | null | undefined):
   return typeof ref === "string" ? ref : ref.id ?? null;
 }
 
-export function revalidateAffairPaths(locale: string, affairId: string, categoryRef: string | Category | null | undefined): void {
-  revalidatePath(`/${locale}/affair/${affairId}`);
-  revalidatePath(`/${locale}/affair/${affairId}/order`);
-  const catId = getCategoryIdFromRef(categoryRef);
-  if (catId) revalidatePath(`/${locale}/category/${catId}`);
+export function revalidateAffairPaths(affairId: string, categoryRef: string | Category | null | undefined): void {
+  locales.map((l) => {
+    revalidatePath(`/${l}/affair/${affairId}`);
+    revalidatePath(`/${l}/affair/${affairId}/order`);
+    const catId = getCategoryIdFromRef(categoryRef);
+    if (catId) revalidatePath(`/${l}/category/${catId}`);
+  })
 }
 
 export function revalidateCategoryPaths(locale: string, categoryId: string): void {

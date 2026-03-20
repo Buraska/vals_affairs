@@ -24,7 +24,7 @@ const ShimmerImage = ({...rest} : ImageProps) => (
     <Image
       placeholder={`data:image/svg+xml;base64,${toBase64(shimmer(700, 475))}`}
       {...rest}
-      sizes="(max-width: 768px) 33vw, 50vw"
+      quality={10}
     />
 );
 

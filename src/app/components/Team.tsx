@@ -69,7 +69,6 @@ export function Team({
                       alt={photo.alt ?? ""}
                       fill
                       style={{ objectFit: "cover" }}
-                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
                     />
                   </div>
                 )}

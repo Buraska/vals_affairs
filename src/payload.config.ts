@@ -11,6 +11,7 @@ import { Users } from './collections/System/Users'
 import { Affair } from './collections/Affair'
 import { Tag } from './collections/Tag'
 import { TagGroup } from './collections/TagGroup'
+import { Ticket } from './collections/Ticket'
 import { WebInfo } from './collections/Globals/WebInfo'
 import { Team } from './collections/Globals/Team'
 import { UserAgreements } from './collections/Globals/UserAgreements'
@@ -41,7 +42,7 @@ export default buildConfig({
     defaultLocale: defaultLocale,  
     fallback: false
   },
-  collections: [Users, Media, Category, Affair, Tag, TagGroup],
+  collections: [Users, Media, Category, Affair, Tag, TagGroup, Ticket],
   globals: [WebInfo, UserAgreements, AboutUs, Team],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

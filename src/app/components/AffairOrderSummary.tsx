@@ -32,9 +32,10 @@ export function AffairOrderSummary({
       const qty = paddedQuantities[i] ?? 0
       const price = ticket['ticket price'] ?? 0
       const subtotal = qty * price
+      const name = typeof ticket.ticket === 'string' ? '—' : ticket.ticket.name ?? '—'
       totalCents += subtotal
       return {
-        name: ticket['ticket name'] ?? '—',
+        name,
         qty,
         price,
         subtotal,

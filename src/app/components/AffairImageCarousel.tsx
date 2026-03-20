@@ -15,6 +15,7 @@ function LightboxSlide({ slide }: { slide: SlideImage }) {
       alt={slide.alt ?? ''}
       fill
       style={{ objectFit: 'contain' }}
+      quality={25}
     />
   )
 }
@@ -88,7 +89,7 @@ export function AffairImageCarousel({
                     alt={media.alt ?? `Photo ${i}`}
                     fill
                     style={{ objectFit: 'cover' }}
-                    sizes="96px"
+                    sizes="80px"
                   />
                 </span>
               </button>
@@ -116,7 +117,6 @@ export function AffairImageCarousel({
                 alt={coverResource.alt ?? title ?? ''}
                 fill
                 style={{ objectFit: 'cover' }}
-                sizes="(max-width: 768px) 50vw, 50vw"
               />
             </span>
           ) : (
