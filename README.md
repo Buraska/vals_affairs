@@ -1,5 +1,3 @@
-- Live: https://vals-affairs.vercel.app/ee
-
 # Vals
 
 This is a Next.js app connected to the headless CMS **Payload**. The site serves as a placeholder for upcoming events: clients can browse events and submit a form to participate.
