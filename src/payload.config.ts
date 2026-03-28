@@ -4,6 +4,9 @@ import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
+import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
+import nodemailer from 'nodemailer'
+
 
 import { Category } from './collections/Category'
 import { Media } from './collections/System/Media'
@@ -13,6 +16,7 @@ import { Tag } from './collections/Tag'
 import { TagGroup } from './collections/TagGroup'
 import { Ticket } from './collections/Ticket'
 import { WebInfo } from './collections/Globals/WebInfo'
+import { BankCredentials } from './collections/Globals/BankCrediants'
 import { Team } from './collections/Globals/Team'
 import { UserAgreements } from './collections/Globals/UserAgreements'
 import { AboutUs } from './collections/Globals/AboutUs'
@@ -43,7 +47,7 @@ export default buildConfig({
     fallback: false
   },
   collections: [Users, Media, Category, Affair, Tag, TagGroup, Ticket],
-  globals: [WebInfo, UserAgreements, AboutUs, Team],
+  globals: [WebInfo, BankCredentials, UserAgreements, AboutUs, Team],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
@@ -73,4 +77,18 @@ export default buildConfig({
         ]
       : []),
   ],
+  email: nodemailerAdapter({
+    defaultFromAddress: 'info@thenextchance.eu',
+    defaultFromName: 'Payload',
+
+    transport: nodemailer.createTransport({
+    host: process.env.MAIL_HOST,
+    port: 587,
+    auth: {
+    user: process.env.MAIL_USER,
+    pass: process.env.MAIL_PASSWORD
+    }
+    })
+
+  }),
 })

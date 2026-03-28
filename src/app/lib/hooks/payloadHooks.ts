@@ -27,6 +27,9 @@ export const afterChangeHookWebInfo: GlobalAfterChangeHook = async () => {
   revalidateAllLocaleRoots()
 }
 
+export const afterChangeHookBankCredentials: GlobalAfterChangeHook = async () => {
+}
+
 export const afterChangeHookTerms: GlobalAfterChangeHook = async ({req}) => {
   const locale = req.locale ?? defaultLocale;
   revalidatePath(`/${locale}/terms`)

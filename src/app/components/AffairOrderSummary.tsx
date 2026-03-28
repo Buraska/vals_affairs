@@ -4,49 +4,23 @@ import { useSearchParams } from 'next/navigation'
 import { useMemo } from 'react'
 import { useLanguage } from '@/app/contexts/LanguageContext'
 import { Affair } from '@/payload-types'
+import { TicketOrderDTO } from './AffairOrderForm'
 
-type Ticket = Affair['tickets'][0]
 
 export function AffairOrderSummary({
   affairTitle,
   affairPrice,
   dateRangeText,
   tickets,
+  totalPrice,
 }: {
   affairTitle: string | null | undefined
   affairPrice: number | null | undefined
   dateRangeText: string
-  tickets: Ticket[]
+  tickets: TicketOrderDTO[],
+  totalPrice: Number
 }) {
-  const searchParams = useSearchParams()
   const { t } = useLanguage()
-  const qParam = searchParams.get('q') ?? ''
-
-  const { lines, total, hasTicketSelection } = useMemo(() => {
-    const quantities = qParam
-      ? qParam.split(',').map((s) => Math.max(0, parseInt(s, 10) || 0))
-      : tickets.map(() => 0)
-    const paddedQuantities = tickets.map((_, i) => quantities[i] ?? 0)
-    let totalCents = 0
-    const lineList = tickets.map((ticket, i) => {
-      const qty = paddedQuantities[i] ?? 0
-      const price = ticket['ticket price'] ?? 0
-      const subtotal = qty * price
-      const name = typeof ticket.ticket === 'string' ? '—' : ticket.ticket.name ?? '—'
-      totalCents += subtotal
-      return {
-        name,
-        qty,
-        price,
-        subtotal,
-      }
-    })
-    return {
-      lines: lineList,
-      total: totalCents,
-      hasTicketSelection: lineList.some((l) => l.qty > 0),
-    }
-  }, [qParam, tickets])
 
   return (
     <>
@@ -55,29 +29,28 @@ export function AffairOrderSummary({
       {tickets.length > 0 ? (
         <>
           <ul className="space-y-2 border-t border-[var(--border)] pt-4">
-            {lines.map((line, i) => {
-              if (line.qty === 0) return null
+            {tickets.map((ticket, i) => {
+              if (ticket.qty === 0) return null
               return (
                 <li
                   key={i}
                   className="flex justify-between gap-4 text-sm text-[var(--muted)]"
                 >
                   <span>
-                    {line.name} × {line.qty}
+                    {ticket.name} × {ticket.qty}
                   </span>
                   <span className="font-medium text-[var(--dark)]">
-                    {line.subtotal} €
+                    {ticket.subtotal} €
                   </span>
                 </li>
               )
             })}
           </ul>
-          {hasTicketSelection && (
+          {tickets.length !== 0 ? (
             <p className="mt-3 border-t border-[var(--border)] pt-3 text-right font-semibold text-[var(--dark)]">
-              {t.affair.total}: {total} €
+              {t.affair.total}: {totalPrice.toFixed(2)} €
             </p>
-          )}
-          {!hasTicketSelection && (
+          ) : (
             <p className="mt-3 text-sm text-[var(--muted)]">
               {t.affair.noTicketsNote}
             </p>

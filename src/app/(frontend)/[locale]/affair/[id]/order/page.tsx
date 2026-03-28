@@ -41,10 +41,13 @@ export async function generateMetadata({
 
 export default async function OrderPage({
   params,
+  searchParams,
 }: {
-  params: Promise<{ locale: string; id: string }>
+  params: Promise<{ locale: Locale; id: string }>
+  searchParams: Promise<{ q?: string }>
 }) {
   const { locale, id } = await params
+  const { q } = await searchParams
   const lang = (isValidLocale(locale) ? locale : 'ee') as Lang
   const t = getTranslations(lang)
 
@@ -62,6 +65,7 @@ export default async function OrderPage({
 
   const tickets = affair.tickets ?? []
   const dateRangeText = formatDateRange(affair['start date'], affair['end date'], locale)
+  const ticketQuery = typeof q === 'string' ? q : ''
 
   return (
     <main className="min-h-screen">
@@ -82,24 +86,16 @@ export default async function OrderPage({
 
         <div className="flex flex-col gap-8 lg:flex-row lg:gap-12">
           <div className="min-w-0 flex-1">
-            <AffairOrderForm />
+          <Suspense fallback={<p className="text-[var(--muted)]">{t.affair.noTicketsNote}</p>}>
+            <AffairOrderForm
+              affair={affair}
+              locale={locale}
+              tickets={tickets}
+              dateRangeText={dateRangeText}
+            />
+            </Suspense>
+            
           </div>
-
-          <aside className="lg:w-[380px] lg:shrink-0">
-            <section className="sticky top-24 rounded border border-[var(--border)] bg-[var(--card-bg)] p-6">
-              <h2 className="mb-4 text-lg font-semibold text-[var(--dark)]" style={{ fontFamily: "var(--font-playfair)" }}>
-                {t.affair.yourOrder}
-              </h2>
-              <Suspense fallback={<p className="text-[var(--muted)]">{t.affair.noTicketsNote}</p>}>
-                <AffairOrderSummary
-                  affairTitle={affair.title}
-                  affairPrice={affair.price}
-                  dateRangeText={dateRangeText}
-                  tickets={tickets}
-                />
-              </Suspense>
-            </section>
-          </aside>
         </div>
       </div>
     </main>

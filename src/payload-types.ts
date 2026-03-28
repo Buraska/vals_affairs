@@ -118,12 +118,14 @@ export interface Config {
     | ('ee' | 'ru' | 'en' | 'fi')[];
   globals: {
     'web-info': WebInfo;
+    'bank-credentials': BankCredential;
     'user-agreements': UserAgreement;
     'about-us': AboutUs;
     team: Team;
   };
   globalsSelect: {
     'web-info': WebInfoSelect<false> | WebInfoSelect<true>;
+    'bank-credentials': BankCredentialsSelect<false> | BankCredentialsSelect<true>;
     'user-agreements': UserAgreementsSelect<false> | UserAgreementsSelect<true>;
     'about-us': AboutUsSelect<false> | AboutUsSelect<true>;
     team: TeamSelect<false> | TeamSelect<true>;
@@ -716,6 +718,90 @@ export interface WebInfo {
   createdAt?: string | null;
 }
 /**
+ * Account details and payment instructions for bank transfers.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "bank-credentials".
+ */
+export interface BankCredential {
+  id: string;
+  /**
+   * IBAN or domestic account number.
+   */
+  accountNumber?: string | null;
+  /**
+   * Bank name, recipient name, BIC/SWIFT, or other transfer details.
+   */
+  credentials?: string | null;
+  /**
+   * Payment instructions (rich text), per language.
+   */
+  instruction?: {
+    ee?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    ru?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    en?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    fi?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * Content for the Terms of Use page. Four sections, each localized (ee, ru, en, fi).
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -916,6 +1002,25 @@ export interface WebInfoSelect<T extends boolean = true> {
   email?: T;
   instagramUrl?: T;
   facebookUrl?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "bank-credentials_select".
+ */
+export interface BankCredentialsSelect<T extends boolean = true> {
+  accountNumber?: T;
+  credentials?: T;
+  instruction?:
+    | T
+    | {
+        ee?: T;
+        ru?: T;
+        en?: T;
+        fi?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

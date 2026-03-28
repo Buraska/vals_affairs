@@ -1,4 +1,7 @@
+import crypto from 'crypto'
+
 /** Locale for date formatting: 'et' for ee, 'en-US' for en, etc. */
+
 function getLocaleForDate(locale: string): string {
   if (locale === 'ee') return 'et-EE'
   if (locale === 'en') return 'en-GB'
@@ -20,3 +23,9 @@ export function formatDateRange(start: string, end: string | null | undefined, l
   return `${startF} – ${formatDate(end, locale)}`
 }
   
+export function generateOrderRef() {
+  // Example: "ORD-20260325-4F9A2C7D"
+  const date = new Date().toISOString().slice(0, 10).replace(/-/g, '')
+  const rand = crypto.randomBytes(4).toString('hex').toUpperCase()
+  return `ORD-${date}-${rand}`
+}
