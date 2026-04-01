@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import type { Category, Media as MediaType } from '@/payload-types'
+import type { Category, GalleryInfo, Media as MediaType } from '@/payload-types'
 import { locales } from '@/app/lib/localization/i18n'
 import { localeLabels } from '@payload-config'
 import ShimmerImage from '@/app/components/ShimmerImage'
@@ -7,17 +7,29 @@ import ShimmerImage from '@/app/components/ShimmerImage'
 export function QuickLinks({
   locale,
   categories,
+  galleryInfo,
   eventsTitle,
   noCategoriesTitle,
   noCategoriesTryOther,
 }: {
   locale: string
   categories: Category[]
+  galleryInfo?: GalleryInfo | null
   eventsTitle: string
   noCategoriesTitle: string
   noCategoriesTryOther: string
 }) {
   const otherLocales = locales.filter((l) => l !== locale)
+  const galleryTitle =
+    galleryInfo?.name?.[locale as keyof NonNullable<GalleryInfo['name']>] ??
+    galleryInfo?.name?.ee ??
+    galleryInfo?.name?.en ??
+    ''
+  const galleryDescription =
+    galleryInfo?.description?.[locale as keyof NonNullable<GalleryInfo['description']>] ??
+    galleryInfo?.description?.ee ??
+    galleryInfo?.description?.en ??
+    ''
 
   return (
     <section id="categories" className="py-12 sm:py-16 px-4 sm:px-8 lg:px-16">
@@ -46,6 +58,49 @@ export function QuickLinks({
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {galleryInfo && (
+            <a
+              href={`/${locale}/gallery`}
+              className="group relative flex flex-col overflow-hidden bg-[var(--card-bg)] border border-[var(--border)] transition hover:bg-[#FFFDF6]"
+            >
+              {galleryInfo.photo && typeof galleryInfo.photo !== 'string' ? (
+                <div className="relative aspect-[4/3] w-full overflow-hidden bg-[var(--border)]">
+                  <ShimmerImage
+                    src={(galleryInfo.photo as MediaType).url ?? ''}
+                    alt={(galleryInfo.photo as MediaType).alt ?? ''}
+                    fill
+                    style={{ objectFit: 'cover' }}
+                  />
+                </div>
+              ) : (
+                <div
+                  className="flex aspect-[4/3] w-full items-center justify-center bg-[var(--border)] text-2xl text-[var(--muted)]"
+                  role="img"
+                  aria-hidden
+                >
+                  →
+                </div>
+              )}
+
+              <div className="flex flex-col gap-1 p-5">
+                <h3
+                  className="font-semibold text-[var(--dark)] group-hover:text-[var(--rust)] transition-colors"
+                  style={{ fontFamily: 'var(--font-playfair)' }}
+                >
+                  {galleryTitle}
+                </h3>
+                <p className="text-sm text-[var(--muted)] font-light">
+                  {galleryDescription}
+                </p>
+              </div>
+
+              <span className="absolute bottom-5 right-5 w-8 h-8 rounded-full border border-[var(--border)] flex items-center justify-center group-hover:bg-[var(--dark)] group-hover:border-[var(--dark)] transition-colors">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="group-hover:[&_path]:stroke-[var(--cream)]">
+                  <path d="M2 7H12M8 3L12 7L8 11" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+            </a>
+          )}
           {categories.map((item) => (
             <a
               key={item.id}

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Playfair_Display, Onest } from "next/font/google";
 import "./globals.css";
 import { defaultLocale } from "@/app/lib/localization/i18n";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",

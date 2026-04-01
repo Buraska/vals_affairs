@@ -10,6 +10,7 @@ import {
   revalidateCategoryIds,
   revalidateCategoryPaths,
   revalidateAllLocaleRoots,
+  revalidateGalleryPaths,
 } from "./hookUtility";
 import { Console } from "console";
 
@@ -81,6 +82,14 @@ export const afterChangeHookCategory: CollectionAfterChangeHook<Category> = asyn
 export const afterDeleteHookCategory: CollectionAfterDeleteHook<Category> = async ({ doc, req }) => {
   revalidateCategoryPaths(req.locale ?? defaultLocale, doc.id);
 };
+
+export const afterChangeHookGallery: CollectionAfterChangeHook = async () => {
+  revalidateGalleryPaths()
+}
+
+export const afterDeleteHookGallery: CollectionAfterDeleteHook = async () => {
+  revalidateGalleryPaths()
+}
 
 
 export const afterChangeHookTag: CollectionAfterChangeHook<Tag> = async ({

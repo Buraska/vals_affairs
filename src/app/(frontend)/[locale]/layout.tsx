@@ -8,6 +8,7 @@ import type { Lang } from '@/app/lib/localization/translations'
 import { isValidLocale, locales } from '@/app/lib/localization/i18n'
 import { getCategoriesForLocale } from '@/app/lib/categoriesForLocale'
 import { Footer } from '@/app/components/Footer'
+import type { GalleryInfo } from '@/payload-types'
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }))
@@ -23,11 +24,14 @@ export default async function LocaleLayout({
   const { locale } = await params
   if (!isValidLocale(locale)) notFound()
   const lang = locale as Lang
-  const [categories, webInfo] = await Promise.all([
+  const [categories, webInfo, galleryInfo] = await Promise.all([
     getCategoriesForLocale(lang),
     getPayload({ config: configPromise }).then((payload) =>
       payload.findGlobal({ slug: 'web-info', depth: 0, locale: lang })
     ),
+    getPayload({ config: configPromise }).then((payload) =>
+      payload.findGlobal({ slug: 'gallery-info', depth: 0, locale: lang, fallbackLocale: 'ee' })
+    ) as Promise<GalleryInfo>,
   ])
 
   const headerWebInfo =
@@ -48,7 +52,7 @@ export default async function LocaleLayout({
       initialLocale={lang}
       initialSiteDescription={headerWebInfo?.siteDescription ?? null}
     >
-      <Header categories={categories} webInfo={headerWebInfo} />
+      <Header categories={categories} webInfo={headerWebInfo} galleryInfo={galleryInfo} />
       {children}
       <Footer />
       {/* <NavigationOverlay /> */}

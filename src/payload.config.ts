@@ -15,11 +15,13 @@ import { Affair } from './collections/Affair'
 import { Tag } from './collections/Tag'
 import { TagGroup } from './collections/TagGroup'
 import { Ticket } from './collections/Ticket'
+import { Gallery } from './collections/Gallery'
 import { WebInfo } from './collections/Globals/WebInfo'
 import { BankCredentials } from './collections/Globals/BankCrediants'
 import { Team } from './collections/Globals/Team'
 import { UserAgreements } from './collections/Globals/UserAgreements'
 import { AboutUs } from './collections/Globals/AboutUs'
+import { GalleryInfo } from './collections/Globals/GalleryInfo'
 import { defaultLocale, locales } from './app/lib/localization/i18n'
 import { s3Storage } from '@payloadcms/storage-s3'
 
@@ -46,8 +48,8 @@ export default buildConfig({
     defaultLocale: defaultLocale,  
     fallback: false
   },
-  collections: [Users, Media, Category, Affair, Tag, TagGroup, Ticket],
-  globals: [WebInfo, BankCredentials, UserAgreements, AboutUs, Team],
+  collections: [Users, Media, Category, Affair, Tag, TagGroup, Ticket, Gallery],
+  globals: [WebInfo, BankCredentials, UserAgreements, AboutUs, Team, GalleryInfo],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

@@ -74,6 +74,7 @@ export interface Config {
     tag: Tag;
     tagGroup: TagGroup;
     ticket: Ticket;
+    gallery: Gallery;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -102,6 +103,7 @@ export interface Config {
     tag: TagSelect<false> | TagSelect<true>;
     tagGroup: TagGroupSelect<false> | TagGroupSelect<true>;
     ticket: TicketSelect<false> | TicketSelect<true>;
+    gallery: GallerySelect<false> | GallerySelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -122,6 +124,7 @@ export interface Config {
     'user-agreements': UserAgreement;
     'about-us': AboutUs;
     team: Team;
+    'gallery-info': GalleryInfo;
   };
   globalsSelect: {
     'web-info': WebInfoSelect<false> | WebInfoSelect<true>;
@@ -129,6 +132,7 @@ export interface Config {
     'user-agreements': UserAgreementsSelect<false> | UserAgreementsSelect<true>;
     'about-us': AboutUsSelect<false> | AboutUsSelect<true>;
     team: TeamSelect<false> | TeamSelect<true>;
+    'gallery-info': GalleryInfoSelect<false> | GalleryInfoSelect<true>;
   };
   locale: 'ee' | 'ru' | 'en' | 'fi';
   user: User;
@@ -375,6 +379,21 @@ export interface TagGroup {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "gallery".
+ */
+export interface Gallery {
+  id: string;
+  title: string;
+  driveLink: string;
+  photos: {
+    photo: string | Media;
+    id?: string | null;
+  }[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -424,6 +443,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'ticket';
         value: string | Ticket;
+      } | null)
+    | ({
+        relationTo: 'gallery';
+        value: string | Gallery;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -634,6 +657,22 @@ export interface TagGroupSelect<T extends boolean = true> {
 export interface TicketSelect<T extends boolean = true> {
   name?: T;
   affairs?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "gallery_select".
+ */
+export interface GallerySelect<T extends boolean = true> {
+  title?: T;
+  driveLink?: T;
+  photos?:
+    | T
+    | {
+        photo?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -985,6 +1024,30 @@ export interface Team {
   createdAt?: string | null;
 }
 /**
+ * Title, description and hero photo for the Gallery page.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "gallery-info".
+ */
+export interface GalleryInfo {
+  id: string;
+  name?: {
+    ee?: string | null;
+    ru?: string | null;
+    en?: string | null;
+    fi?: string | null;
+  };
+  description?: {
+    ee?: string | null;
+    ru?: string | null;
+    en?: string | null;
+    fi?: string | null;
+  };
+  photo: string | Media;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "web-info_select".
  */
@@ -1073,6 +1136,32 @@ export interface TeamSelect<T extends boolean = true> {
         email?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "gallery-info_select".
+ */
+export interface GalleryInfoSelect<T extends boolean = true> {
+  name?:
+    | T
+    | {
+        ee?: T;
+        ru?: T;
+        en?: T;
+        fi?: T;
+      };
+  description?:
+    | T
+    | {
+        ee?: T;
+        ru?: T;
+        en?: T;
+        fi?: T;
+      };
+  photo?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

@@ -10,6 +10,7 @@ import {
 import { lexicalToHtml } from '@/utilities/lexicalToHtml'
 import { generateOrderRef } from '@/utilities/utility'
 import { TicketOrderDTO } from '@/app/components/AffairOrderForm'
+import { MAIL_ENDPOINT_SUBSCRIBE, MAIL_ENDPOINT_SUBSCRIBE_ARGS } from '../endpoints'
 
 const LIMITS = {
   name: 200,
@@ -27,6 +28,34 @@ function isValidEmail(email: string): boolean {
 
 function checkTypeAndSlice(obj: any, limit: number): string {
   return typeof obj === 'string' ? obj.trim().slice(0, limit) : ''
+}
+
+async function subscribeUser(email: string, name: string): Promise<Response>{
+  const errors: string[] = []
+  if (!isValidEmail(email)) {
+    errors.push("Invalid email")
+  }
+  if (!name){
+    errors.push("Invalid name")
+  }
+  if (errors.length !== 0){
+    return NextResponse.json({ error: errors.join(', ') }, { status: 400 })
+  }
+  const body = {
+    ...MAIL_ENDPOINT_SUBSCRIBE_ARGS,
+    email,
+    name,
+  }
+
+  const res = await fetch(MAIL_ENDPOINT_SUBSCRIBE, {
+    method: 'POST',
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(body),
+  })
+
+  if (!res.ok) console.log(`Cannot subscribe user: ERROR ${res.status} | ${await res.text()}`)
+
+  return res;
 }
 
 export type affairOrderPostJson = {
@@ -72,6 +101,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Invalid email' }, { status: 400 })
   }
 
+  subscribeUser(email, name);
 
   const payload = await getPayload({ config: configPromise })
   const bank = await payload.findGlobal({
@@ -81,6 +111,7 @@ export async function POST(req: Request) {
     overrideAccess: true,
   })
 
+  
   const instructionLexical =
     bank.instruction?.[b.locale] ?? bank.instruction?.ee ?? bank.instruction?.en ?? null
 

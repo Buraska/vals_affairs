@@ -89,6 +89,12 @@ export function revalidateAllLocaleRoots(): void {
   }
 }
 
+export function revalidateGalleryPaths(): void {
+  for (const locale of locales) {
+    revalidatePath(`/${locale}/gallery`)
+  }
+}
+
 export async function collectCategoryIdsFromAffairDocs(
   payload: import("payload").Payload,
   affairDocs: (string | Affair)[] | undefined

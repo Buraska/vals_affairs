@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useLanguage } from "@/app/contexts/LanguageContext";
 import type { Lang } from "@/app/lib/localization/translations";
 import { locales } from "@/app/lib/localization/i18n";
-import type { Category } from "@/payload-types";
+import type { Category, GalleryInfo } from "@/payload-types";
 import { NavItems } from "./NavItems";
 
 const navItemsHead = [
@@ -64,21 +64,27 @@ export type WebInfoData = {
 export function Header({
   categories = [],
   webInfo,
+  galleryInfo,
 }: {
   categories?: Category[]
   webInfo?: WebInfoData | null
+  galleryInfo?: GalleryInfo | null
 }) {
   const { lang, t } = useLanguage();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const galleryTitle =
+    galleryInfo?.name?.[lang] ?? galleryInfo?.name?.ee ?? galleryInfo?.name?.en ?? null
 
   const siteName = webInfo?.siteName ?? t.meta.siteName;
 
   return (
     <header
-      className="sticky top-0 z-50 h-[72px] flex items-center justify-between px-4 sm:px-8 lg:px-16 border-b border-[var(--border)]"
+      className="sticky top-0 z-50  px-4 sm:px-8 lg:px-16 lg:py-3"
       style={{ background: "rgba(245, 240, 232, 0.92)", backdropFilter: "blur(12px)" }}
     >
-      <div className="flex items-center gap-4 min-w-0">
+      <div className="flex h-[72px] items-center justify-between gap-4 min-w-0 lg:h-auto">
+        <div className="flex items-center gap-4 min-w-0">
         <button
           type="button"
           onClick={() => setMobileOpen((o) => !o)}
@@ -112,11 +118,7 @@ export function Header({
         </div>
       </div>
 
-      <nav className="hidden lg:flex items-center gap-8">
-        <NavItems items={navItemsHead.map(({ key, href }) => ({ name: t.nav[key], href: `/${lang}${href}` }))} />
-        <NavItems items={categories.map(({ id, title }) => ({ name: title, href: `/${lang}/category/${id}` }))} />
-        <NavItems items={navItemsTail.map(({ key, href }) => ({ name: t.nav[key], href: `/${lang}${href}` }))} />
-        <div className="flex items-center gap-3 pl-2">
+        <div className="hidden lg:flex items-center gap-3 pl-2">
           {webInfo?.phone ? (
             <a href={`tel:${webInfo.phone.replace(/\s/g, "")}`} className="text-sm text-[var(--muted)] hover:text-[var(--dark)] transition">
               {webInfo.phone}
@@ -140,6 +142,13 @@ export function Header({
             ))}
           </div>
         </div>
+      </div>
+
+      <nav className="hidden lg:flex items-center justify-center gap-5 border-[var(--border)] pt-3">
+        <NavItems items={navItemsHead.map(({ key, href }) => ({ name: t.nav[key], href: `/${lang}${href}` }))} />
+        {galleryTitle ? <NavItems items={[{ name: galleryTitle, href: `/${lang}/gallery` }]} /> : null}
+        <NavItems items={categories.map(({ id, title }) => ({ name: title, href: `/${lang}/category/${id}` }))} />
+        <NavItems items={navItemsTail.map(({ key, href }) => ({ name: t.nav[key], href: `/${lang}${href}` }))} />
       </nav>
 
 
@@ -153,6 +162,15 @@ export function Header({
                 {t.nav[key]}
               </Link>
             ))}
+            {galleryTitle ? (
+              <Link
+                href={`/${lang}/gallery`}
+                onClick={() => setMobileOpen(false)}
+                className="py-2.5 text-sm text-[var(--muted)] hover:text-[var(--dark)]"
+              >
+                {galleryTitle}
+              </Link>
+            ) : null}
             {categories.map((cat) => (
               <Link key={cat.id} href={`/${lang}/category/${cat.id}`} onClick={() => setMobileOpen(false)} className="py-2.5 text-sm text-[var(--muted)] hover:text-[var(--dark)]">
                 {cat.title}

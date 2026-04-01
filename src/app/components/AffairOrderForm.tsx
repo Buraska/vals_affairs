@@ -8,7 +8,7 @@ import { useLanguage } from '@/app/contexts/LanguageContext'
 import { affairOrderPostJson } from '../api/affair-order/route'
 import { AffairOrderSummary } from './AffairOrderSummary'
 import { Affair} from '@/payload-types'
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Locale } from '../lib/localization/i18n'
 
 type Ticket = Affair['tickets'][0]
@@ -33,8 +33,14 @@ export function AffairOrderForm({
   dateRangeText: string
 }) {
   const { t, lang } = useLanguage()
+  const router = useRouter()
   const [phone, setPhone] = useState<string | undefined>()
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
+  const [successModalOpen, setSuccessModalOpen] = useState(false)
+
+  function goHome() {
+    router.push(`/${lang}`)
+  }
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -78,6 +84,7 @@ export function AffairOrderForm({
       }
 
       setStatus('success')
+      setSuccessModalOpen(true)
       form.reset()
       setPhone(undefined)
     } catch {
@@ -213,11 +220,6 @@ export function AffairOrderForm({
           </Link>
         </div>
 
-        {status === 'success' && (
-          <p className="text-sm font-medium text-[var(--dark)]" role="status">
-            {t.order.submitSuccess}
-          </p>
-        )}
         {status === 'error' && (
           <p className="text-sm font-medium text-[var(--rust)]" role="alert">
             {t.order.submitError}
@@ -237,6 +239,49 @@ export function AffairOrderForm({
         <p className="text-sm text-[var(--muted)]">{t.order.rules}</p>
           </form>
         </section>
+
+        {successModalOpen  && (
+          <div
+            className="fixed w inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Order submitted"
+            onClick={() => {
+              setSuccessModalOpen(false)
+              goHome()
+            }}
+          >
+            <div
+              className="w-full max-w-xl rounded-2xl border border-emerald-200/60 bg-[var(--card-bg)] p-8 text-[var(--dark)] shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex min-w-0 items-start gap-4">
+                  <div className="min-w-0">
+                    <p className="text-base font-semibold text-emerald-800" role="status">
+                      {t.order.submitSuccess}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-7">
+                <div className="flex justify-center">
+                <button
+                  type="button"
+                  className="rounded-lg bg-emerald-600 px-8 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2"
+                  onClick={() => {
+                    setSuccessModalOpen(false)
+                    goHome()
+                  }}
+                >
+                  {t.order.goHome}
+                </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       <aside className="lg:w-[380px] lg:shrink-0">

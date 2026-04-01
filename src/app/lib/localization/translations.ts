@@ -15,7 +15,7 @@ const heroSchema = { statsTitle: '', schoolTours: '', familyTrips: '', celebrati
 const valueSchema = { title: '', variety: '', varietyDesc: '', newRoutes: '', savings: '', savingsDesc: '', quality: '', qualityDesc: '' }
 const contactSchema = { title: '', phone: '', addressLabel: '', nonProfit: '', forBusiness: '', team: '', hours: '', hoursValue: '', weekend: '' }
 const footerSchema = { more: '', schoolProjects: '', giftCards: '', charity: '', merch: '', documents: '', contract: '', privacy: '', reportError: '', aboutUs: '', philosophy: '', contacts: '', reviews: '', partners: '', press: '', account: '', tours: '', subscribe: '', subscribeSuccess: '', subscribeCta: '', websiteDevelopment: '' }
-const commonSchema = { back: '', backToEvent: '', notFoundEvent: '', notFoundOrder: '', additional: '', photoCount: '', openGallery: '', menu: '', termsPageTitle: '', aboutPageTitle: '', contentNotAdded: '' }
+const commonSchema = { back: '', backToEvent: '', notFoundEvent: '', notFoundOrder: '', additional: '', photoCount: '', openGallery: '', menu: '', termsPageTitle: '', aboutPageTitle: '', galleryPageTitle: '', showMore: '', contentNotAdded: '' }
 const affairSchema = { scheduleTitle: '', takePlace: '', ticket: '', yourOrder: '', total: '', noTicketsNote: '', participation: '', notAvailable: '' }
 const orderSchema = {
   pageTitle: '',
@@ -34,6 +34,7 @@ const orderSchema = {
   submitSending: '',
   submitSuccess: '',
   submitError: '',
+  goHome: '',
 }
 /** Order confirmation email (affair-order); {site} = site name placeholder */
 const orderEmailSchema = {
@@ -161,6 +162,8 @@ export const translations: Record<Lang, TranslationsSchema> = {
       menu: "Menüü",
       termsPageTitle: "Kasutustingimused",
       aboutPageTitle: "Meist",
+      galleryPageTitle: "Galerii",
+      showMore: "Vaata rohkem…",
       contentNotAdded: "Sisu pole veel lisatud.",
     },
     affair: {
@@ -188,8 +191,10 @@ export const translations: Record<Lang, TranslationsSchema> = {
       placeholderAge: "ürituse ajal",
       placeholderNotes: "Näiteks teiste osalejate andmed (perekonnanimi, eesnimi, vanus) või soovid",
       submitSending: "Saadan…",
-      submitSuccess: "Tellimus on saadetud. Võtame peagi ühendust.",
+      submitSuccess:
+        "Peaaegu valmis! Oleme saatnud teile e-kirja maksejuhistega. Tehke makse ja teie koht registreeritakse.",
       submitError: "Saatmine ebaõnnestus. Proovige uuesti või helistage.",
+      goHome: "Avalehele",
     },
     orderEmail: {
       hello: "Tere",
@@ -326,6 +331,8 @@ export const translations: Record<Lang, TranslationsSchema> = {
       menu: "Меню",
       termsPageTitle: "Пользовательские соглашения",
       aboutPageTitle: "О нас",
+      galleryPageTitle: "Галерея",
+      showMore: "Показать больше…",
       contentNotAdded: "Контент пока не добавлен.",
     },
     affair: {
@@ -353,8 +360,10 @@ export const translations: Record<Lang, TranslationsSchema> = {
       placeholderAge: "на момент участия в мероприятии",
       placeholderNotes: "Например, данные других участников (фамилия, имя и возраст) или пожелания к заказу",
       submitSending: "Отправка…",
-      submitSuccess: "Заявка отправлена. Мы скоро свяжемся с вами.",
+      submitSuccess:
+        "Почти всё! Письмо с инструкцией по оплате отправлено вам на почту. Совершите оплату, и ваше место будет зарегистрировано.",
       submitError: "Не удалось отправить. Попробуйте снова или позвоните нам.",
+      goHome: "На главную страницу",
     },
     orderEmail: {
       hello: "Здравствуйте",
@@ -489,6 +498,8 @@ export const translations: Record<Lang, TranslationsSchema> = {
       menu: "Menu",
       termsPageTitle: "Terms of use",
       aboutPageTitle: "About us",
+      galleryPageTitle: "Gallery",
+      showMore: "Show more…",
       contentNotAdded: "Content has not been added yet.",
     },
     affair: {
@@ -516,8 +527,10 @@ export const translations: Record<Lang, TranslationsSchema> = {
       placeholderAge: "at the time of the event",
       placeholderNotes: "E.g. other participants' details (name, age) or special requests",
       submitSending: "Sending…",
-      submitSuccess: "Your request has been sent. We will contact you shortly.",
+      submitSuccess:
+        "Almost done! We’ve emailed you the payment instructions. Complete the payment and your spot will be reserved.",
       submitError: "Could not send. Please try again or call us.",
+      goHome: "Go to homepage",
     },
     orderEmail: {
       hello: "Hello",
@@ -652,6 +665,8 @@ export const translations: Record<Lang, TranslationsSchema> = {
       menu: "Valikko",
       termsPageTitle: "Käyttöehdot",
       aboutPageTitle: "Meistä",
+      galleryPageTitle: "Galleria",
+      showMore: "Näytä lisää…",
       contentNotAdded: "Sisältöä ei ole vielä lisätty.",
     },
     affair: {
@@ -679,8 +694,10 @@ export const translations: Record<Lang, TranslationsSchema> = {
       placeholderAge: "tapahtuman aikana",
       placeholderNotes: "Esim. muiden osallistujien tiedot tai toiveet",
       submitSending: "Lähetetään…",
-      submitSuccess: "Tilaus on lähetetty. Otamme yhteyttä pian.",
+      submitSuccess:
+        "Melkein valmista! Olemme lähettäneet sinulle sähköpostitse maksutusohjeet. Suorita maksu, niin paikkasi rekisteröidään.",
       submitError: "Lähetys epäonnistui. Yritä uudelleen tai soita.",
+      goHome: "Etusivulle",
     },
     orderEmail: {
       hello: "Hei",

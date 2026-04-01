@@ -8,6 +8,7 @@ import { isValidLocale } from "@/app/lib/localization/i18n";
 import { locales, type Locale } from "@/app/lib/localization/i18n";
 import { getPayload } from "payload";
 import configPromise from "@payload-config";
+import type { GalleryInfo } from "@/payload-types";
 
 
 export function generateStaticParams() {
@@ -22,11 +23,14 @@ export default async function HomePage({
   const { locale } = await params;
   const lang = (isValidLocale(locale) ? locale : "ee") as Locale;
   const t = getTranslations(lang as Lang);
-  const [categories, teamGlobal] = await Promise.all([
+  const [categories, teamGlobal, galleryInfo] = await Promise.all([
     getCategoriesForLocale(lang),
     getPayload({ config: configPromise }).then((payload) =>
       payload.findGlobal({ slug: "team", depth: 1 })
     ),
+    getPayload({ config: configPromise }).then((payload) =>
+      payload.findGlobal({ slug: "gallery-info", depth: 1, locale: lang, fallbackLocale: "ee" })
+    ) as Promise<GalleryInfo>,
   ]);
   const teamMembers = teamGlobal?.members ?? [];
 
@@ -36,6 +40,7 @@ export default async function HomePage({
       <QuickLinks
         locale={locale}
         categories={categories}
+        galleryInfo={galleryInfo}
         eventsTitle={t.category.eventsTitle}
         noCategoriesTitle={t.category.noCategoriesTitle}
         noCategoriesTryOther={t.category.noCategoriesTryOther}
