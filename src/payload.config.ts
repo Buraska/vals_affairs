@@ -16,6 +16,7 @@ import { Tag } from './collections/Tag'
 import { TagGroup } from './collections/TagGroup'
 import { Ticket } from './collections/Ticket'
 import { Gallery } from './collections/Gallery'
+import { Order } from './collections/Order'
 import { WebInfo } from './collections/Globals/WebInfo'
 import { BankCredentials } from './collections/Globals/BankCrediants'
 import { Team } from './collections/Globals/Team'
@@ -24,6 +25,7 @@ import { AboutUs } from './collections/Globals/AboutUs'
 import { GalleryInfo } from './collections/Globals/GalleryInfo'
 import { defaultLocale, locales } from './app/lib/localization/i18n'
 import { s3Storage } from '@payloadcms/storage-s3'
+import { mcpPlugin } from '@payloadcms/plugin-mcp'
 
 /** Display names for locales (used in language switcher, empty-categories block, etc.) */
 export const localeLabels: Record<string, string> = {
@@ -48,7 +50,7 @@ export default buildConfig({
     defaultLocale: defaultLocale,  
     fallback: false
   },
-  collections: [Users, Media, Category, Affair, Tag, TagGroup, Ticket, Gallery],
+  collections: [Users, Media, Category, Affair, Tag, TagGroup, Ticket, Gallery, Order],
   globals: [WebInfo, BankCredentials, UserAgreements, AboutUs, Team, GalleryInfo],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
@@ -60,6 +62,26 @@ export default buildConfig({
   }),
   sharp,
   plugins: [
+    mcpPlugin({
+      collections: {
+        users: { enabled: true },
+        media: { enabled: true },
+        category: { enabled: true },
+        Affair: { enabled: true },
+        tag: { enabled: true },
+        tagGroup: { enabled: true },
+        ticket: { enabled: true },
+        gallery: { enabled: true },
+        order: { enabled: true },
+      },
+      globals: {
+        'web-info': { enabled: true },
+        'user-agreements': { enabled: true },
+        'about-us': { enabled: true },
+        team: { enabled: true },
+        'gallery-info': { enabled: true },
+      },
+    }),
     // R2: set R2_BUCKET, R2_ENDPOINT (https://<ACCOUNT_ID>.r2.cloudflarestorage.com), R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY
     ...(process.env.R2_BUCKET
       ? [

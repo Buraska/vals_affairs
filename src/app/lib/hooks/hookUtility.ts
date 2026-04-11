@@ -86,13 +86,18 @@ export function revalidateCategoryPaths(locale: string, categoryId: string): voi
 export function revalidateAllLocaleRoots(): void {
   for (const locale of locales) {
     revalidatePath(`/${locale}`);
+    revalidatePath(`/${locale}`, "layout");
+  }
+}
+
+export function revalidateAllLocalesWithPaths(path:string): void {
+  for (const locale of locales) {
+    revalidatePath(`/${locale}/${path}`)
   }
 }
 
 export function revalidateGalleryPaths(): void {
-  for (const locale of locales) {
-    revalidatePath(`/${locale}/gallery`)
-  }
+  revalidateAllLocalesWithPaths("gallery")
 }
 
 export async function collectCategoryIdsFromAffairDocs(

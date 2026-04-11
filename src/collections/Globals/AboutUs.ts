@@ -12,8 +12,33 @@ export const AboutUs: GlobalConfig = {
   access: {
     read: () => true,
   },
-  fields: [    
+  fields: [
     {
+      type: 'group',
+      name: 'name',
+      fields: locales.map((locale) => ({
+        name: locale,
+        label: locale,
+        type: 'textarea',
+      })),
+    },
+    {
+      type: 'group',
+      name: 'description',
+      fields: locales.map((locale) => ({
+        name: locale,
+        label: locale,
+        type: 'textarea',
+      })),
+    },
+    {
+      name: 'photo',
+      type: 'upload',
+      relationTo: 'media',
+      required: true,
+    },
+    {
+      
       type: 'group',
       label: 'Content',
       fields: locales.map((locale) => ({

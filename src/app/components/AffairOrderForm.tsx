@@ -5,7 +5,7 @@ import 'react-phone-number-input/style.css'
 import { useMemo, useState, type FormEvent } from 'react'
 import Link from 'next/link'
 import { useLanguage } from '@/app/contexts/LanguageContext'
-import { affairOrderPostJson } from '../api/affair-order/route'
+import type { affairOrderPostJson, TicketOrderDTO } from '@/app/lib/affairOrderTypes'
 import { AffairOrderSummary } from './AffairOrderSummary'
 import { Affair} from '@/payload-types'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -13,13 +13,7 @@ import { Locale } from '../lib/localization/i18n'
 
 type Ticket = Affair['tickets'][0]
 
-export type TicketOrderDTO = {
-  name: string,
-  qty:number,
-  price: number,
-  subtotal: number,
-}
-
+export type { TicketOrderDTO } from '@/app/lib/affairOrderTypes'
 
 export function AffairOrderForm({
   affair,
@@ -59,6 +53,7 @@ export function AffairOrderForm({
     }
     
     const postBody: affairOrderPostJson = {
+      affairId: String(affair.id),
       customerName,
       email,
       phone: phone.trim(),

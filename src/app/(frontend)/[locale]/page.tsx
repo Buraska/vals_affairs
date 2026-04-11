@@ -8,7 +8,7 @@ import { isValidLocale } from "@/app/lib/localization/i18n";
 import { locales, type Locale } from "@/app/lib/localization/i18n";
 import { getPayload } from "payload";
 import configPromise from "@payload-config";
-import type { GalleryInfo } from "@/payload-types";
+import type { AboutUs, GalleryInfo } from "@/payload-types";
 
 
 export function generateStaticParams() {
@@ -23,7 +23,7 @@ export default async function HomePage({
   const { locale } = await params;
   const lang = (isValidLocale(locale) ? locale : "ee") as Locale;
   const t = getTranslations(lang as Lang);
-  const [categories, teamGlobal, galleryInfo] = await Promise.all([
+  const [categories, teamGlobal, galleryInfo, aboutUs] = await Promise.all([
     getCategoriesForLocale(lang),
     getPayload({ config: configPromise }).then((payload) =>
       payload.findGlobal({ slug: "team", depth: 1 })
@@ -31,6 +31,9 @@ export default async function HomePage({
     getPayload({ config: configPromise }).then((payload) =>
       payload.findGlobal({ slug: "gallery-info", depth: 1, locale: lang, fallbackLocale: "ee" })
     ) as Promise<GalleryInfo>,
+    getPayload({ config: configPromise }).then((payload) =>
+      payload.findGlobal({ slug: "about-us", depth: 1, locale: lang, fallbackLocale: "ee" })
+    ) as Promise<AboutUs>,
   ]);
   const teamMembers = teamGlobal?.members ?? [];
 
@@ -41,6 +44,7 @@ export default async function HomePage({
         locale={locale}
         categories={categories}
         galleryInfo={galleryInfo}
+        aboutUs={aboutUs}
         eventsTitle={t.category.eventsTitle}
         noCategoriesTitle={t.category.noCategoriesTitle}
         noCategoriesTryOther={t.category.noCategoriesTryOther}

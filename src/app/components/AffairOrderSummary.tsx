@@ -4,7 +4,7 @@ import { useSearchParams } from 'next/navigation'
 import { useMemo } from 'react'
 import { useLanguage } from '@/app/contexts/LanguageContext'
 import { Affair } from '@/payload-types'
-import { TicketOrderDTO } from './AffairOrderForm'
+import type { TicketOrderDTO } from '@/app/lib/affairOrderTypes'
 
 
 export function AffairOrderSummary({

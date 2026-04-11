@@ -1,15 +1,14 @@
 import { NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
-import { isValidLocale, type Locale } from '@/app/lib/localization/i18n'
 import {
   AffairOrderEmailParams,
   buildAffairOrderEmailHtml,
   buildAffairOrderEmailText,
-} from '@/utilities/affairOrderEmailTemplate'
+} from '@/app/lib/MailTemlates/affairOrderEmailTemplate'
 import { lexicalToHtml } from '@/utilities/lexicalToHtml'
 import { generateOrderRef } from '@/utilities/utility'
-import { TicketOrderDTO } from '@/app/components/AffairOrderForm'
+import type { affairOrderPostJson, TicketOrderDTO } from '@/app/lib/affairOrderTypes'
 import { MAIL_ENDPOINT_SUBSCRIBE, MAIL_ENDPOINT_SUBSCRIBE_ARGS } from '../endpoints'
 
 const LIMITS = {
@@ -58,17 +57,7 @@ async function subscribeUser(email: string, name: string): Promise<Response>{
   return res;
 }
 
-export type affairOrderPostJson = {
-  customerName: string,
-  affairTitle: string,
-  email: string,
-  phone: string,
-  age: string,
-  notes: string,
-  agree: boolean,
-  locale: Locale,
-  ticketDTOs: TicketOrderDTO[],
-}
+export type { affairOrderPostJson, TicketOrderDTO } from '@/app/lib/affairOrderTypes'
 
 export async function POST(req: Request) {
   let body: unknown
@@ -84,6 +73,7 @@ export async function POST(req: Request) {
 
   const b = body as affairOrderPostJson
 
+  const affairId = checkTypeAndSlice(b.affairId, 200)
   const name = checkTypeAndSlice(b.customerName, LIMITS.name)
   const email = checkTypeAndSlice(b.email, LIMITS.email)
   const phone = checkTypeAndSlice(b.phone, LIMITS.phone)
@@ -93,7 +83,7 @@ export async function POST(req: Request) {
   const affairTitle = checkTypeAndSlice(b.affairTitle, LIMITS.affairTitle)
   const ticketDTOs: TicketOrderDTO[] = b.ticketDTOs
 
-  if (!name || !email || !phone || !agree || !affairTitle) {
+  if (!affairId || !name || !email || !phone || !agree || !affairTitle) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
   }
 
@@ -101,9 +91,22 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Invalid email' }, { status: 400 })
   }
 
-  subscribeUser(email, name);
+  void subscribeUser(email, name)
 
   const payload = await getPayload({ config: configPromise })
+
+  const affair = await payload
+    .findByID({
+      collection: 'Affair',
+      id: affairId,
+      depth: 0,
+      overrideAccess: true,
+    })
+    .catch(() => null)
+  if (!affair) {
+    return NextResponse.json({ error: 'Invalid affairId' }, { status: 400 })
+  }
+
   const bank = await payload.findGlobal({
     slug: 'bank-credentials',
     locale: b.locale,
@@ -111,13 +114,50 @@ export async function POST(req: Request) {
     overrideAccess: true,
   })
 
-  
+  const webInfo = await payload.findGlobal({
+    slug: 'web-info',
+    locale: b.locale,
+    depth: 0,
+    overrideAccess: true,
+  })
+
   const instructionLexical =
     bank.instruction?.[b.locale] ?? bank.instruction?.ee ?? bank.instruction?.en ?? null
 
   const orderRef = generateOrderRef()
   const date = Date()
-  const siteName = (await payload.findGlobal({slug:'web-info'})).siteName
+
+  const items = (ticketDTOs ?? [])
+    .filter((t) => (t?.qty ?? 0) > 0)
+    .map((t) => ({
+      ticketName: String(t.name ?? '').slice(0, 500),
+      qty: t.qty ?? 0,
+      unitPrice: t.price ?? 0,
+      subtotal: t.subtotal ?? 0,
+    }))
+  const total = items.reduce((sum, i) => sum + (i.subtotal ?? 0), 0)
+
+  const createdOrder = await payload.create({
+    collection: 'order',
+    overrideAccess: true,
+    data: {
+      orderRef,
+      status: 'pending_payment',
+      locale: b.locale,
+      affair: affairId,
+      customer: {
+        name,
+        email,
+        phone,
+        age,
+      },
+      notes,
+      items,
+      amounts: { total, currency: 'EUR' },
+      payment: { method: 'bank_transfer' },
+      email: { sent: false },
+    },
+  })
 
   const templateParams: AffairOrderEmailParams = {
     customerName: name,
@@ -126,17 +166,20 @@ export async function POST(req: Request) {
     phone: phone,
     locale: b.locale,
     ticketDTOs: b.ticketDTOs,
-    
     bankInstructionHtml: lexicalToHtml(instructionLexical),
     bankInstructionLexical: instructionLexical,
     bankAccountNumber: bank.accountNumber ?? "",
     bankCredentials: bank.credentials ?? "",
-    siteName,
     orderRef: orderRef,
     placedAt: date,
+    branding: {
+      siteName: webInfo.siteName,
+      email: webInfo.email,
+      phone: webInfo.phone,
+    },
   }
 
-  const html = buildAffairOrderEmailHtml(templateParams)
+  const html = await buildAffairOrderEmailHtml(templateParams)
   const text = buildAffairOrderEmailText(templateParams)
   const subject = `Order: ${affairTitle}`.slice(0, 250)
 
@@ -150,8 +193,26 @@ export async function POST(req: Request) {
     })
   } catch (err) {
     console.error('affair-order sendMail:', err)
+    await payload.update({
+      collection: 'order',
+      id: createdOrder.id,
+      overrideAccess: true,
+      data: {
+        email: { sent: false, error: String(err) },
+      },
+    })
     return NextResponse.json({ error: `Failed to send email: ${err}` }, { status: 502 })
   }
 
-  return NextResponse.json({ ok: true })
+
+  await payload.update({
+    collection: 'order',
+    id: createdOrder.id,
+    overrideAccess: true,
+    data: {
+      email: { sent: true, error: null },
+    },
+  })
+
+  return NextResponse.json({ ok: true, orderRef })
 }

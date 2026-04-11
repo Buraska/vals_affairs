@@ -75,6 +75,7 @@ export interface Config {
     tagGroup: TagGroup;
     ticket: Ticket;
     gallery: Gallery;
+    order: Order;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -104,6 +105,7 @@ export interface Config {
     tagGroup: TagGroupSelect<false> | TagGroupSelect<true>;
     ticket: TicketSelect<false> | TicketSelect<true>;
     gallery: GallerySelect<false> | GallerySelect<true>;
+    order: OrderSelect<false> | OrderSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -394,6 +396,54 @@ export interface Gallery {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "order".
+ */
+export interface Order {
+  id: string;
+  orderRef: string;
+  status: 'pending_payment' | 'paid' | 'cancelled';
+  locale: 'ee' | 'ru' | 'en' | 'fi';
+  affair: string | Affair;
+  customer: {
+    name: string;
+    email: string;
+    phone: string;
+    age?: string | null;
+  };
+  notes?: string | null;
+  items?:
+    | {
+        ticketName: string;
+        qty: number;
+        unitPrice: number;
+        subtotal: number;
+        id?: string | null;
+      }[]
+    | null;
+  amounts: {
+    total: number;
+    currency: string;
+  };
+  payment: {
+    method: 'bank_transfer';
+    transactionId?: string | null;
+    provider?: string | null;
+    paidAt?: string | null;
+  };
+  email?: {
+    sent?: boolean | null;
+    error?: string | null;
+  };
+  statusEmail?: {
+    lastStatus?: string | null;
+    lastSentAt?: string | null;
+    lastError?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -447,6 +497,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'gallery';
         value: string | Gallery;
+      } | null)
+    | ({
+        relationTo: 'order';
+        value: string | Order;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -672,6 +726,63 @@ export interface GallerySelect<T extends boolean = true> {
     | {
         photo?: T;
         id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "order_select".
+ */
+export interface OrderSelect<T extends boolean = true> {
+  orderRef?: T;
+  status?: T;
+  locale?: T;
+  affair?: T;
+  customer?:
+    | T
+    | {
+        name?: T;
+        email?: T;
+        phone?: T;
+        age?: T;
+      };
+  notes?: T;
+  items?:
+    | T
+    | {
+        ticketName?: T;
+        qty?: T;
+        unitPrice?: T;
+        subtotal?: T;
+        id?: T;
+      };
+  amounts?:
+    | T
+    | {
+        total?: T;
+        currency?: T;
+      };
+  payment?:
+    | T
+    | {
+        method?: T;
+        transactionId?: T;
+        provider?: T;
+        paidAt?: T;
+      };
+  email?:
+    | T
+    | {
+        sent?: T;
+        error?: T;
+      };
+  statusEmail?:
+    | T
+    | {
+        lastStatus?: T;
+        lastSentAt?: T;
+        lastError?: T;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -919,6 +1030,19 @@ export interface UserAgreement {
  */
 export interface AboutUs {
   id: string;
+  name?: {
+    ee?: string | null;
+    ru?: string | null;
+    en?: string | null;
+    fi?: string | null;
+  };
+  description?: {
+    ee?: string | null;
+    ru?: string | null;
+    en?: string | null;
+    fi?: string | null;
+  };
+  photo: string | Media;
   ee?: {
     root: {
       type: string;
@@ -1106,6 +1230,23 @@ export interface UserAgreementsSelect<T extends boolean = true> {
  * via the `definition` "about-us_select".
  */
 export interface AboutUsSelect<T extends boolean = true> {
+  name?:
+    | T
+    | {
+        ee?: T;
+        ru?: T;
+        en?: T;
+        fi?: T;
+      };
+  description?:
+    | T
+    | {
+        ee?: T;
+        ru?: T;
+        en?: T;
+        fi?: T;
+      };
+  photo?: T;
   ee?: T;
   ru?: T;
   en?: T;

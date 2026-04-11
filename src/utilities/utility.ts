@@ -29,3 +29,7 @@ export function generateOrderRef() {
   const rand = crypto.randomBytes(4).toString('hex').toUpperCase()
   return `ORD-${date}-${rand}`
 }
+
+export function escapeHtml(s: string): string {
+  return s
+}

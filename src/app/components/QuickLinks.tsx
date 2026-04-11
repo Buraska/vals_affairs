@@ -1,13 +1,74 @@
 import Link from 'next/link'
-import type { Category, GalleryInfo, Media as MediaType } from '@/payload-types'
+import type { AboutUs, Category, GalleryInfo, Media as MediaType } from '@/payload-types'
 import { locales } from '@/app/lib/localization/i18n'
 import { localeLabels } from '@payload-config'
 import ShimmerImage from '@/app/components/ShimmerImage'
+
+function QuickLinkCard({
+  href,
+  image,
+  title,
+  description,
+  className,
+  textClassName,
+}: {
+  href: string
+  image?: string | MediaType | null
+  title: string
+  description?: string
+  className?: string
+  textClassName?: string
+}) {
+  return (
+    <a
+      href={href}
+      className={`${className} group relative flex flex-col overflow-hidden bg-[var(--card-bg)] border border-[var(--border)] transition hover:bg-[#FFFDF6]`}
+    >
+      {image && typeof image !== 'string' ? (
+        <div className="relative aspect-[4/3] w-full overflow-hidden bg-[var(--border)]">
+          <ShimmerImage
+            src={(image as MediaType).url ?? ''}
+            alt={(image as MediaType).alt ?? ''}
+            fill
+            style={{ objectFit: 'cover' }}
+          />
+        </div>
+      ) : (
+        <div
+          className="flex aspect-[4/3] w-full items-center justify-center bg-[var(--border)] text-2xl text-[var(--muted)]"
+          role="img"
+          aria-hidden
+        >
+          →
+        </div>
+      )}
+
+      <div className="flex flex-col gap-1 p-5">
+        <h3
+          className={` font-semibold text-[var(--dark)] group-hover:text-[var(--rust)] transition-colors`}
+          style={{ fontFamily: 'var(--font-playfair)' }}
+        >
+          {title}
+        </h3>
+        {description ? (
+          <p className={`text-sm font-light text-[var(--muted)] ${textClassName}`}>{description}</p>
+        ) : null}
+      </div>
+
+      <span className="absolute bottom-5 right-5 w-8 h-8 rounded-full border border-[var(--border)] flex items-center justify-center group-hover:bg-[var(--dark)] group-hover:border-[var(--dark)] transition-colors">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="group-hover:[&_path]:stroke-[var(--cream)]">
+          <path d="M2 7H12M8 3L12 7L8 11" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </span>
+    </a>
+  )
+}
 
 export function QuickLinks({
   locale,
   categories,
   galleryInfo,
+  aboutUs,
   eventsTitle,
   noCategoriesTitle,
   noCategoriesTryOther,
@@ -15,6 +76,7 @@ export function QuickLinks({
   locale: string
   categories: Category[]
   galleryInfo?: GalleryInfo | null
+  aboutUs?: AboutUs | null
   eventsTitle: string
   noCategoriesTitle: string
   noCategoriesTryOther: string
@@ -29,6 +91,17 @@ export function QuickLinks({
     galleryInfo?.description?.[locale as keyof NonNullable<GalleryInfo['description']>] ??
     galleryInfo?.description?.ee ??
     galleryInfo?.description?.en ??
+    ''
+
+  const aboutTitle =
+    aboutUs?.name?.[locale as keyof NonNullable<AboutUs['name']>] ??
+    aboutUs?.name?.ee ??
+    aboutUs?.name?.en ??
+    ''
+  const aboutDescription =
+    aboutUs?.description?.[locale as keyof NonNullable<AboutUs['description']>] ??
+    aboutUs?.description?.ee ??
+    aboutUs?.description?.en ??
     ''
 
   return (
@@ -59,81 +132,35 @@ export function QuickLinks({
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {galleryInfo && (
-            <a
+            <QuickLinkCard
               href={`/${locale}/gallery`}
-              className="group relative flex flex-col overflow-hidden bg-[var(--card-bg)] border border-[var(--border)] transition hover:bg-[#FFFDF6]"
-            >
-              {galleryInfo.photo && typeof galleryInfo.photo !== 'string' ? (
-                <div className="relative aspect-[4/3] w-full overflow-hidden bg-[var(--border)]">
-                  <ShimmerImage
-                    src={(galleryInfo.photo as MediaType).url ?? ''}
-                    alt={(galleryInfo.photo as MediaType).alt ?? ''}
-                    fill
-                    style={{ objectFit: 'cover' }}
-                  />
-                </div>
-              ) : (
-                <div
-                  className="flex aspect-[4/3] w-full items-center justify-center bg-[var(--border)] text-2xl text-[var(--muted)]"
-                  role="img"
-                  aria-hidden
-                >
-                  →
-                </div>
-              )}
-
-              <div className="flex flex-col gap-1 p-5">
-                <h3
-                  className="font-semibold text-[var(--dark)] group-hover:text-[var(--rust)] transition-colors"
-                  style={{ fontFamily: 'var(--font-playfair)' }}
-                >
-                  {galleryTitle}
-                </h3>
-                <p className="text-sm text-[var(--muted)] font-light">
-                  {galleryDescription}
-                </p>
-              </div>
-
-              <span className="absolute bottom-5 right-5 w-8 h-8 rounded-full border border-[var(--border)] flex items-center justify-center group-hover:bg-[var(--dark)] group-hover:border-[var(--dark)] transition-colors">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="group-hover:[&_path]:stroke-[var(--cream)]">
-                  <path d="M2 7H12M8 3L12 7L8 11" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </span>
-            </a>
+              image={galleryInfo.photo as unknown as MediaType}
+              title={galleryTitle}
+              description={galleryDescription}
+              className='bg-[var(--warm)]'
+              textClassName='text-white group-hover:text-gray-400'
+            />
           )}
           {categories.map((item) => (
-            <a
+            <QuickLinkCard
               key={item.id}
               href={`/${locale}/category/${item.id}`}
-              className="group relative flex flex-col overflow-hidden bg-[var(--card-bg)] border border-[var(--border)] transition hover:bg-[#FFFDF6]"
-            >
-              {item.image ? (
-                <div className="relative aspect-[4/3] w-full overflow-hidden bg-[var(--border)]">
-                  <ShimmerImage
-                    src={(item.image as MediaType).url ?? ""}
-                    alt={(item.image as MediaType).alt ?? ""}
-                    fill
-                    style={{ objectFit: 'cover' }}
-                  />
-                </div>
-              ) : (
-                <div className="flex aspect-[4/3] w-full items-center justify-center bg-[var(--border)] text-2xl text-[var(--muted)]" role="img" aria-hidden>
-                  →
-                </div>
-              )}
-              <div className="flex flex-col gap-1 p-5">
-                <h3 className="font-semibold text-[var(--dark)] group-hover:text-[var(--rust)] transition-colors" style={{ fontFamily: "var(--font-playfair)" }}>
-                  {item.title}
-                </h3>
-                <p className="text-sm text-[var(--muted)] font-light">{item.description ?? ""}</p>
-              </div>
-              <span className="absolute bottom-5 right-5 w-8 h-8 rounded-full border border-[var(--border)] flex items-center justify-center group-hover:bg-[var(--dark)] group-hover:border-[var(--dark)] transition-colors">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="group-hover:[&_path]:stroke-[var(--cream)]">
-                  <path d="M2 7H12M8 3L12 7L8 11" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </span>
-            </a>
+              image={item.image as unknown as MediaType}
+              title={item.title ?? ''}
+              description={item.description ?? ''}
+            />
           ))}
+
+          {aboutUs && (
+            <QuickLinkCard
+              href={`/${locale}/about`}
+              image={aboutUs.photo as unknown as MediaType}
+              title={aboutTitle}
+              description={aboutDescription}
+              className='bg-[var(--warm)]'
+              textClassName='text-white group-hover:text-gray-400'
+            />
+          )}
         </div>
       )}
     </section>

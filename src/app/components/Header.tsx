@@ -5,17 +5,13 @@ import Link from "next/link";
 import { useLanguage } from "@/app/contexts/LanguageContext";
 import type { Lang } from "@/app/lib/localization/translations";
 import { locales } from "@/app/lib/localization/i18n";
-import type { Category, GalleryInfo } from "@/payload-types";
+import type { AboutUs, Category, GalleryInfo } from "@/payload-types";
 import { NavItems } from "./NavItems";
 
 const navItemsHead = [
   { key: "home", href: "#" },
 ] as const;
 
-
-const navItemsTail = [
-  { key: "about", href: "/about" },
-] as const;
 
 const langLabels: Record<Lang, string> = { ee: "ee", ru: "ru", en: "en", fi: "fi" };
 
@@ -65,16 +61,20 @@ export function Header({
   categories = [],
   webInfo,
   galleryInfo,
+  aboutUs,
 }: {
   categories?: Category[]
   webInfo?: WebInfoData | null
   galleryInfo?: GalleryInfo | null
+  aboutUs?: AboutUs | null
 }) {
   const { lang, t } = useLanguage();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const galleryTitle =
     galleryInfo?.name?.[lang] ?? galleryInfo?.name?.ee ?? galleryInfo?.name?.en ?? null
+  const aboutTitle =
+    aboutUs?.name?.[lang] ?? aboutUs?.name?.ee ?? aboutUs?.name?.en ?? t.nav.about
 
   const siteName = webInfo?.siteName ?? t.meta.siteName;
 
@@ -144,11 +144,11 @@ export function Header({
         </div>
       </div>
 
-      <nav className="hidden lg:flex items-center justify-center gap-5 border-[var(--border)] pt-3">
+      <nav className="hidden lg:flex items-center justify-center gap-5 border-t border-[var(--border)] pt-3">
         <NavItems items={navItemsHead.map(({ key, href }) => ({ name: t.nav[key], href: `/${lang}${href}` }))} />
         {galleryTitle ? <NavItems items={[{ name: galleryTitle, href: `/${lang}/gallery` }]} /> : null}
         <NavItems items={categories.map(({ id, title }) => ({ name: title, href: `/${lang}/category/${id}` }))} />
-        <NavItems items={navItemsTail.map(({ key, href }) => ({ name: t.nav[key], href: `/${lang}${href}` }))} />
+        <NavItems items={[{ name: aboutTitle, href: `/${lang}/about` }]} />
       </nav>
 
 
@@ -176,11 +176,13 @@ export function Header({
                 {cat.title}
               </Link>
             ))}
-            {navItemsTail.map(({ key, href }) => (
-              <Link key={key} href={`/${lang}${href}`} onClick={() => setMobileOpen(false)} className="py-2.5 text-sm text-[var(--muted)] hover:text-[var(--dark)]">
-                {t.nav[key]}
-              </Link>
-            ))}
+            <Link
+              href={`/${lang}/about`}
+              onClick={() => setMobileOpen(false)}
+              className="py-2.5 text-sm text-[var(--muted)] hover:text-[var(--dark)]"
+            >
+              {aboutTitle}
+            </Link>
             <div className="mt-3 pt-3 border-t border-[var(--border)] flex flex-wrap gap-2">
               {locales.map((l) => (
                 <Link
