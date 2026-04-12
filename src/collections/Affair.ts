@@ -3,7 +3,9 @@ import type { CollectionConfig } from 'payload'
 
 export const Affair: CollectionConfig = {
   slug: 'Affair',
-  hooks: { afterChange: [afterChangeHookAffair], afterDelete: [afterDeleteHookAffair] },
+  hooks: { afterChange: [afterChangeHookAffair, ({ doc, req }) => {
+    console.log('🚀 afterChange fired!')}
+  ], afterDelete: [afterDeleteHookAffair] },
   access: {
     read: () => true,
   },
@@ -21,7 +23,6 @@ export const Affair: CollectionConfig = {
     {
       name: 'description',
       type: 'richText',
-      required: true,
       localized: true,
     },
     {

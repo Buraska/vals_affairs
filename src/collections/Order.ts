@@ -3,7 +3,6 @@ import type { Access, CollectionConfig } from 'payload'
 
 const adminOnly: Access = ({ req }) => Boolean(req.user)
 
-
 export const Order: CollectionConfig = {
   slug: 'order',
   access: {
