@@ -64,6 +64,7 @@ export type SupportedTimezones =
 export interface Config {
   auth: {
     users: UserAuthOperations;
+    'payload-mcp-api-keys': PayloadMcpApiKeyAuthOperations;
   };
   blocks: {};
   collections: {
@@ -76,6 +77,7 @@ export interface Config {
     ticket: Ticket;
     gallery: Gallery;
     order: Order;
+    'payload-mcp-api-keys': PayloadMcpApiKey;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -106,6 +108,7 @@ export interface Config {
     ticket: TicketSelect<false> | TicketSelect<true>;
     gallery: GallerySelect<false> | GallerySelect<true>;
     order: OrderSelect<false> | OrderSelect<true>;
+    'payload-mcp-api-keys': PayloadMcpApiKeysSelect<false> | PayloadMcpApiKeysSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -137,13 +140,31 @@ export interface Config {
     'gallery-info': GalleryInfoSelect<false> | GalleryInfoSelect<true>;
   };
   locale: 'ee' | 'ru' | 'en' | 'fi';
-  user: User;
+  user: User | PayloadMcpApiKey;
   jobs: {
     tasks: unknown;
     workflows: unknown;
   };
 }
 export interface UserAuthOperations {
+  forgotPassword: {
+    email: string;
+    password: string;
+  };
+  login: {
+    email: string;
+    password: string;
+  };
+  registerFirstUser: {
+    email: string;
+    password: string;
+  };
+  unlock: {
+    email: string;
+    password: string;
+  };
+}
+export interface PayloadMcpApiKeyAuthOperations {
   forgotPassword: {
     email: string;
     password: string;
@@ -269,7 +290,7 @@ export interface Category {
 export interface Affair {
   id: string;
   title?: string | null;
-  description: {
+  description?: {
     root: {
       type: string;
       children: {
@@ -283,7 +304,7 @@ export interface Affair {
       version: number;
     };
     [k: string]: unknown;
-  };
+  } | null;
   images: {
     image?: (string | null) | Media;
     id?: string | null;
@@ -386,11 +407,17 @@ export interface TagGroup {
 export interface Gallery {
   id: string;
   title: string;
-  driveLink: string;
+  date: string;
   photos: {
     photo: string | Media;
     id?: string | null;
   }[];
+  videos?:
+    | {
+        youtubeUrl: string;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -441,6 +468,245 @@ export interface Order {
   };
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * API keys control which collections, resources, tools, and prompts MCP clients can access
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-mcp-api-keys".
+ */
+export interface PayloadMcpApiKey {
+  id: string;
+  /**
+   * The user that the API key is associated with.
+   */
+  user: string | User;
+  /**
+   * A useful label for the API key.
+   */
+  label?: string | null;
+  /**
+   * The purpose of the API key.
+   */
+  description?: string | null;
+  users?: {
+    /**
+     * Allow clients to find users.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create users.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update users.
+     */
+    update?: boolean | null;
+    /**
+     * Allow clients to delete users.
+     */
+    delete?: boolean | null;
+  };
+  media?: {
+    /**
+     * Allow clients to find media.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create media.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update media.
+     */
+    update?: boolean | null;
+    /**
+     * Allow clients to delete media.
+     */
+    delete?: boolean | null;
+  };
+  category?: {
+    /**
+     * Allow clients to find category.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create category.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update category.
+     */
+    update?: boolean | null;
+    /**
+     * Allow clients to delete category.
+     */
+    delete?: boolean | null;
+  };
+  affair?: {
+    /**
+     * Allow clients to find Affair.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create Affair.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update Affair.
+     */
+    update?: boolean | null;
+    /**
+     * Allow clients to delete Affair.
+     */
+    delete?: boolean | null;
+  };
+  tag?: {
+    /**
+     * Allow clients to find tag.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create tag.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update tag.
+     */
+    update?: boolean | null;
+    /**
+     * Allow clients to delete tag.
+     */
+    delete?: boolean | null;
+  };
+  tagGroup?: {
+    /**
+     * Allow clients to find tagGroup.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create tagGroup.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update tagGroup.
+     */
+    update?: boolean | null;
+    /**
+     * Allow clients to delete tagGroup.
+     */
+    delete?: boolean | null;
+  };
+  ticket?: {
+    /**
+     * Allow clients to find ticket.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create ticket.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update ticket.
+     */
+    update?: boolean | null;
+    /**
+     * Allow clients to delete ticket.
+     */
+    delete?: boolean | null;
+  };
+  gallery?: {
+    /**
+     * Allow clients to find gallery.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create gallery.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update gallery.
+     */
+    update?: boolean | null;
+    /**
+     * Allow clients to delete gallery.
+     */
+    delete?: boolean | null;
+  };
+  order?: {
+    /**
+     * Allow clients to find order.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create order.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update order.
+     */
+    update?: boolean | null;
+    /**
+     * Allow clients to delete order.
+     */
+    delete?: boolean | null;
+  };
+  webInfo?: {
+    /**
+     * Allow clients to find web-info global.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to update web-info global.
+     */
+    update?: boolean | null;
+  };
+  userAgreements?: {
+    /**
+     * Allow clients to find user-agreements global.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to update user-agreements global.
+     */
+    update?: boolean | null;
+  };
+  aboutUs?: {
+    /**
+     * Allow clients to find about-us global.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to update about-us global.
+     */
+    update?: boolean | null;
+  };
+  team?: {
+    /**
+     * Allow clients to find team global.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to update team global.
+     */
+    update?: boolean | null;
+  };
+  galleryInfo?: {
+    /**
+     * Allow clients to find gallery-info global.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to update gallery-info global.
+     */
+    update?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  enableAPIKey?: boolean | null;
+  apiKey?: string | null;
+  apiKeyIndex?: string | null;
+  collection: 'payload-mcp-api-keys';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -501,12 +767,21 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'order';
         value: string | Order;
+      } | null)
+    | ({
+        relationTo: 'payload-mcp-api-keys';
+        value: string | PayloadMcpApiKey;
       } | null);
   globalSlug?: string | null;
-  user: {
-    relationTo: 'users';
-    value: string | User;
-  };
+  user:
+    | {
+        relationTo: 'users';
+        value: string | User;
+      }
+    | {
+        relationTo: 'payload-mcp-api-keys';
+        value: string | PayloadMcpApiKey;
+      };
   updatedAt: string;
   createdAt: string;
 }
@@ -516,10 +791,15 @@ export interface PayloadLockedDocument {
  */
 export interface PayloadPreference {
   id: string;
-  user: {
-    relationTo: 'users';
-    value: string | User;
-  };
+  user:
+    | {
+        relationTo: 'users';
+        value: string | User;
+      }
+    | {
+        relationTo: 'payload-mcp-api-keys';
+        value: string | PayloadMcpApiKey;
+      };
   key?: string | null;
   value?:
     | {
@@ -720,11 +1000,17 @@ export interface TicketSelect<T extends boolean = true> {
  */
 export interface GallerySelect<T extends boolean = true> {
   title?: T;
-  driveLink?: T;
+  date?: T;
   photos?:
     | T
     | {
         photo?: T;
+        id?: T;
+      };
+  videos?:
+    | T
+    | {
+        youtubeUrl?: T;
         id?: T;
       };
   updatedAt?: T;
@@ -786,6 +1072,122 @@ export interface OrderSelect<T extends boolean = true> {
       };
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-mcp-api-keys_select".
+ */
+export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
+  user?: T;
+  label?: T;
+  description?: T;
+  users?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+        delete?: T;
+      };
+  media?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+        delete?: T;
+      };
+  category?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+        delete?: T;
+      };
+  affair?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+        delete?: T;
+      };
+  tag?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+        delete?: T;
+      };
+  tagGroup?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+        delete?: T;
+      };
+  ticket?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+        delete?: T;
+      };
+  gallery?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+        delete?: T;
+      };
+  order?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+        delete?: T;
+      };
+  webInfo?:
+    | T
+    | {
+        find?: T;
+        update?: T;
+      };
+  userAgreements?:
+    | T
+    | {
+        find?: T;
+        update?: T;
+      };
+  aboutUs?:
+    | T
+    | {
+        find?: T;
+        update?: T;
+      };
+  team?:
+    | T
+    | {
+        find?: T;
+        update?: T;
+      };
+  galleryInfo?:
+    | T
+    | {
+        find?: T;
+        update?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  enableAPIKey?: T;
+  apiKey?: T;
+  apiKeyIndex?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

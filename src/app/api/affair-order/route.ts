@@ -5,11 +5,16 @@ import {
   AffairOrderEmailParams,
   buildAffairOrderEmailHtml,
   buildAffairOrderEmailText,
-} from '@/app/lib/MailTemlates/affairOrderEmailTemplate'
+} from '@/app/lib/mail/affairOrderEmailTemplate'
 import { lexicalToHtml } from '@/utilities/lexicalToHtml'
-import { generateOrderRef } from '@/utilities/utility'
+import { checkTypeAndSlice, generateOrderRef, isValidEmail } from '@/utilities/utility'
 import type { affairOrderPostJson, TicketOrderDTO } from '@/app/lib/affairOrderTypes'
 import { MAIL_ENDPOINT_SUBSCRIBE, MAIL_ENDPOINT_SUBSCRIBE_ARGS } from '../endpoints'
+import { MailServce } from '@/app/lib/mail/mailService'
+import { invoiceService } from '@/app/lib/ZohoClient/ZohoClient'
+import { CreateContactPerson } from '@trieb.work/zoho-ts/dist/types/contactPerson'
+import { CreateContact } from '@trieb.work/zoho-ts'
+import { CreateInvoice, Invoice } from '@trieb.work/zoho-ts/dist/types/invoice'
 
 const LIMITS = {
   name: 200,
@@ -21,41 +26,7 @@ const LIMITS = {
   ticketQuery: 500,
 } as const
 
-function isValidEmail(email: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-}
 
-function checkTypeAndSlice(obj: any, limit: number): string {
-  return typeof obj === 'string' ? obj.trim().slice(0, limit) : ''
-}
-
-async function subscribeUser(email: string, name: string): Promise<Response>{
-  const errors: string[] = []
-  if (!isValidEmail(email)) {
-    errors.push("Invalid email")
-  }
-  if (!name){
-    errors.push("Invalid name")
-  }
-  if (errors.length !== 0){
-    return NextResponse.json({ error: errors.join(', ') }, { status: 400 })
-  }
-  const body = {
-    ...MAIL_ENDPOINT_SUBSCRIBE_ARGS,
-    email,
-    name,
-  }
-
-  const res = await fetch(MAIL_ENDPOINT_SUBSCRIBE, {
-    method: 'POST',
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify(body),
-  })
-
-  if (!res.ok) console.log(`Cannot subscribe user: ERROR ${res.status} | ${await res.text()}`)
-
-  return res;
-}
 
 export type { affairOrderPostJson, TicketOrderDTO } from '@/app/lib/affairOrderTypes'
 
@@ -72,6 +43,9 @@ export async function POST(req: Request) {
   }
 
   const b = body as affairOrderPostJson
+  
+  const orderRef = generateOrderRef()
+  const date = Date()
 
   const affairId = checkTypeAndSlice(b.affairId, 200)
   const name = checkTypeAndSlice(b.customerName, LIMITS.name)
@@ -91,7 +65,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Invalid email' }, { status: 400 })
   }
 
-  void subscribeUser(email, name)
+  MailServce.subscribeUser(email, name)
+
 
   const payload = await getPayload({ config: configPromise })
 
@@ -124,8 +99,7 @@ export async function POST(req: Request) {
   const instructionLexical =
     bank.instruction?.[b.locale] ?? bank.instruction?.ee ?? bank.instruction?.en ?? null
 
-  const orderRef = generateOrderRef()
-  const date = Date()
+
 
   const items = (ticketDTOs ?? [])
     .filter((t) => (t?.qty ?? 0) > 0)
@@ -136,29 +110,6 @@ export async function POST(req: Request) {
       subtotal: t.subtotal ?? 0,
     }))
   const total = items.reduce((sum, i) => sum + (i.subtotal ?? 0), 0)
-
-  const createdOrder = await payload.create({
-    collection: 'order',
-    overrideAccess: true,
-    data: {
-      orderRef,
-      status: 'pending_payment',
-      locale: b.locale,
-      affair: affairId,
-      customer: {
-        name,
-        email,
-        phone,
-        age,
-      },
-      notes,
-      items,
-      amounts: { total, currency: 'EUR' },
-      payment: { method: 'bank_transfer' },
-      email: { sent: false },
-    },
-  })
-
   const templateParams: AffairOrderEmailParams = {
     customerName: name,
     affairTitle: affairTitle,
@@ -180,39 +131,16 @@ export async function POST(req: Request) {
   }
 
   const html = await buildAffairOrderEmailHtml(templateParams)
-  const text = buildAffairOrderEmailText(templateParams)
-  const subject = `Order: ${affairTitle}`.slice(0, 250)
 
-  try {
-    await payload.sendEmail({
-      from: 'The Next Chance <no-reply@thenextchance.eu>',
-      to: email,
-      subject,
-      text,
-      html,
-    })
-  } catch (err) {
-    console.error('affair-order sendMail:', err)
-    await payload.update({
-      collection: 'order',
-      id: createdOrder.id,
-      overrideAccess: true,
-      data: {
-        email: { sent: false, error: String(err) },
-      },
-    })
-    return NextResponse.json({ error: `Failed to send email: ${err}` }, { status: 502 })
-  }
+  const con = await invoiceService.contact.create({contact_name: `${name} ${orderRef}`, customer_sub_type: 'individual', phone})
+  const conPerson = await invoiceService.contactperson.create({contact_id: con.contact_id, email, phone, last_name: name})
 
-
-  await payload.update({
-    collection: 'order',
-    id: createdOrder.id,
-    overrideAccess: true,
-    data: {
-      email: { sent: true, error: null },
-    },
-  })
+  const invoice: Invoice = await invoiceService.invoice.create({
+    customer_id: con.contact_id,
+    contact_persons: [conPerson.contact_person_id],
+    line_items: items.map((i) => ({item_id: "", name: i.ticketName, quantity: i.qty, rate: i.unitPrice}))})
+  
+  await invoiceService.invoice.sentEmail(invoice.invoice_id)
 
   return NextResponse.json({ ok: true, orderRef })
 }

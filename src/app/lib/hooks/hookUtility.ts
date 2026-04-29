@@ -83,6 +83,10 @@ export function revalidateCategoryPaths(locale: string, categoryId: string): voi
   revalidatePath(`/${locale}`);
 }
 
+export function revalidateAll(): void {
+  revalidatePath(`/`, "layout");
+}
+
 export function revalidateAllLocaleRoots(): void {
   for (const locale of locales) {
     revalidatePath(`/${locale}`);

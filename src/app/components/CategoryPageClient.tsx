@@ -7,6 +7,7 @@ import { AffairCard } from '@/app/components/AffairCard'
 import { CategorySortSelect } from '@/app/components/CategorySortSelect'
 import { TagFilters } from '@/app/components/TagFilters'
 import CategorySearch from '@/app/components/CategorySearch'
+import SectionImageReveal from '@/app/components/SectionImageReveal'
 import { useLanguage } from '../contexts/LanguageContext'
 
 type SortOption = { value: string; label: string }
@@ -113,17 +114,24 @@ export function CategoryPageClient({
         <p className="text-xs text-[var(--muted)] font-light tracking-widest uppercase mb-4">
           {t.category.countEvents.replace('{count}', String(affairs.length))}
         </p>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-px">
-          {affairs.length === 0 ? (
-            <p className="text-[var(--muted)] py-8 col-span-full">{noResultsText}</p>
-          ) : (
-            affairs.map((affair) => (
-              <div key={affair.id} className="bg-[var(--card-bg)]">
-                <AffairCard affair={affair} locale={locale} className="p-5" />
-              </div>
-            ))
-          )}
-        </div>
+        {affairs.length === 0 ? (
+          <p className="text-[var(--muted)] py-8">{noResultsText}</p>
+        ) : (
+          <SectionImageReveal
+            count={affairs.filter((a) => {
+              const first = a.images?.[0]?.image
+              return typeof first === 'object' && first != null
+            }).length}
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-px">
+              {affairs.map((affair) => (
+                <div key={affair.id} className="bg-[var(--card-bg)]">
+                  <AffairCard affair={affair} locale={locale} className="p-5" />
+                </div>
+              ))}
+            </div>
+          </SectionImageReveal>
+        )}
       </div>
     </div>
   )

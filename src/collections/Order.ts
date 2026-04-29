@@ -1,4 +1,4 @@
-import { afterChangeHookOrder } from '@/app/lib/hooks/payloadHooks'
+import { afterChangeRevalidateAll } from '@/app/lib/hooks/payloadHooks'
 import type { Access, CollectionConfig } from 'payload'
 
 const adminOnly: Access = ({ req }) => Boolean(req.user)
@@ -12,7 +12,7 @@ export const Order: CollectionConfig = {
     delete: adminOnly,
   },
   hooks: {
-    afterChange: [afterChangeHookOrder],
+    afterChange: [afterChangeRevalidateAll],
   },
   admin: {
     useAsTitle: 'orderRef',

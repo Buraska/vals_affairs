@@ -28,6 +28,7 @@
     "@payloadcms/storage-vercel-blob": "3.77.0",
     "@payloadcms/ui": "3.77.0",
     "@tailwindcss/postcss": "^4.0.0",
+    "@trieb.work/zoho-ts": "github:Buraska/zoho-ts",
     "@vercel/speed-insights": "^2.0.0",
     "clsx": "^2.1.1",
     "cross-env": "^7.0.3",
@@ -74,6 +75,7 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "sharp",
+      "@trieb.work/zoho-ts",
       "esbuild",
       "unrs-resolver"
     ],

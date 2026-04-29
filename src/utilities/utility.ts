@@ -33,3 +33,11 @@ export function generateOrderRef() {
 export function escapeHtml(s: string): string {
   return s
 }
+
+export function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+}
+
+export function checkTypeAndSlice(obj: unknown, limit: number): string {
+  return typeof obj === 'string' ? obj.trim().slice(0, limit) : ''
+}

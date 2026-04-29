@@ -1,11 +1,11 @@
 import type { GlobalConfig } from 'payload'
 import { locales } from '@/app/lib/localization/i18n'
-import { afterChangeHookBankCredentials } from '@/app/lib/hooks/payloadHooks'
+import { globalAfterChangeRevalidateAll } from '@/app/lib/hooks/payloadHooks'
 
 export const BankCredentials: GlobalConfig = {
   slug: 'bank-credentials',
   label: 'Bank credentials',
-  hooks: { afterChange: [afterChangeHookBankCredentials] },
+  hooks: { afterChange: [globalAfterChangeRevalidateAll] },
   admin: {
     description: 'Account details and payment instructions for bank transfers.',
   },

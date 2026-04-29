@@ -1,11 +1,11 @@
 import type { GlobalConfig } from 'payload'
 import { locales } from '@/app/lib/localization/i18n'
-import { afterChangeHookTeam } from '@/app/lib/hooks/payloadHooks'
+import { globalAfterChangeRevalidateAll } from '@/app/lib/hooks/payloadHooks'
 
 export const Team: GlobalConfig = {
   slug: 'team',
   label: 'Team',
-  hooks: { afterChange: [afterChangeHookTeam] },
+  hooks: { afterChange: [globalAfterChangeRevalidateAll] },
   access: {
     read: () => true,
   },

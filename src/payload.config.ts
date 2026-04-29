@@ -1,7 +1,7 @@
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
-import { buildConfig } from 'payload'
+import { buildConfig, type Config } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
@@ -88,6 +88,12 @@ export default buildConfig({
           s3Storage({
             collections: { media: true },
             bucket: process.env.R2_BUCKET,
+            // Bypass Vercel's ~4.5 MB serverless body limit by uploading the
+            // original file directly from the browser to R2 via a presigned
+            // URL. Requires CORS to be configured on the R2 bucket (see README).
+            clientUploads: {
+              access: ({ req }) => Boolean(req.user),
+            },
             config: {
               endpoint: process.env.R2_ENDPOINT,
               region: 'auto',
@@ -98,6 +104,35 @@ export default buildConfig({
               },
             },
           }),
+          // Append AFTER s3Storage so our provider mounts last and its
+          // setUploadHandler() call wins for the `media` collection. Our
+          // handler downscales huge images in the browser before PUTting
+          // them straight to R2.
+          (incomingConfig: Config): Config => {
+            const adminSection = incomingConfig.admin ?? {}
+            const componentsSection = adminSection.components ?? {}
+            const providers = componentsSection.providers ?? []
+            return {
+              ...incomingConfig,
+              admin: {
+                ...adminSection,
+                components: {
+                  ...componentsSection,
+                  providers: [
+                    ...providers,
+                    {
+                      path: '/app/components/admin/MediaDownscaleHandler#MediaDownscaleHandler',
+                      clientProps: {
+                        collectionSlug: 'media',
+                        enabled: true,
+                        serverHandlerPath: '/storage-s3-generate-signed-url',
+                      },
+                    },
+                  ],
+                },
+              },
+            }
+          },
         ]
       : []),
   ],

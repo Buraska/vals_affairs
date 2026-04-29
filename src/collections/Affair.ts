@@ -1,11 +1,9 @@
-import { afterChangeHookAffair, afterDeleteHookAffair } from '@/app/lib/hooks/payloadHooks'
+import { afterChangeRevalidateAll, afterDeleteRevaledateAll } from '@/app/lib/hooks/payloadHooks'
 import type { CollectionConfig } from 'payload'
 
 export const Affair: CollectionConfig = {
   slug: 'Affair',
-  hooks: { afterChange: [afterChangeHookAffair, ({ doc, req }) => {
-    console.log('🚀 afterChange fired!')}
-  ], afterDelete: [afterDeleteHookAffair] },
+  hooks: { afterChange: [afterChangeRevalidateAll], afterDelete: [afterDeleteRevaledateAll] },
   access: {
     read: () => true,
   },

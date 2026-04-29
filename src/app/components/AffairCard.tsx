@@ -5,7 +5,8 @@ import { lexicalToPlainText } from "@/utilities/lexicalToPlainText"
 import Link from "next/link"
 import { useLanguage } from "@/app/contexts/LanguageContext"
 import clsx from 'clsx'
-import ShimmerImage from "@/app/components/ShimmerImage"
+import SmartImage from "@/app/components/SmartImage"
+import { pickMediaSize } from "@/utilities/pickMediaSize"
 
 
 export const AffairCard = ({ affair, locale, className = "" }: { affair: Affair; locale: string, className: string }) => {
@@ -26,11 +27,12 @@ export const AffairCard = ({ affair, locale, className = "" }: { affair: Affair;
     >
       {(firstImage && typeof firstImage !== 'string') ? (
         <div className="relative w-full aspect-[4/3] overflow-hidden bg-[var(--border)]">
-          <ShimmerImage
-            src={firstImage.url ?? ""}
-            alt={firstImage.alt ?? ""}
+          <SmartImage
+            src={pickMediaSize(firstImage, 'medium').url || firstImage.url || ''}
+            alt={firstImage.alt ?? ''}
             fill
-            style={{ objectFit: "cover" }}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            style={{ objectFit: 'cover' }}
           />
         </div>
       ) : (

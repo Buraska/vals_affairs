@@ -1,7 +1,9 @@
 "use client";
 
 import { useLanguage } from "@/app/contexts/LanguageContext";
-import ShimmerImage from "@/app/components/ShimmerImage";
+import SmartImage from "@/app/components/SmartImage";
+import SectionImageReveal from "@/app/components/SectionImageReveal";
+import { pickMediaSize } from "@/utilities/pickMediaSize";
 import type { Team } from "@/payload-types";
 import { defaultLocale, type Locale } from "@/app/lib/localization/i18n";
 
@@ -48,56 +50,67 @@ export function Team({
           {t.contact.team}
         </h2>
       </div>
-      <div className="relative z-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {hasMembers &&
-          members.map((person, index) => {
-            const photo =
-              typeof person.photo === "object" && person.photo != null
-                ? person.photo
-                : null;
-            const roleText = getDescriptionForLocale(person.description, locale);
+      <SectionImageReveal
+        count={
+          hasMembers
+            ? members.filter((m) => typeof m.photo === "object" && m.photo != null).length
+            : 0
+        }
+        className="relative z-10"
+      >
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {hasMembers &&
+            members.map((person, index) => {
+              const photo =
+                typeof person.photo === "object" && person.photo != null
+                  ? person.photo
+                  : null;
+              const roleText = getDescriptionForLocale(person.description, locale);
+              const picked = pickMediaSize(photo, "small");
 
-            return (
-              <div
-                key={person.id ?? `member-${index}`}
-                className="border border-[var(--border)] bg-[var(--cream)] p-5 transition hover:border-[var(--warm)]"
-              >
-                {photo && (
-                  <div className="relative mb-4 aspect-square overflow-hidden bg-[var(--border)]">
-                    <ShimmerImage
-                      src={photo.url ?? ""}
-                      alt={photo.alt ?? ""}
-                      fill
-                      style={{ objectFit: "cover" }}
-                    />
-                  </div>
-                )}
-                <h3 className="font-semibold text-[var(--dark)]" style={{ fontFamily: "var(--font-playfair)" }}>
-                  {person.name}
-                </h3>
-                {roleText && (
-                  <p className="mt-1 text-sm text-[var(--muted)] font-light">{roleText}</p>
-                )}
-                {person.phone && (
-                  <a
-                    href={`tel:${person.phone.replace(/\s/g, "")}`}
-                    className="mt-2 block text-sm text-[var(--rust)] hover:underline"
-                  >
-                    {person.phone}
-                  </a>
-                )}
-                {person.email && (
-                  <a
-                    href={`mailto:${person.email}`}
-                    className="mt-0.5 block text-sm text-[var(--rust)] hover:underline"
-                  >
-                    {person.email}
-                  </a>
-                )}
-              </div>
-            );
-          })}
-      </div>
+              return (
+                <div
+                  key={person.id ?? `member-${index}`}
+                  className="border border-[var(--border)] bg-[var(--cream)] p-5 transition hover:border-[var(--warm)]"
+                >
+                  {photo && picked.url && (
+                    <div className="relative mb-4 aspect-square overflow-hidden bg-[var(--border)]">
+                      <SmartImage
+                        src={picked.url}
+                        alt={photo.alt ?? ""}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                        style={{ objectFit: "cover" }}
+                      />
+                    </div>
+                  )}
+                  <h3 className="font-semibold text-[var(--dark)]" style={{ fontFamily: "var(--font-playfair)" }}>
+                    {person.name}
+                  </h3>
+                  {roleText && (
+                    <p className="mt-1 text-sm text-[var(--muted)] font-light">{roleText}</p>
+                  )}
+                  {person.phone && (
+                    <a
+                      href={`tel:${person.phone.replace(/\s/g, "")}`}
+                      className="mt-2 block text-sm text-[var(--rust)] hover:underline"
+                    >
+                      {person.phone}
+                    </a>
+                  )}
+                  {person.email && (
+                    <a
+                      href={`mailto:${person.email}`}
+                      className="mt-0.5 block text-sm text-[var(--rust)] hover:underline"
+                    >
+                      {person.email}
+                    </a>
+                  )}
+                </div>
+              );
+            })}
+        </div>
+      </SectionImageReveal>
     </section>
   );
 }

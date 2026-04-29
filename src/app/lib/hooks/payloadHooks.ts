@@ -13,8 +13,9 @@ import {
   revalidateAllLocaleRoots,
   revalidateGalleryPaths,
   revalidateAllLocalesWithPaths,
+  revalidateAll,
 } from "./hookUtility";
-import { buildOrderStatusEmailHtml, buildOrderStatusEmailText } from "@/app/lib/MailTemlates/orderStatusEmailTemplate";
+import { buildOrderStatusEmailHtml, buildOrderStatusEmailText } from "@/app/lib/mail/orderStatusEmailTemplate";
 import { getTranslations, Lang } from "../localization/translations";
 
 
@@ -111,6 +112,22 @@ export const afterChangeHookOrder: CollectionAfterChangeHook<OrderType> = async 
 export const afterChangeHookTeam: GlobalAfterChangeHook = async () => {
   revalidateAllLocaleRoots();
 };
+
+export const globalAfterChangeRevalidateAll: GlobalAfterChangeHook = async ({req}) => {
+  revalidateAll()
+}
+
+export const afterChangeRevalidateAll: CollectionAfterChangeHook = async ({req}) => {
+  revalidateAll()
+}
+
+export const afterDeleteRevaledateAll: CollectionAfterDeleteHook = async ({req}) => {
+  revalidateAll()
+}
+
+
+
+
 
 export const afterChangeHookAboutUs: GlobalAfterChangeHook = async ({req}) => {
   revalidateAllLocaleRoots()

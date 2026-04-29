@@ -1,4 +1,4 @@
-import { afterChangeHookTicket, afterDeleteHookTicket } from '@/app/lib/hooks/payloadHooks'
+import { afterChangeRevalidateAll, afterDeleteRevaledateAll } from '@/app/lib/hooks/payloadHooks'
 import type { CollectionConfig } from 'payload'
 
 export const Ticket: CollectionConfig = {
@@ -6,7 +6,7 @@ export const Ticket: CollectionConfig = {
   access: {
     read: () => true,
   },
-  hooks: { afterChange: [afterChangeHookTicket], afterDelete: [afterDeleteHookTicket] },
+  hooks: { afterChange: [afterChangeRevalidateAll], afterDelete: [afterDeleteRevaledateAll] },
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'createdAt'],

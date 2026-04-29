@@ -2,7 +2,9 @@ import Link from 'next/link'
 import type { AboutUs, Category, GalleryInfo, Media as MediaType } from '@/payload-types'
 import { locales } from '@/app/lib/localization/i18n'
 import { localeLabels } from '@payload-config'
-import ShimmerImage from '@/app/components/ShimmerImage'
+import SmartImage from '@/app/components/SmartImage'
+import SectionImageReveal from '@/app/components/SectionImageReveal'
+import { pickMediaSize } from '@/utilities/pickMediaSize'
 
 function QuickLinkCard({
   href,
@@ -26,10 +28,11 @@ function QuickLinkCard({
     >
       {image && typeof image !== 'string' ? (
         <div className="relative aspect-[4/3] w-full overflow-hidden bg-[var(--border)]">
-          <ShimmerImage
-            src={(image as MediaType).url ?? ''}
+          <SmartImage
+            src={pickMediaSize(image as MediaType, 'medium').url || (image as MediaType).url || ''}
             alt={(image as MediaType).alt ?? ''}
             fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             style={{ objectFit: 'cover' }}
           />
         </div>
@@ -130,38 +133,50 @@ export function QuickLinks({
           </div>
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {galleryInfo && (
-            <QuickLinkCard
-              href={`/${locale}/gallery`}
-              image={galleryInfo.photo as unknown as MediaType}
-              title={galleryTitle}
-              description={galleryDescription}
-              className='bg-[var(--warm)]'
-              textClassName='text-white group-hover:text-gray-400'
-            />
-          )}
-          {categories.map((item) => (
-            <QuickLinkCard
-              key={item.id}
-              href={`/${locale}/category/${item.id}`}
-              image={item.image as unknown as MediaType}
-              title={item.title ?? ''}
-              description={item.description ?? ''}
-            />
-          ))}
+        (() => {
+          const hasImage = (v: unknown) => typeof v === 'object' && v != null
+          const imageCount =
+            (galleryInfo && hasImage(galleryInfo.photo) ? 1 : 0) +
+            categories.filter((c) => hasImage(c.image)).length +
+            (aboutUs && hasImage(aboutUs.photo) ? 1 : 0)
 
-          {aboutUs && (
-            <QuickLinkCard
-              href={`/${locale}/about`}
-              image={aboutUs.photo as unknown as MediaType}
-              title={aboutTitle}
-              description={aboutDescription}
-              className='bg-[var(--warm)]'
-              textClassName='text-white group-hover:text-gray-400'
-            />
-          )}
-        </div>
+          return (
+            <SectionImageReveal count={imageCount}>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {galleryInfo && (
+                  <QuickLinkCard
+                    href={`/${locale}/gallery`}
+                    image={galleryInfo.photo as unknown as MediaType}
+                    title={galleryTitle}
+                    description={galleryDescription}
+                    className="bg-[var(--warm)]"
+                    textClassName="text-white group-hover:text-gray-400"
+                  />
+                )}
+                {categories.map((item) => (
+                  <QuickLinkCard
+                    key={item.id}
+                    href={`/${locale}/category/${item.id}`}
+                    image={item.image as unknown as MediaType}
+                    title={item.title ?? ''}
+                    description={item.description ?? ''}
+                  />
+                ))}
+
+                {aboutUs && (
+                  <QuickLinkCard
+                    href={`/${locale}/about`}
+                    image={aboutUs.photo as unknown as MediaType}
+                    title={aboutTitle}
+                    description={aboutDescription}
+                    className="bg-[var(--warm)]"
+                    textClassName="text-white group-hover:text-gray-400"
+                  />
+                )}
+              </div>
+            </SectionImageReveal>
+          )
+        })()
       )}
     </section>
   );

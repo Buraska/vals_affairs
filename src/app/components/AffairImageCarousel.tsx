@@ -4,8 +4,10 @@ import { useState } from 'react'
 import Image from 'next/image'
 import Lightbox, { SlideImage } from 'yet-another-react-lightbox'
 import 'yet-another-react-lightbox/styles.css'
-import ShimmerImage from '@/app/components/ShimmerImage'
+import SmartImage from '@/app/components/SmartImage'
+import SectionImageReveal from '@/app/components/SectionImageReveal'
 import { useLanguage } from '@/app/contexts/LanguageContext'
+import { pickMediaSize } from '@/utilities/pickMediaSize'
 import type { Media as MediaType } from '@/payload-types'
 
 function LightboxSlide({ slide }: { slide: SlideImage }) {
@@ -15,7 +17,7 @@ function LightboxSlide({ slide }: { slide: SlideImage }) {
       alt={slide.alt ?? ''}
       fill
       style={{ objectFit: 'contain' }}
-      quality={25}
+      quality={75}
     />
   )
 }
@@ -63,74 +65,78 @@ export function AffairImageCarousel({
     )
   }
   const hasMultiple = slides.length > 1
-  const coverResource =  slides[0]
+  const coverResource = slides[0]
+  const cover = pickMediaSize(coverResource, 'large')
+  const revealCount = slides.length + (coverResource ? 1 : 0)
 
   return (
     <>
-      <div className="flex flex-col-reverse">
-        {hasMultiple && (
-          <div className="flex flex-row flex-nowrap gap-2 overflow-x-auto pb-2" role="list" aria-label="Gallery thumbnails">
-            {slides.map((media, i) => (
-              <button
-                key={media.id}
-                type="button"
-                role="listitem"
-                className="relative h-16 w-24 shrink-0 overflow-hidden rounded-sm border-2 border-amber-200 transition-colors hover:border-amber-500 focus:border-amber-600 focus:outline-none"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setIndex(i)
-                  setOpen(true)
-                }}
-                aria-label={`${i + 1} / ${slides.length}. ${t.common.openGallery}`}
-              >
-                <span className="relative block size-full">
-                  <ShimmerImage
-                    src={media.thumbnailURL ?? ''}
-                    alt={media.alt ?? `Photo ${i}`}
-                    fill
-                    style={{ objectFit: 'cover' }}
-                    sizes="80px"
-                  />
-                </span>
-              </button>
-            ))}
-          </div>
-        )}
-
-        <button
-          type="button"
-          disabled={lightboxSlides.length === 0}
-          className="relative mb-4 w-full aspect-[16/10] overflow-hidden rounded-lg bg-amber-100 cursor-pointer"
-          onClick={() => {
-            if (lightboxSlides.length > 0) {
-              setIndex(0)
-              setOpen(true)
-            }
-          }}
-          aria-label={title ? `${t.common.openGallery}: ${title}` : t.common.openGallery}
-        >
-
-          {coverResource ? (
-            <span className="relative block size-full">
-              <ShimmerImage
-                src={coverResource.url ?? ''}
-                alt={coverResource.alt ?? title ?? ''}
-                fill
-                style={{ objectFit: 'cover' }}
-              />
-            </span>
-          ) : (
-            <div className="flex aspect-[16/10] w-full items-center justify-center text-4xl text-amber-300">
-              —
-            </div>
-          )}
+      <SectionImageReveal count={revealCount}>
+        <div className="flex flex-col-reverse">
           {hasMultiple && (
-            <div className="absolute bottom-3 right-3 rounded-sm bg-black/50 px-2 py-1 text-xs font-medium text-white">
-              {slides.length} {t.common.photoCount}
+            <div className="flex flex-row flex-nowrap gap-2 overflow-x-auto pb-2" role="list" aria-label="Gallery thumbnails">
+              {slides.map((media, i) => (
+                <button
+                  key={media.id}
+                  type="button"
+                  role="listitem"
+                  className="relative h-16 w-24 shrink-0 overflow-hidden rounded-sm border-2 border-amber-200 transition-colors hover:border-amber-500 focus:border-amber-600 focus:outline-none"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setIndex(i)
+                    setOpen(true)
+                  }}
+                  aria-label={`${i + 1} / ${slides.length}. ${t.common.openGallery}`}
+                >
+                  <span className="relative block size-full">
+                    <SmartImage
+                      src={media.thumbnailURL ?? media.sizes?.thumbnail?.url ?? media.url ?? ''}
+                      alt={media.alt ?? `Photo ${i}`}
+                      fill
+                      style={{ objectFit: 'cover' }}
+                      sizes="96px"
+                    />
+                  </span>
+                </button>
+              ))}
             </div>
           )}
-        </button>
-      </div>
+
+          <button
+            type="button"
+            disabled={lightboxSlides.length === 0}
+            className="relative mb-4 w-full aspect-[16/10] overflow-hidden rounded-lg bg-amber-100 cursor-pointer"
+            onClick={() => {
+              if (lightboxSlides.length > 0) {
+                setIndex(0)
+                setOpen(true)
+              }
+            }}
+            aria-label={title ? `${t.common.openGallery}: ${title}` : t.common.openGallery}
+          >
+            {coverResource ? (
+              <span className="relative block size-full">
+                <SmartImage
+                  src={cover.url || coverResource.url || ''}
+                  alt={coverResource.alt ?? title ?? ''}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 60vw"
+                  style={{ objectFit: 'cover' }}
+                />
+              </span>
+            ) : (
+              <div className="flex aspect-[16/10] w-full items-center justify-center text-4xl text-amber-300">
+                —
+              </div>
+            )}
+            {hasMultiple && (
+              <div className="absolute bottom-3 right-3 rounded-sm bg-black/50 px-2 py-1 text-xs font-medium text-white">
+                {slides.length} {t.common.photoCount}
+              </div>
+            )}
+          </button>
+        </div>
+      </SectionImageReveal>
 
 
       <Lightbox
