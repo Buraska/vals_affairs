@@ -83,24 +83,32 @@ export default buildConfig({
       },
     }),
     // R2: set R2_BUCKET, R2_ENDPOINT (https://<ACCOUNT_ID>.r2.cloudflarestorage.com), R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY
-    ...(process.env.R2_BUCKET
+    ...(process.env.S3_BUCKET
       ? [
           s3Storage({
-            collections: { media: true },
-            bucket: process.env.R2_BUCKET,
+            collections: { 
+              media: true
+              // {
+              //   disablePayloadAccessControl: true,
+              //   generateFileURL: ({ filename, prefix }) => {
+              //     const key = prefix ? `${prefix}/${filename}` : filename
+              //     return `https://${process.env.S3_BUCKET}.s3.${process.env.S3_REGION}.amazonaws.com/${key}`
+              //   },
+              // },
+
+            },
+            bucket: process.env.S3_BUCKET,
             // Bypass Vercel's ~4.5 MB serverless body limit by uploading the
             // original file directly from the browser to R2 via a presigned
             // URL. Requires CORS to be configured on the R2 bucket (see README).
-            clientUploads: {
-              access: ({ req }) => Boolean(req.user),
-            },
+
             config: {
-              endpoint: process.env.R2_ENDPOINT,
-              region: 'auto',
+              // endpoint: process.env.R2_ENDPOINT, // For R2 storage
+              region: process.env.S3_REGION,
               forcePathStyle: true,
               credentials: {
-                accessKeyId: process.env.R2_ACCESS_KEY_ID ?? '',
-                secretAccessKey: process.env.R2_SECRET_ACCESS_KEY ?? '',
+                accessKeyId: process.env.S3_ACCESS_KEY_ID ?? '',
+                secretAccessKey: process.env.S3_SECRET_ACCESS_KEY ?? '',
               },
             },
           }),
@@ -108,31 +116,7 @@ export default buildConfig({
           // setUploadHandler() call wins for the `media` collection. Our
           // handler downscales huge images in the browser before PUTting
           // them straight to R2.
-          (incomingConfig: Config): Config => {
-            const adminSection = incomingConfig.admin ?? {}
-            const componentsSection = adminSection.components ?? {}
-            const providers = componentsSection.providers ?? []
-            return {
-              ...incomingConfig,
-              admin: {
-                ...adminSection,
-                components: {
-                  ...componentsSection,
-                  providers: [
-                    ...providers,
-                    {
-                      path: '/app/components/admin/MediaDownscaleHandler#MediaDownscaleHandler',
-                      clientProps: {
-                        collectionSlug: 'media',
-                        enabled: true,
-                        serverHandlerPath: '/storage-s3-generate-signed-url',
-                      },
-                    },
-                  ],
-                },
-              },
-            }
-          },
+
         ]
       : []),
   ],

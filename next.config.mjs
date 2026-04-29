@@ -27,6 +27,12 @@ const nextConfig = {
         hostname: '*.public.blob.vercel-storage.com',
         pathname: '/**',
       },
+      // {
+      //   protocol: 'https',
+      //   hostname: `${process.env.S3_BUCKET}.s3.${process.env.S3_REGION}.amazonaws.com`,
+      //   pathname: `/**`,
+      // },
+      // new URL(`${process.env.R2_ENDPOINT}/**`),
       // YouTube video thumbnails
       {
         protocol: 'https',
