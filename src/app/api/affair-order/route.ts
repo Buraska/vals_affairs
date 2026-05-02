@@ -46,7 +46,6 @@ export async function POST(req: Request) {
   
   const orderRef = generateOrderRef()
   const date = Date()
-
   const affairId = checkTypeAndSlice(b.affairId, 200)
   const name = checkTypeAndSlice(b.customerName, LIMITS.name)
   const email = checkTypeAndSlice(b.email, LIMITS.email)
@@ -67,78 +66,23 @@ export async function POST(req: Request) {
 
   MailServce.subscribeUser(email, name)
 
-
-  const payload = await getPayload({ config: configPromise })
-
-  const affair = await payload
-    .findByID({
-      collection: 'Affair',
-      id: affairId,
-      depth: 0,
-      overrideAccess: true,
-    })
-    .catch(() => null)
-  if (!affair) {
-    return NextResponse.json({ error: 'Invalid affairId' }, { status: 400 })
-  }
-
-  const bank = await payload.findGlobal({
-    slug: 'bank-credentials',
-    locale: b.locale,
-    depth: 0,
-    overrideAccess: true,
-  })
-
-  const webInfo = await payload.findGlobal({
-    slug: 'web-info',
-    locale: b.locale,
-    depth: 0,
-    overrideAccess: true,
-  })
-
-  const instructionLexical =
-    bank.instruction?.[b.locale] ?? bank.instruction?.ee ?? bank.instruction?.en ?? null
-
-
-
   const items = (ticketDTOs ?? [])
     .filter((t) => (t?.qty ?? 0) > 0)
     .map((t) => ({
-      ticketName: String(t.name ?? '').slice(0, 500),
+      ticketName: `${b.affairTitle}: ${String(t.name ?? '')}`.slice(0, 500),
       qty: t.qty ?? 0,
       unitPrice: t.price ?? 0,
       subtotal: t.subtotal ?? 0,
     }))
-  const total = items.reduce((sum, i) => sum + (i.subtotal ?? 0), 0)
-  const templateParams: AffairOrderEmailParams = {
-    customerName: name,
-    affairTitle: affairTitle,
-    email: email,
-    phone: phone,
-    locale: b.locale,
-    ticketDTOs: b.ticketDTOs,
-    bankInstructionHtml: lexicalToHtml(instructionLexical),
-    bankInstructionLexical: instructionLexical,
-    bankAccountNumber: bank.accountNumber ?? "",
-    bankCredentials: bank.credentials ?? "",
-    orderRef: orderRef,
-    placedAt: date,
-    branding: {
-      siteName: webInfo.siteName,
-      email: webInfo.email,
-      phone: webInfo.phone,
-    },
-  }
 
-  const html = await buildAffairOrderEmailHtml(templateParams)
-
-  const con = await invoiceService.contact.create({contact_name: `${name} ${orderRef}`, customer_sub_type: 'individual', phone})
+  const con = await invoiceService.contact.create({contact_name: `${name}`, customer_sub_type: 'individual', phone})
   const conPerson = await invoiceService.contactperson.create({contact_id: con.contact_id, email, phone, last_name: name})
 
   const invoice: Invoice = await invoiceService.invoice.create({
     customer_id: con.contact_id,
     contact_persons: [conPerson.contact_person_id],
-    line_items: items.map((i) => ({item_id: "", name: i.ticketName, quantity: i.qty, rate: i.unitPrice}))})
+    line_items: items.map((i) => ({item_id: "", name: i.ticketName, quantity: i.qty, rate: i.unitPrice})),
+    is_inclusive_tax: true},)
   
   await invoiceService.invoice.sentEmail(invoice.invoice_id)
 

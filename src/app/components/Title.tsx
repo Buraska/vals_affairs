@@ -4,11 +4,9 @@ import { useLanguage } from "@/app/contexts/LanguageContext";
 
 export function Title() {
   const { t, siteDescription } = useLanguage();
-  const lines = siteDescription?.trim().split("\n");
-  const headline = lines?.[0]?.trim() || t.hero.heroTitle;
-  const tagline = lines?.[1]?.trim() || t.meta.tagline;
+
   return (
-    <section className="relative overflow-hidden border-b border-[var(--border)] lg:min-h-[min(calc(100vh-72px),28rem)] flex flex-col justify-center px-4 sm:px-8 lg:px-16 py-12 sm:py-16 ">
+    <section className="relative overflow-hidden border-b border-[var(--border)] lg:min-h-28rem flex flex-col justify-center px-4 sm:px-8 lg:px-16 py-12 sm:py-16 ">
       {/* Градиент в стиле заката — оранжевые и тёплые тона */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -31,14 +29,8 @@ export function Title() {
           `,
         }}
       />
-      <h1
-        className="relative text-center z-10 text-3xl sm:text-4xl md:text-5xl font-black leading-[1.05] tracking-tight text-[var(--cream)] mb-6"
-        style={{ fontFamily: "var(--font-playfair)" }}
-      >
-        {headline}
-      </h1>
-      <p className="text-center relative z-10  text-base leading-relaxed text-[var(--cream)]/70">
-        {tagline}
+      <p className="relative z-10 mx-auto max-w-[55ch] text-pretty text-center text-lg sm:text-xl lg:text-2xl font-medium leading-relaxed tracking-[-0.01em] text-[var(--cream)] drop-shadow-[0_1px_2px_rgba(0,0,0,0.35)]">
+        {siteDescription}
       </p>
     </section>
   );
