@@ -53,7 +53,7 @@ type SmartImageProps = Omit<ImageProps, 'src' | 'width' | 'height'> & {
 const SmartImage = forwardRef<HTMLImageElement, SmartImageProps>(function SmartImage(
   {
     resource,
-    preferredSize = 'large',
+    preferredSize = 'small',
     src: srcProp,
     width: widthProp,
     height: heightProp,

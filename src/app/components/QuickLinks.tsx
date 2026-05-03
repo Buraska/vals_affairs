@@ -29,7 +29,7 @@ function QuickLinkCard({
       {image && typeof image !== 'string' ? (
         <div className="relative aspect-[4/3] w-full overflow-hidden bg-[var(--border)]">
           <SmartImage
-            src={pickMediaSize(image as MediaType, 'medium').url || (image as MediaType).url || ''}
+            src={pickMediaSize(image as MediaType, 'small').url || (image as MediaType).url || ''}
             alt={(image as MediaType).alt ?? ''}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

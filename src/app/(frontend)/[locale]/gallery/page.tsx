@@ -105,8 +105,8 @@ export default async function GalleryPage({
                   <div className="columns-1 gap-4 sm:columns-2 lg:columns-3 xl:columns-4 [&>*]:mb-4">
                     {photos.map((p, idx) => {
                       const photo = p?.photo as Media
-                      const picked = pickMediaSize(photo, 'large')
-                      if (!picked.url) return null
+                      const picked = pickMediaSize(photo, 'small')
+                      if (!picked.url && !photo?.url) return null
 
                       const alt = photo?.alt ?? title ?? ''
 
@@ -116,7 +116,7 @@ export default async function GalleryPage({
                           className="group relative block w-full break-inside-avoid overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--card-bg)] shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
                         >
                           <SmartImage
-                            src={picked.url}
+                            src={picked.url || photo.url || ''}
                             width={picked.width || photo.width || 1200}
                             height={picked.height || photo.height || 800}
                             alt={alt}

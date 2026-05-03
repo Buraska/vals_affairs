@@ -28,7 +28,7 @@ export const AffairCard = ({ affair, locale, className = "" }: { affair: Affair;
       {(firstImage && typeof firstImage !== 'string') ? (
         <div className="relative w-full aspect-[4/3] overflow-hidden bg-[var(--border)]">
           <SmartImage
-            src={pickMediaSize(firstImage, 'medium').url || firstImage.url || ''}
+            src={pickMediaSize(firstImage, 'small').url || firstImage.url || ''}
             alt={firstImage.alt ?? ''}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
