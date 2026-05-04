@@ -102,10 +102,10 @@ export default async function GalleryPage({
                     SectionImageReveal keeps the grid hidden until every photo has
                     finished loading (or a 5s timeout fires). */}
                 <SectionImageReveal count={photos.length}>
-                  <div className="columns-1 gap-4 sm:columns-2 lg:columns-3 xl:columns-4 [&>*]:mb-4">
+                  <div className="columns-1 gap-4 sm:columns-2 lg:columns-3 xl:columns-3 [&>*]:mb-4">
                     {photos.map((p, idx) => {
                       const photo = p?.photo as Media
-                      const picked = pickMediaSize(photo, 'small')
+                      const picked = pickMediaSize(photo, 'medium')
                       if (!picked.url && !photo?.url) return null
 
                       const alt = photo?.alt ?? title ?? ''
@@ -121,7 +121,7 @@ export default async function GalleryPage({
                             height={picked.height || photo.height || 800}
                             alt={alt}
                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
-                            className="h-auto w-full object-contain transition-transform duration-500 group-hover:scale-[1.02]"
+                            className="h-auto w-full object-contain group-hover:scale-[1.02]"
                           />
                         </figure>
                       )

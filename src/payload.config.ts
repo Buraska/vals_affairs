@@ -87,8 +87,18 @@ export default buildConfig({
       ? [
           s3Storage({
             collections: { 
-              media: true
+              media: {generateFileURL: ({ filename, prefix }) => {
+                    const key = prefix ? `${prefix}/${filename}` : filename
+                    return `https://${process.env.S3_BUCKET}.s3.${process.env.S3_REGION}.amazonaws.com/${key}`
+                }}
             },
+                          // {
+              //   disablePayloadAccessControl: true,
+              //   generateFileURL: ({ filename, prefix }) => {
+              //     const key = prefix ? `${prefix}/${filename}` : filename
+              //     return `https://${process.env.S3_BUCKET}.s3.${process.env.S3_REGION}.amazonaws.com/${key}`
+              //   },
+              // },
             bucket: process.env.S3_BUCKET,
             // Bypass Vercel's ~4.5 MB serverless body limit by uploading the
             // original file directly from the browser to R2 via a presigned

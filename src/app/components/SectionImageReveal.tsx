@@ -47,7 +47,7 @@ type Props = {
  */
 export default function SectionImageReveal({
   count,
-  timeoutMs = 0,
+  timeoutMs = 25,
   className,
   children,
 }: Props) {

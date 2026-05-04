@@ -11,20 +11,17 @@ import {
 
 import type { Media } from '@/payload-types'
 import { pickMediaSize, type MediaSizeVariant } from '@/utilities/pickMediaSize'
+import { cn } from '@/utilities/ui'
 import { useRegisterImage } from '@/app/components/SectionImageReveal'
 
-const shimmer = (w: number, h: number) => `
-<svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-  <defs>
-    <linearGradient id="g">
-      <stop stop-color="#ddd" offset="20%" />
-      <stop stop-color="#eee" offset="50%" />
-      <stop stop-color="#ddd" offset="70%" />
-    </linearGradient>
-  </defs>
-  <rect width="${w}" height="${h}" fill="#e2d9c8" />
-  <rect id="r" width="${w}" height="${h}" fill="url(#g)" />
-</svg>`
+/** Tiny inline SVG for blur placeholder (no `xmlns` / xlink URIs). */
+const shimmer = (w: number, h: number) =>
+  `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">` +
+  `<defs><linearGradient id="g">` +
+  `<stop stop-color="#ddd" offset="20%"/><stop stop-color="#eee" offset="50%"/><stop stop-color="#ddd" offset="70%"/>` +
+  `</linearGradient></defs>` +
+  `<rect width="${w}" height="${h}" fill="#e2d9c8"/><rect width="${w}" height="${h}" fill="url(#g)"/>` +
+  `</svg>`
 
 const toBase64 = (str: string) =>
   typeof window === 'undefined' ? Buffer.from(str).toString('base64') : window.btoa(str)
@@ -125,11 +122,14 @@ const SmartImage = forwardRef<HTMLImageElement, SmartImageProps>(function SmartI
 
   if (!finalSrc) return null
 
-  const revealClass = revealed
-    ? 'opacity-100 transition-opacity duration-500 ease-out'
-    : 'opacity-0'
-
-  const mergedImgClassName = [className, revealClass].filter(Boolean).join(' ')
+  // One transition-property must cover both reveal (opacity) and caller hover
+  // (transform). `transition-transform` + `transition-opacity` conflict — only
+  // one wins in generated CSS, so opacity often never animates.
+  const mergedImgClassName = cn(
+    className,
+    'transition-[opacity,transform] duration-500 ease-out',
+    revealed ? 'opacity-100' : 'opacity-0',
+  )
 
   const commonProps = {
     alt: finalAlt ?? '',
