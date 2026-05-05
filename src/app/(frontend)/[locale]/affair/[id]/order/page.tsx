@@ -3,14 +3,18 @@ import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
-import { AffairOrderForm } from '@/app/components/AffairOrderForm'
-import { AffairOrderSummary } from '@/app/components/AffairOrderSummary'
+
 import { getTranslations } from '@/app/lib/localization/translations'
 import type { Lang } from '@/app/lib/localization/translations'
 import { isValidLocale, Locale, locales } from '@/app/lib/localization/i18n'
 import { formatDateRange } from '@/utilities/utility'
+import dynamic from 'next/dynamic'
 
 const payload = await getPayload({ config: configPromise })
+
+
+const AffairOrderForm = dynamic((() => (import('@/app/components/AffairOrderForm'))))
+
 
 export async function generateStaticParams() {
   const { docs: affairs } = await payload.find({
@@ -41,13 +45,10 @@ export async function generateMetadata({
 
 export default async function OrderPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ locale: Locale; id: string }>
-  searchParams: Promise<{ q?: string }>
 }) {
   const { locale, id } = await params
-  const { q } = await searchParams
   const lang = (isValidLocale(locale) ? locale : 'ee') as Lang
   const t = getTranslations(lang)
 
@@ -65,7 +66,6 @@ export default async function OrderPage({
 
   const tickets = affair.tickets ?? []
   const dateRangeText = formatDateRange(affair['start date'], affair['end date'], locale)
-  const ticketQuery = typeof q === 'string' ? q : ''
 
   return (
     <main className="min-h-screen">

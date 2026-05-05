@@ -45,7 +45,6 @@ function QuickLinkCard({
           →
         </div>
       )}
-
       <div className="flex flex-col gap-1 p-5">
         <h3
           className={` font-semibold text-[var(--dark)] group-hover:text-[var(--rust)] transition-colors`}

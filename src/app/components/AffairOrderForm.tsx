@@ -15,7 +15,7 @@ type Ticket = Affair['tickets'][0]
 
 export type { TicketOrderDTO } from '@/app/lib/affairOrderTypes'
 
-export function AffairOrderForm({
+export default function AffairOrderForm({
   affair,
   locale,
   tickets,

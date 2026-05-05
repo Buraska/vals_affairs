@@ -14,19 +14,30 @@ import { pickMediaSize, type MediaSizeVariant } from '@/utilities/pickMediaSize'
 import { cn } from '@/utilities/ui'
 import { useRegisterImage } from '@/app/components/SectionImageReveal'
 
-/** Tiny inline SVG for blur placeholder (no `xmlns` / xlink URIs). */
-const shimmer = (w: number, h: number) =>
-  `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">` +
-  `<defs><linearGradient id="g">` +
-  `<stop stop-color="#ddd" offset="20%"/><stop stop-color="#eee" offset="50%"/><stop stop-color="#ddd" offset="70%"/>` +
-  `</linearGradient></defs>` +
-  `<rect width="${w}" height="${h}" fill="#e2d9c8"/><rect width="${w}" height="${h}" fill="url(#g)"/>` +
-  `</svg>`
+/** Tiny SVG blur placeholder — needs `xmlns` for `<img>` / data URLs; base64 keeps `url(#id)` intact. */
+function shimmerSvg(w: number, h: number): string {
+  return [
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">`,
+    '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="0">',
+    '<stop offset="20%" stop-color="#ddd"/>',
+    '<stop offset="50%" stop-color="#eee"/>',
+    '<stop offset="70%" stop-color="#ddd"/>',
+    '</linearGradient></defs>',
+    `<rect width="${w}" height="${h}" fill="#e2d9c8"/>`,
+    `<rect width="${w}" height="${h}" fill="url(#g)"/>`,
+    '</svg>',
+  ].join('')
+}
 
-const toBase64 = (str: string) =>
-  typeof window === 'undefined' ? Buffer.from(str).toString('base64') : window.btoa(str)
+function svgToBlurDataUrl(svg: string): string {
+  const base64 =
+    typeof window === 'undefined'
+      ? Buffer.from(svg, 'utf-8').toString('base64')
+      : btoa(svg)
+  return `data:image/svg+xml;base64,${base64}`
+}
 
-const DEFAULT_BLUR = `data:image/svg+xml;base64,${toBase64(shimmer(32, 24))}`
+const DEFAULT_BLUR = svgToBlurDataUrl(shimmerSvg(32, 24))
 
 type SmartImageProps = Omit<ImageProps, 'src' | 'width' | 'height'> & {
   src?: ImageProps['src']
