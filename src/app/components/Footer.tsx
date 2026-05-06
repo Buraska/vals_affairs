@@ -21,14 +21,14 @@ export function Footer() {
       </span>
       <span className="text-xs text-[var(--muted)] font-light tracking-wide sm:ml-auto">
         {t.footer.websiteDevelopment}{" "}
-        <a
+        <Link
           href="https://www.linkedin.com/in/vadim-buraska/"
           target="_blank"
           rel="noopener noreferrer"
           className="text-[var(--rust)] hover:underline"
         >
           Vadim Zolotarenko
-        </a>
+        </Link>
       </span>
     </footer>
   );

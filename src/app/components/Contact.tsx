@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useLanguage } from "@/app/contexts/LanguageContext";
 
 type ContactEntry = {
@@ -59,15 +60,15 @@ export function Contact() {
               <ul className="mt-4 space-y-2 text-sm text-stone-700">
                 <li>
                   <strong>e-mail:</strong>{" "}
-                  <a href={`mailto:${c.email}`} className="text-amber-700 hover:underline">
+                  <Link href={`mailto:${c.email}`} className="text-amber-700 hover:underline">
                     {c.email}
-                  </a>
+                  </Link>
                 </li>
                 <li>
                   <strong>{t.contact.phone}:</strong>{" "}
-                  <a href={`tel:+372${c.phone.replace(/\s/g, "")}`} className="text-amber-700 hover:underline">
+                  <Link href={`tel:+372${c.phone.replace(/\s/g, "")}`} className="text-amber-700 hover:underline">
                     +372 {c.phone}
-                  </a>
+                  </Link>
                 </li>
                 <li>
                   <strong>{t.contact.addressLabel}:</strong> {c.address}

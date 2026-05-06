@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useLanguage } from "@/app/contexts/LanguageContext";
 import SmartImage from "@/app/components/SmartImage";
 import SectionImageReveal from "@/app/components/SectionImageReveal";
@@ -91,20 +92,20 @@ export function Team({
                     <p className="mt-1 text-sm text-[var(--muted)] font-light">{roleText}</p>
                   )}
                   {person.phone && (
-                    <a
+                    <Link
                       href={`tel:${person.phone.replace(/\s/g, "")}`}
                       className="mt-2 block text-sm text-[var(--rust)] hover:underline"
                     >
                       {person.phone}
-                    </a>
+                    </Link>
                   )}
                   {person.email && (
-                    <a
+                    <Link
                       href={`mailto:${person.email}`}
                       className="mt-0.5 block text-sm text-[var(--rust)] hover:underline"
                     >
                       {person.email}
-                    </a>
+                    </Link>
                   )}
                 </div>
               );

@@ -22,7 +22,7 @@ function QuickLinkCard({
   textClassName?: string
 }) {
   return (
-    <a
+    <Link
       href={href}
       className={`${className} group relative flex flex-col overflow-hidden bg-[var(--card-bg)] border border-[var(--border)] transition hover:bg-[#FFFDF6]`}
     >
@@ -62,7 +62,7 @@ function QuickLinkCard({
           <path d="M2 7H12M8 3L12 7L8 11" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </span>
-    </a>
+    </Link>
   )
 }
 

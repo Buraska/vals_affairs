@@ -106,28 +106,28 @@ export function Header({
         </Link>
         <div className="hidden lg:flex items-center gap-3 ml-4">
           {webInfo?.instagramUrl ? (
-            <a href={webInfo.instagramUrl} target="_blank" rel="noopener noreferrer" className="text-[var(--muted)] hover:text-[var(--dark)] transition" aria-label="Instagram">
+            <Link href={webInfo.instagramUrl} target="_blank" rel="noopener noreferrer" className="text-[var(--muted)] hover:text-[var(--dark)] transition" aria-label="Instagram">
               {instagramIcon}
-            </a>
+            </Link>
           ) : null}
           {webInfo?.facebookUrl ? (
-            <a href={webInfo.facebookUrl} target="_blank" rel="noopener noreferrer" className="text-[var(--muted)] hover:text-[var(--dark)] transition" aria-label="Facebook">
+            <Link href={webInfo.facebookUrl} target="_blank" rel="noopener noreferrer" className="text-[var(--muted)] hover:text-[var(--dark)] transition" aria-label="Facebook">
               {facebookIcon}
-            </a>
+            </Link>
           ) : null}
         </div>
       </div>
 
         <div className="hidden lg:flex items-center gap-3 pl-2">
           {webInfo?.phone ? (
-            <a href={`tel:${webInfo.phone.replace(/\s/g, "")}`} className="text-sm text-[var(--muted)] hover:text-[var(--dark)] transition">
+            <Link href={`tel:${webInfo.phone.replace(/\s/g, "")}`} className="text-sm text-[var(--muted)] hover:text-[var(--dark)] transition">
               {webInfo.phone}
-            </a>
+            </Link>
           ) : null}
           {webInfo?.email ? (
-            <a href={`mailto:${webInfo.email}`} className="text-sm text-[var(--muted)] hover:text-[var(--dark)] transition">
+            <Link href={`mailto:${webInfo.email}`} className="text-sm text-[var(--muted)] hover:text-[var(--dark)] transition">
               {webInfo.email}
-            </a>
+            </Link>
           ) : null}
           <div className="hidden lg:flex flex rounded border border-[var(--border)] p-0.5">
             {locales.map((l) => (
@@ -197,28 +197,28 @@ export function Header({
               ))}
             </div>
             {webInfo?.phone ? (
-              <a href={`tel:${webInfo.phone.replace(/\s/g, "")}`} onClick={() => setMobileOpen(false)} className="mt-2 py-2 text-sm text-[var(--rust)]">
+              <Link href={`tel:${webInfo.phone.replace(/\s/g, "")}`} onClick={() => setMobileOpen(false)} className="mt-2 py-2 text-sm text-[var(--rust)]">
                 {webInfo.phone}
-              </a>
+              </Link>
             ) : null}
             {webInfo?.email ? (
-              <a href={`mailto:${webInfo.email}`} onClick={() => setMobileOpen(false)} className="py-2 text-sm text-[var(--rust)]">
+              <Link href={`mailto:${webInfo.email}`} onClick={() => setMobileOpen(false)} className="py-2 text-sm text-[var(--rust)]">
                 {webInfo.email}
-              </a>
+              </Link>
             ) : null}
             {(webInfo?.facebookUrl || webInfo?.instagramUrl) && (
               <div className="mt-3 pt-3 border-t border-[var(--border)] flex gap-3">
                 {webInfo?.instagramUrl ? (
-                  <a href={webInfo.instagramUrl} target="_blank" rel="noopener noreferrer" onClick={() => setMobileOpen(false)} className="flex items-center gap-2 text-sm text-[var(--muted)]" aria-label="Instagram">
+                  <Link href={webInfo.instagramUrl} target="_blank" rel="noopener noreferrer" onClick={() => setMobileOpen(false)} className="flex items-center gap-2 text-sm text-[var(--muted)]" aria-label="Instagram">
                     {instagramIcon}
                     Instagram
-                  </a>
+                  </Link>
                 ) : null}
                 {webInfo?.facebookUrl ? (
-                  <a href={webInfo.facebookUrl} target="_blank" rel="noopener noreferrer" onClick={() => setMobileOpen(false)} className="flex items-center gap-2 text-sm text-[var(--muted)]" aria-label="Facebook">
+                  <Link href={webInfo.facebookUrl} target="_blank" rel="noopener noreferrer" onClick={() => setMobileOpen(false)} className="flex items-center gap-2 text-sm text-[var(--muted)]" aria-label="Facebook">
                     {facebookIcon}
                     Facebook
-                  </a>
+                  </Link>
                 ) : null}
               </div>
             )}
