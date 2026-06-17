@@ -135,7 +135,7 @@ export function Header({
             {locales.map((l) => (
               <Link
                 key={l}
-                href={`/${l}/${usePathname().replace(/^\/[^\/]+\//, '')}`}
+                href={`/${l}`}
                 className={`rounded px-2.5 py-1 text-xs font-medium transition ${lang === l ? "bg-[var(--dark)] text-[var(--cream)]" : "text-[var(--muted)] hover:text-[var(--dark)]"}`}
                 prefetch={false}
               >
