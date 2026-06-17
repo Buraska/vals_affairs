@@ -124,15 +124,18 @@ export default async function AffairPage({
                 </p>
               </section>
 
-              {descriptionHtml && (
+
+            </div>
+          </div>
+        </div>
+
+        {descriptionHtml && (
                 <section
                   className={`mb-6 affair-rich-text [&_p]:mb-4 [&_p]:text-[var(--muted)] [&_strong]:text-[var(--dark)] [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:space-y-1 [&_ol]:pl-6 [&_li]:text-[var(--muted)] [&_h2]:mt-4 [&_h2]:mb-4 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-[var(--dark)] [&_h3]:mt-4 [&_h3]:mb-4 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:text-[var(--dark)] [&_a]:text-[var(--rust)] [&_a]:underline [&_a]:hover:text-[var(--dark)]`}
                   dangerouslySetInnerHTML={{ __html: descriptionHtml }}
                 />
               )}
-            </div>
-          </div>
-        </div>
+              
         {affair['additional info'] && affair['additional info'].length > 0 && (
           <AffairAdditionalInfoTabs
             tabs={affair['additional info']

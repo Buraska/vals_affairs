@@ -7,6 +7,8 @@ import type { Lang } from "@/app/lib/localization/translations";
 import { locales } from "@/app/lib/localization/i18n";
 import type { AboutUs, Category, GalleryInfo } from "@/payload-types";
 import { NavItems } from "./NavItems";
+import { useRouter } from "next/router";
+import { usePathname } from "next/navigation";
 
 const navItemsHead = [
   { key: "home", href: "#" },
@@ -133,7 +135,7 @@ export function Header({
             {locales.map((l) => (
               <Link
                 key={l}
-                href={`/${l}`}
+                href={`/${l}/${usePathname().replace(/^\/[^\/]+\//, '')}`}
                 className={`rounded px-2.5 py-1 text-xs font-medium transition ${lang === l ? "bg-[var(--dark)] text-[var(--cream)]" : "text-[var(--muted)] hover:text-[var(--dark)]"}`}
                 prefetch={false}
               >
