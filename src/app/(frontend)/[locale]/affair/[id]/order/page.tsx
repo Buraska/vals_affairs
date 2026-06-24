@@ -9,9 +9,9 @@ import type { Lang } from '@/app/lib/localization/translations'
 import { isValidLocale, Locale, locales } from '@/app/lib/localization/i18n'
 import { formatDateRange } from '@/utilities/utility'
 import dynamic from 'next/dynamic'
+import { AffairOrderSummary } from '@/app/components/AffairOrderSummary'
 
 const payload = await getPayload({ config: configPromise })
-
 
 const AffairOrderForm = dynamic((() => (import('@/app/components/AffairOrderForm'))))
 
@@ -34,7 +34,7 @@ export async function generateMetadata({
   const { locale, id } = await params
   const t = getTranslations(locale as Lang)
   const affair = await payload
-    .findByID({ collection: 'Affair', id, depth: 0, locale: locale})
+    .findByID({ collection: 'Affair', id, depth: 0, locale: locale })
     .catch(() => null)
   if (!affair) return { title: t.common.notFoundOrder }
   return {
@@ -85,19 +85,33 @@ export default async function OrderPage({
         </h1>
 
         <div className="flex flex-col gap-8 lg:flex-row lg:gap-12">
-          <div className="min-w-0 flex-1">
-          <Suspense fallback={<p className="text-[var(--muted)]">{t.affair.noTicketsNote}</p>}>
-            <AffairOrderForm
-              affair={affair}
-              locale={locale}
-              tickets={tickets}
-              dateRangeText={dateRangeText}
-            />
+            <Suspense fallback={<p className="text-[var(--muted)]">{t.affair.noTicketsNote}</p>}>
+              <AffairOrderForm
+                affair={affair}
+                locale={locale}
+                tickets={tickets}
+                dateRangeText={dateRangeText}
+              />
             </Suspense>
-            
+            <div className="lg:w-[380px] lg:shrink-0">
+              <section className="sticky top-24 rounded border border-[var(--border)] bg-[var(--card-bg)] p-6">
+                <h2
+                  className="mb-4 text-lg font-semibold text-[var(--dark)]"
+                  style={{ fontFamily: 'var(--font-playfair)' }}>
+                  {t.affair.yourOrder}
+                </h2>
+                <Suspense>
+                <AffairOrderSummary
+                  affairTitle={affair.title}
+                  affairPrice={affair.price}
+                  dateRangeText={dateRangeText}
+                  tickets={tickets}
+                />
+                </Suspense>
+              </section>
+            </div>
           </div>
         </div>
-      </div>
     </main>
   )
 }

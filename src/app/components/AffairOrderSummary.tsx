@@ -5,6 +5,7 @@ import { useMemo } from 'react'
 import { useLanguage } from '@/app/contexts/LanguageContext'
 import { Affair } from '@/payload-types'
 import type { TicketOrderDTO } from '@/app/lib/affairOrderTypes'
+import { Ticket } from './AffairTicketsBlock'
 
 
 export function AffairOrderSummary({
@@ -12,15 +13,38 @@ export function AffairOrderSummary({
   affairPrice,
   dateRangeText,
   tickets,
-  totalPrice,
 }: {
   affairTitle: string | null | undefined
   affairPrice: number | null | undefined
   dateRangeText: string
-  tickets: TicketOrderDTO[],
-  totalPrice: Number
+  tickets: Ticket[],
 }) {
   const { t } = useLanguage()
+  const searchParams = useSearchParams()
+  const qParam = searchParams.get('q') ?? ''
+
+
+  const {ticketDTOs, totalPrice} = useMemo(() => {
+    const quantities = qParam
+      ? qParam.split(',').map((s) => Math.max(0, parseInt(s, 10) || 0))
+      : tickets.map(() => 0)
+    const paddedQuantities = tickets.map((_, i) => quantities[i] ?? 0)
+    let totalPrice = 0
+    const ticketDTOs: TicketOrderDTO[] = tickets.map((ticket, i) => {
+      const qty = paddedQuantities[i] ?? 0
+      const price = ticket['ticket price'] ?? 0
+      const subtotal = qty * price
+      const name = typeof ticket.ticket === 'string' ? '—' : ticket.ticket.name ?? '—'
+      totalPrice += subtotal
+      return {
+        name,
+        qty,
+        price,
+        subtotal,
+      }
+    })
+    return {ticketDTOs, totalPrice}
+  }, [qParam])
 
   return (
     <>
@@ -29,7 +53,7 @@ export function AffairOrderSummary({
       {tickets.length > 0 ? (
         <>
           <ul className="space-y-2 border-t border-[var(--border)] pt-4">
-            {tickets.map((ticket, i) => {
+            {ticketDTOs.map((ticket, i) => {
               if (ticket.qty === 0) return null
               return (
                 <li

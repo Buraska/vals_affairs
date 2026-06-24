@@ -279,23 +279,7 @@ export default function AffairOrderForm({
         )}
       </div>
 
-      <aside className="lg:w-[380px] lg:shrink-0">
-        <section className="sticky top-24 rounded border border-[var(--border)] bg-[var(--card-bg)] p-6">
-          <h2
-            className="mb-4 text-lg font-semibold text-[var(--dark)]"
-            style={{ fontFamily: 'var(--font-playfair)' }}
-          >
-            {t.affair.yourOrder}
-          </h2>
-          <AffairOrderSummary
-            affairTitle={affair.title}
-            affairPrice={affair.price}
-            dateRangeText={dateRangeText}
-            tickets={ticketDTOs}
-            totalPrice={totalPrice}
-          />
-        </section>
-      </aside>
+
   </div>
   )
 }
