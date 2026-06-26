@@ -7,10 +7,11 @@ import { AffairTicketsWithOrderLink } from '@/app/components/AffairTicketsWithOr
 import { lexicalToHtml } from '@/utilities/lexicalToHtml'
 import { Media as MediaType } from '@/payload-types'
 import { AffairImageCarousel } from '@/app/components/AffairImageCarousel'
+import { AffairCarousel } from '@/app/components/AffairCarousel'
+import { AffairDateTime } from '@/app/components/AffairDateTime'
 import { getTranslations } from '@/app/lib/localization/translations'
 import type { Lang } from '@/app/lib/localization/translations'
 import { isValidLocale, Locale, locales } from '@/app/lib/localization/i18n'
-import { formatDateRange } from '@/utilities/utility'
 
 const payload = await getPayload({ config: configPromise })
 
@@ -66,6 +67,17 @@ export default async function AffairPage({
     typeof affair.category === 'string' ? affair.category : affair.category?.id
   const descriptionHtml = lexicalToHtml(affair.description)
 
+  const related = (
+    await payload.find({
+      collection: 'Affair',
+      depth: 1,
+      locale: lang,
+      where: { id: { not_equals: id } },
+      limit: 50,
+    })
+  ).docs
+  const randomRelated = [...related].sort(() => Math.random() - 0.5).slice(0, 5)
+
   const slides: MediaType[] = affair.images
     ? affair.images.map((i) => i.image).filter((i): i is MediaType => i != null && typeof i !== 'string')
     : []
@@ -85,6 +97,13 @@ export default async function AffairPage({
           </Link>
         )}
 
+        <h1
+          className="mb-6 text-3xl font-bold leading-tight text-[var(--dark)] sm:text-4xl lg:text-5xl"
+          style={{ fontFamily: "var(--font-playfair)" }}
+        >
+          {affair.title}
+        </h1>
+
         <div className="flex flex-col lg:flex-row gap-8">
           {slides.length !== 0 ? (
             <div className="relative min-h-0 min-w-0 flex-1 overflow-hidden  lg:flex-[2]">
@@ -100,9 +119,6 @@ export default async function AffairPage({
           )}
 
           <div className="lg:flex-[1] lg:min-w-0">
-            <h1 className="mb-6 text-3xl font-bold text-[var(--dark)] sm:text-4xl" style={{ fontFamily: "var(--font-playfair)" }}>
-              {affair.title}
-            </h1>
             <div className="mb-6 border-b border-[var(--border)] pb-6">
               {affair.isAvailable === true ? (
                 <AffairTicketsWithOrderLink
@@ -115,26 +131,36 @@ export default async function AffairPage({
               )}
             </div>
             <div>
-              <section className="mb-6">
-                <h2 className="mb-2 text-xs font-medium text-[var(--muted)] tracking-widest uppercase">
-                  {t.affair.scheduleTitle}
-                </h2>
-                <p className="text-[var(--dark)] font-medium">
-                  {formatDateRange(affair['start date'], affair['end date'], locale)}
-                </p>
-              </section>
-
-
+              <AffairDateTime
+                startDate={affair['start date']}
+                endDate={affair['end date']}
+                locale={locale}
+                label={t.affair.scheduleTitle}
+                addToCalendarLabel={t.affair.addToCalendar}
+                eventTitle={affair.title}
+                details={t.affair.calendarDetails}
+              />
             </div>
           </div>
         </div>
 
         {descriptionHtml && (
-                <section
-                  className={`mb-6 affair-rich-text [&_p]:mb-4 [&_p]:text-[var(--muted)] [&_strong]:text-[var(--dark)] [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:space-y-1 [&_ol]:pl-6 [&_li]:text-[var(--muted)] [&_h2]:mt-4 [&_h2]:mb-4 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-[var(--dark)] [&_h3]:mt-4 [&_h3]:mb-4 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:text-[var(--dark)] [&_a]:text-[var(--rust)] [&_a]:underline [&_a]:hover:text-[var(--dark)]`}
-                  dangerouslySetInnerHTML={{ __html: descriptionHtml }}
-                />
-              )}
+          <section className="mb-6">
+            <div className="mb-4 flex items-center gap-3">
+              <h2
+                className="text-2xl font-bold text-[var(--dark)]"
+                style={{ fontFamily: 'var(--font-playfair)' }}
+              >
+                {t.affair.descriptionTitle}
+              </h2>
+              <span className="h-px flex-1 bg-[var(--border)]" />
+            </div>
+            <div
+              className={`affair-rich-text [&_p]:mb-4 [&_p]:text-[var(--muted)] [&_strong]:text-[var(--dark)] [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:space-y-1 [&_ol]:pl-6 [&_li]:text-[var(--muted)] [&_h2]:mt-4 [&_h2]:mb-4 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-[var(--dark)] [&_h3]:mt-4 [&_h3]:mb-4 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:text-[var(--dark)] [&_a]:text-[var(--rust)] [&_a]:underline [&_a]:hover:text-[var(--dark)]`}
+              dangerouslySetInnerHTML={{ __html: descriptionHtml }}
+            />
+          </section>
+        )}
               
         {affair['additional info'] && affair['additional info'].length > 0 && (
           <AffairAdditionalInfoTabs
@@ -151,6 +177,34 @@ export default async function AffairPage({
               })
               .filter(Boolean) as { id: string; title: string; contentHtml: string }[]}
           />
+        )}
+
+        {randomRelated.length > 0 && (
+          <section className="mt-12">
+            <div className="mb-6 flex items-center gap-3">
+              <h2
+                className="text-2xl font-bold text-[var(--dark)]"
+                style={{ fontFamily: 'var(--font-playfair)' }}
+              >
+                {t.affair.relatedTitle}
+              </h2>
+              <span className="h-px flex-1 bg-[var(--border)]" />
+            </div>
+
+            <AffairCarousel affairs={randomRelated} locale={lang} />
+
+            <div className="mt-8 flex justify-center">
+              <Link
+                href={`/${lang}`}
+                className="inline-flex items-center justify-center gap-2 rounded-lg border border-[var(--rust)] px-6 py-2.5 text-sm font-medium text-[var(--rust)] transition-colors hover:bg-[var(--rust)] hover:text-white"
+              >
+                {t.affair.seeMore}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </Link>
+            </div>
+          </section>
         )}
       </div>
     </main>

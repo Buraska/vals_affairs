@@ -62,7 +62,7 @@ export default async function LocaleLayout({
         aboutUs={aboutUs}
       />
       {children}
-      <Footer />
+      <Footer webInfo={headerWebInfo} />
       {/* <NavigationOverlay /> */}
     </LanguageProvider>
   )

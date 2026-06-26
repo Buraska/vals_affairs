@@ -279,7 +279,6 @@ export default function AffairOrderForm({
         )}
       </div>
 
-
   </div>
   )
 }

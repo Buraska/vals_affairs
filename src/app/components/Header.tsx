@@ -7,7 +7,6 @@ import type { Lang } from "@/app/lib/localization/translations";
 import { locales } from "@/app/lib/localization/i18n";
 import type { AboutUs, Category, GalleryInfo } from "@/payload-types";
 import { NavItems } from "./NavItems";
-import { useRouter } from "next/router";
 import { usePathname } from "next/navigation";
 
 const navItemsHead = [
@@ -72,18 +71,32 @@ export function Header({
 }) {
   const { lang, t } = useLanguage();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
+
+  const localizedPath = (target: Lang) => {
+    if (!pathname) return `/${target}`;
+    const segments = pathname.split("/");
+    if (segments.length > 1 && (locales as readonly string[]).includes(segments[1])) {
+      segments[1] = target;
+      return segments.join("/") || `/${target}`;
+    }
+    return `/${target}`;
+  };
 
   const galleryTitle =
     galleryInfo?.name?.[lang] ?? galleryInfo?.name?.ee ?? galleryInfo?.name?.en ?? null
   const aboutTitle =
     aboutUs?.name?.[lang] ?? aboutUs?.name?.ee ?? aboutUs?.name?.en ?? t.nav.about
 
-  const siteName = webInfo?.siteName ?? t.meta.siteName;
-
   return (
     <header
-      className="sticky top-0 z-50  px-4 sm:px-8 lg:px-16 lg:py-3"
-      style={{ background: "rgba(245, 240, 232, 0.92)", backdropFilter: "blur(12px)" }}
+      className="sticky top-0 z-50  px-4 sm:px-8 lg:px-16 lg:py-3 border-b border-[var(--warm)]/40 shadow-[0_2px_12px_rgba(196,82,42,0.06)]"
+      style={{
+        backgroundColor: "#F6F1E9",
+        
+        backgroundSize: "44px 44px, 100% 100%, 100% 100%, 100% 100%",
+        backdropFilter: "blur(12px)",
+      }}
     >
       <div className="flex h-[72px] items-center justify-between gap-4 min-w-0 lg:h-auto">
         <div className="flex items-center gap-4 min-w-0">
@@ -101,9 +114,12 @@ export function Header({
             )}
           </svg>
         </button>
-        <Link href={`/${lang}`} className="shrink-0">
-          <span className="font-serif italic text-4xl  tracking-tight text-[var(--dark)]" style={{ fontFamily: "var(--font-playfair)" }}>
-            {siteName}
+        <Link href={`/${lang}`} className="shrink-0 leading-none">
+          <span className="block font-serif italic text-3xl sm:text-4xl tracking-tight text-[var(--dark)]" style={{ fontFamily: "var(--font-playfair)" }}>
+            Waltz & Vals
+          </span>
+          <span className="block mt-0.5 text-[0.6rem] sm:text-xs font-semibold uppercase tracking-[0.25em] text-[var(--muted)]">
+            Voyage Capital
           </span>
         </Link>
         <div className="hidden lg:flex items-center gap-3 ml-4">
@@ -135,7 +151,7 @@ export function Header({
             {locales.map((l) => (
               <Link
                 key={l}
-                href={`/${l}`}
+                href={localizedPath(l)}
                 className={`rounded px-2.5 py-1 text-xs font-medium transition ${lang === l ? "bg-[var(--dark)] text-[var(--cream)]" : "text-[var(--muted)] hover:text-[var(--dark)]"}`}
                 prefetch={false}
               >
@@ -147,8 +163,8 @@ export function Header({
       </div>
 
       <nav className="hidden lg:flex items-center justify-center gap-5 border-t border-[var(--border)] pt-3">
-        <NavItems items={navItemsHead.map(({ key, href }) => ({ name: t.nav[key], href: `/${lang}${href}` }))} />
-        {galleryTitle ? <NavItems items={[{ name: galleryTitle, href: `/${lang}/gallery` }]} /> : null}
+        {/* <NavItems items={navItemsHead.map(({ key, href }) => ({ name: t.nav[key], href: `/${lang}${href}` }))} />
+        {galleryTitle ? <NavItems items={[{ name: galleryTitle, href: `/${lang}/gallery` }]} /> : null} */}
         <NavItems items={categories.map(({ id, title }) => ({ name: title, href: `/${lang}/category/${id}` }))} />
         <NavItems items={[{ name: aboutTitle, href: `/${lang}/about` }]} />
       </nav>
@@ -164,7 +180,7 @@ export function Header({
                 {t.nav[key]}
               </Link>
             ))}
-            {galleryTitle ? (
+            {/* {galleryTitle ? (
               <Link
                 href={`/${lang}/gallery`}
                 onClick={() => setMobileOpen(false)}
@@ -172,7 +188,7 @@ export function Header({
               >
                 {galleryTitle}
               </Link>
-            ) : null}
+            ) : null} */}
             {categories.map((cat) => (
               <Link key={cat.id} href={`/${lang}/category/${cat.id}`} onClick={() => setMobileOpen(false)} className="py-2.5 text-sm text-[var(--muted)] hover:text-[var(--dark)]">
                 {cat.title}
@@ -189,7 +205,7 @@ export function Header({
               {locales.map((l) => (
                 <Link
                   key={l}
-                  href={`/${l}`}
+                  href={localizedPath(l)}
                   onClick={() => setMobileOpen(false)}
                   className={`rounded border border-[var(--border)] px-2.5 py-1.5 text-xs font-medium transition ${lang === l ? "bg-[var(--dark)] text-[var(--cream)]" : "text-[var(--muted)] hover:text-[var(--dark)]"}`}
                   prefetch={false}

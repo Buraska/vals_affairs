@@ -1,6 +1,6 @@
 'use client'
 import type { Affair} from "@/payload-types"
-import { formatDateRange } from "@/utilities/utility"
+import { formatDayMonthRange } from "@/utilities/utility"
 import { lexicalToPlainText } from "@/utilities/lexicalToPlainText"
 import Link from "next/link"
 import { useLanguage } from "@/app/contexts/LanguageContext"
@@ -9,16 +9,36 @@ import SmartImage from "@/app/components/SmartImage"
 import { pickMediaSize } from "@/utilities/pickMediaSize"
 
 
-export const AffairCard = ({ affair, locale, className = "" }: { affair: Affair; locale: string, className: string }) => {
+export const AffairCard = ({ affair, locale, className = "", showCategory = false }: { affair: Affair; locale: string, className?: string, showCategory?: boolean }) => {
   const { t } = useLanguage()
   const firstImage = affair.images?.[0].image
   const isAvailable = affair.isAvailable !== false
 
   const descriptionText = lexicalToPlainText(affair.description)
-  const categoryTitle = typeof affair.category === 'object' && affair.category != null ? affair.category.title : null
+  const dateLabel = formatDayMonthRange(affair['start date'], affair['end date'], locale)
   const tagItems = (affair.tags ?? [])
     .map((t) => (typeof t.tag === 'object' && t.tag != null ? t.tag : null))
     .filter((tag): tag is NonNullable<typeof tag> => tag != null && 'name' in tag)
+
+  const categoryName =
+    typeof affair.category === 'object' && affair.category != null ? affair.category.title : null
+
+  const categoryBadge =
+    showCategory && categoryName ? (
+      <div className="absolute top-3 left-3 z-10 inline-flex items-center rounded-full bg-[var(--rust)]/90 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-[var(--cream)] shadow-md backdrop-blur-sm">
+        {categoryName}
+      </div>
+    ) : null
+
+  const dateBadge = (
+    <div className="absolute top-3 right-3 z-10 inline-flex items-center gap-1.5 rounded-full bg-[var(--dark)]/70 px-3 py-1.5 text-sm font-bold text-[var(--cream)] shadow-md backdrop-blur-sm">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden>
+        <rect x="3" y="4.5" width="18" height="16" rx="2.5" stroke="currentColor" strokeWidth="1.8" />
+        <path d="M3 9H21M8 2.5V6M16 2.5V6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      </svg>
+      {dateLabel}
+    </div>
+  )
 
   return (
     <Link
@@ -27,6 +47,8 @@ export const AffairCard = ({ affair, locale, className = "" }: { affair: Affair;
     >
       {(firstImage && typeof firstImage !== 'string') ? (
         <div className="relative w-full aspect-[4/3] overflow-hidden bg-[var(--border)]">
+          {categoryBadge}
+          {dateBadge}
           <SmartImage
             src={pickMediaSize(firstImage, 'small').url || firstImage.url || ''}
             alt={firstImage.alt ?? ''}
@@ -36,32 +58,25 @@ export const AffairCard = ({ affair, locale, className = "" }: { affair: Affair;
           />
         </div>
       ) : (
-        <div className="w-full aspect-[16/9] flex items-center justify-center bg-[var(--border)] text-[var(--muted)]" aria-hidden>→</div>
+        <div className="relative w-full aspect-[16/9] flex items-center justify-center bg-[var(--border)] text-[var(--muted)]" aria-hidden>
+          {categoryBadge}
+          {dateBadge}
+        </div>
       )}
       <div className="relative flex flex-col p-6 overflow-hidden">
         <span className="absolute bottom-0 left-0 right-0 h-0 bg-[var(--rust)] opacity-[0.06] transition-[height] duration-300 group-hover:h-full" aria-hidden />
-        <div className="relative z-10 flex items-start justify-between gap-4 mb-4">
-          <div className="flex flex-wrap items-center gap-1.5 min-w-0">
-            {categoryTitle ? (
-              <span className="text-[0.65rem] font-semibold tracking-widest uppercase px-2.5 py-1 rounded-sm bg-[var(--sage)]/15 text-[var(--sage)] shrink-0">
-                {categoryTitle}
+        {tagItems.length > 0 ? (
+          <div className="relative z-10 mb-4 flex flex-wrap items-center gap-1.5 min-w-0">
+            {tagItems.map((tag) => (
+              <span
+                key={tag.id}
+                className="text-[0.65rem] font-semibold tracking-widest uppercase px-2.5 py-1 rounded-sm bg-[var(--warm)]/15 text-[var(--warm)] shrink-0"
+              >
+                {tag.name}
               </span>
-            ) : null}
-            {tagItems.length > 0 ? (
-              tagItems.map((tag) => (
-                <span
-                  key={tag.id}
-                  className="text-[0.65rem] font-semibold tracking-widest uppercase px-2.5 py-1 rounded-sm bg-[var(--warm)]/15 text-[var(--warm)] shrink-0"
-                >
-                  {tag.name}
-                </span>
-              ))
-            ) : null}
+            ))}
           </div>
-          <span className="text-xs text-[var(--muted)] font-light tracking-wide shrink-0">
-            {formatDateRange(affair['start date'], affair['end date'], locale)}
-          </span>
-        </div>
+        ) : null}
         <h2 className="relative z-10 text-lg font-bold leading-tight text-[var(--dark)] mb-2" style={{ fontFamily: "var(--font-playfair)" }}>
           {affair.title}
         </h2>
@@ -71,17 +86,12 @@ export const AffairCard = ({ affair, locale, className = "" }: { affair: Affair;
           </p>
         ) : null}
         <div className="relative z-10 flex items-center justify-between mt-auto">
-          <div className="flex items-center gap-2 text-xs text-[var(--muted)] font-light">
+          <div className="flex items-center gap-2 text-sm text-[var(--dark)] font-semibold">
             <span>{affair.price} €</span>
             {!isAvailable && (
               <span className="ml-2 text-[var(--rust)] font-medium">{t.card.noSlots}</span>
             )}
           </div>
-          <span className="w-8 h-8 rounded-full border border-[var(--border)] flex items-center justify-center group-hover:bg-[var(--dark)] group-hover:border-[var(--dark)] transition-colors">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="group-hover:[&_path]:stroke-[var(--cream)]">
-              <path d="M2 7H12M8 3L12 7L8 11" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </span>
         </div>
       </div>
     </Link>

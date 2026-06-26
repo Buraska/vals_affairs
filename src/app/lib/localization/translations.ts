@@ -14,9 +14,9 @@ const navSchema = {
 const heroSchema = { statsTitle: '', schoolTours: '', familyTrips: '', celebrations: '', campSessions: '', heroTitle: '', ctaEvents: '', ctaTeam: '' }
 const valueSchema = { title: '', variety: '', varietyDesc: '', newRoutes: '', savings: '', savingsDesc: '', quality: '', qualityDesc: '' }
 const contactSchema = { title: '', phone: '', addressLabel: '', nonProfit: '', forBusiness: '', team: '', hours: '', hoursValue: '', weekend: '' }
-const footerSchema = { more: '', schoolProjects: '', giftCards: '', charity: '', merch: '', documents: '', contract: '', privacy: '', reportError: '', aboutUs: '', philosophy: '', contacts: '', reviews: '', partners: '', press: '', account: '', tours: '', subscribe: '', subscribeSuccess: '', subscribeCta: '', websiteDevelopment: '' }
+const footerSchema = { more: '', schoolProjects: '', giftCards: '', charity: '', merch: '', documents: '', contract: '', privacy: '', reportError: '', aboutUs: '', philosophy: '', ourJourney: '', contacts: '', reviews: '', partners: '', press: '', account: '', tours: '', subscribe: '', subscribeSuccess: '', subscribeCta: '', websiteDevelopment: '' }
 const commonSchema = { back: '', backToEvent: '', notFoundEvent: '', notFoundOrder: '', additional: '', photoCount: '', openGallery: '', menu: '', termsPageTitle: '', aboutPageTitle: '', galleryPageTitle: '', showMore: '', contentNotAdded: '' }
-const affairSchema = { scheduleTitle: '', takePlace: '', ticket: '', yourOrder: '', total: '', noTicketsNote: '', participation: '', notAvailable: '' }
+const affairSchema = { scheduleTitle: '', descriptionTitle: '', addToCalendar: '', calendarDetails: '', relatedTitle: '', seeMore: '', takePlace: '', ticket: '', yourOrder: '', total: '', noTicketsNote: '', participation: '', notAvailable: '' }
 const orderSchema = {
   pageTitle: '',
   formName: '',
@@ -75,6 +75,7 @@ const categorySchema = { search: '', sort: '', sortByDate: '', sortByPriceAsc: '
 const cardSchema = { noSlots: '', available: '', slotsCount: '' }
 const tabsSchema = { ariaLabel: '' }
 const metaSchema = { siteDescription: '', tagline: '', siteName: '' }
+const newsletterSchema = { title: '', subtitle: '', namePlaceholder: '', emailPlaceholder: '', button: '', sending: '', success: '', error: '' }
 
 export type TranslationsSchema = {
   nav: typeof navSchema
@@ -90,6 +91,7 @@ export type TranslationsSchema = {
   card: typeof cardSchema
   tabs: typeof tabsSchema
   meta: typeof metaSchema
+  newsletter: typeof newsletterSchema
 }
 
 export const translations: Record<Lang, TranslationsSchema> = {
@@ -147,6 +149,7 @@ export const translations: Record<Lang, TranslationsSchema> = {
       reportError: "Teata veast",
       aboutUs: "Meist",
       philosophy: "Meie filosoofia",
+      ourJourney: "Meie teekond",
       contacts: "Kontaktid",
       reviews: "Arvustused",
       partners: "Partnerid",
@@ -174,7 +177,12 @@ export const translations: Record<Lang, TranslationsSchema> = {
       contentNotAdded: "Sisu pole veel lisatud.",
     },
     affair: {
-      scheduleTitle: "Reisi ajakava",
+      scheduleTitle: "Kuupäev ja kellaaeg",
+      descriptionTitle: "Kirjeldus",
+      addToCalendar: "Lisa Google'i kalendrisse",
+      calendarDetails: "Üritus korraldajalt Waltz & Vals Capital Voyage.",
+      relatedTitle: "Sulle võib huvi pakkuda",
+      seeMore: "Vaata rohkem",
       takePlace: "Võta koht",
       ticket: "Pilet",
       yourOrder: "Teie tellimus",
@@ -268,6 +276,16 @@ export const translations: Record<Lang, TranslationsSchema> = {
       tagline: "Ekskursioonid, meistrikursused, tuurid ja pühad lastele ja täiskanutele",
       siteName: "Vals",
     },
+    newsletter: {
+      title: "Telli meie uudiskiri",
+      subtitle: "Saa esimesena teada uutest sündmustest, tuuridest ja eripakkumistest.",
+      namePlaceholder: "Sinu nimi",
+      emailPlaceholder: "Sinu e-post",
+      button: "Telli",
+      sending: "Saadan…",
+      success: "Suurepärane! Kontrolli e-kirja tellimuse kinnituse saamiseks.",
+      error: "Tellimine ebaõnnestus. Proovi uuesti.",
+    },
   },
   ru: {
     nav: {
@@ -323,6 +341,7 @@ export const translations: Record<Lang, TranslationsSchema> = {
       reportError: "Сообщить об ошибке",
       aboutUs: "О нас",
       philosophy: "Наша философия",
+      ourJourney: "Наш путь",
       contacts: "Контакты",
       reviews: "Отзывы",
       partners: "Партнеры",
@@ -350,7 +369,12 @@ export const translations: Record<Lang, TranslationsSchema> = {
       contentNotAdded: "Контент пока не добавлен.",
     },
     affair: {
-      scheduleTitle: "Расписание путешествия",
+      scheduleTitle: "Дата и время",
+      descriptionTitle: "Описание",
+      addToCalendar: "Добавить в Google Календарь",
+      calendarDetails: "Мероприятие от Waltz & Vals Capital Voyage.",
+      relatedTitle: "Вам может быть интересно",
+      seeMore: "Смотреть больше",
       takePlace: "Занять место",
       ticket: "Билет",
       yourOrder: "Ваш заказ",
@@ -442,6 +466,16 @@ export const translations: Record<Lang, TranslationsSchema> = {
       tagline: "Экскурсии, мастер-классы, туры и праздники для детей и взрослых",
       siteName: "Vals",
     },
+    newsletter: {
+      title: "Подпишитесь на рассылку",
+      subtitle: "Узнавайте первыми о новых событиях, турах и специальных предложениях.",
+      namePlaceholder: "Ваше имя",
+      emailPlaceholder: "Ваш email",
+      button: "Подписаться",
+      sending: "Отправка…",
+      success: "Отлично! Проверьте почту для подтверждения подписки.",
+      error: "Не удалось подписаться. Попробуйте снова.",
+    },
   },
   en: {
     nav: {
@@ -497,6 +531,7 @@ export const translations: Record<Lang, TranslationsSchema> = {
       reportError: "Report an error",
       aboutUs: "About us",
       philosophy: "Our philosophy",
+      ourJourney: "Our journey",
       contacts: "Contacts",
       reviews: "Reviews",
       partners: "Partners",
@@ -524,7 +559,12 @@ export const translations: Record<Lang, TranslationsSchema> = {
       contentNotAdded: "Content has not been added yet.",
     },
     affair: {
-      scheduleTitle: "Trip schedule",
+      scheduleTitle: "Date and time",
+      descriptionTitle: "Description",
+      addToCalendar: "Add to Google Calendar",
+      calendarDetails: "An event by Waltz & Vals Capital Voyage.",
+      relatedTitle: "You might be interested",
+      seeMore: "See more",
       takePlace: "Book a place",
       ticket: "Ticket",
       yourOrder: "Your order",
@@ -616,6 +656,16 @@ export const translations: Record<Lang, TranslationsSchema> = {
       tagline: "Tours, workshops, and celebrations for children and adults",
       siteName: "Vals",
     },
+    newsletter: {
+      title: "Subscribe to our newsletter",
+      subtitle: "Be the first to hear about new events, tours and special offers.",
+      namePlaceholder: "Your name",
+      emailPlaceholder: "Your email",
+      button: "Subscribe",
+      sending: "Sending…",
+      success: "Great! Check your email for the subscription confirmation.",
+      error: "Could not subscribe. Please try again.",
+    },
   },
   fi: {
     nav: {
@@ -671,6 +721,7 @@ export const translations: Record<Lang, TranslationsSchema> = {
       reportError: "Ilmoita virheestä",
       aboutUs: "Meistä",
       philosophy: "Filosofiamme",
+      ourJourney: "Matkamme",
       contacts: "Yhteystiedot",
       reviews: "Arvostelut",
       partners: "Kumppanit",
@@ -698,7 +749,12 @@ export const translations: Record<Lang, TranslationsSchema> = {
       contentNotAdded: "Sisältöä ei ole vielä lisätty.",
     },
     affair: {
-      scheduleTitle: "Matkan aikataulu",
+      scheduleTitle: "Päivämäärä ja aika",
+      descriptionTitle: "Kuvaus",
+      addToCalendar: "Lisää Google-kalenteriin",
+      calendarDetails: "Tapahtuman järjestää Waltz & Vals Capital Voyage.",
+      relatedTitle: "Saatat olla kiinnostunut",
+      seeMore: "Katso lisää",
       takePlace: "Varaa paikka",
       ticket: "Lippu",
       yourOrder: "Tilauksesi",
@@ -789,6 +845,16 @@ export const translations: Record<Lang, TranslationsSchema> = {
       siteDescription: "Kierrokset, työpajat ja juhlat lapsille ja aikuisille. Tallinna ja Viro.",
       tagline: "Kierrokset, työpajat ja juhlat lapsille ja aikuisille",
       siteName: "Vals",
+    },
+    newsletter: {
+      title: "Tilaa uutiskirjeemme",
+      subtitle: "Kuule ensimmäisten joukossa uusista tapahtumista, kierroksista ja tarjouksista.",
+      namePlaceholder: "Nimesi",
+      emailPlaceholder: "Sähköpostisi",
+      button: "Tilaa",
+      sending: "Lähetetään…",
+      success: "Loistavaa! Tarkista sähköpostisi tilauksen vahvistusta varten.",
+      error: "Tilaus epäonnistui. Yritä uudelleen.",
     },
   },
 } as const
