@@ -65,6 +65,10 @@ export default async function AffairPage({
 
   const categoryId =
     typeof affair.category === 'string' ? affair.category : affair.category?.id
+  const categoryTitle =
+    typeof affair.category === 'object' && affair.category != null
+      ? affair.category.title
+      : null
   const descriptionHtml = lexicalToHtml(affair.description)
 
   const related = (
@@ -85,17 +89,28 @@ export default async function AffairPage({
   return (
     <main className="min-h-screen">
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-8 lg:px-16">
-        {categoryId && (
+        <nav className="mb-6 flex items-center gap-4 text-sm text-[var(--muted)]">
           <Link
-            href={`/${locale}/category/${categoryId}`}
-            className="mb-6 inline-flex items-center gap-2 text-sm text-[var(--muted)] hover:text-[var(--rust)] transition-colors"
+            href={`/${locale}`}
+            className="inline-flex items-center gap-1.5 transition-colors hover:text-[var(--rust)]"
           >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
               <path d="M9 11L5 7L9 3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-            {t.common.back}
+            {t.common.home}
           </Link>
-        )}
+          {categoryId && (
+            <Link
+              href={`/${locale}/category/${categoryId}`}
+              className="inline-flex items-center gap-1.5 transition-colors hover:text-[var(--rust)]"
+            >
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
+                <path d="M9 11L5 7L9 3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              {categoryTitle ?? t.common.toCategory}
+            </Link>
+          )}
+        </nav>
 
         <h1
           className="mb-6 text-3xl font-bold leading-tight text-[var(--dark)] sm:text-4xl lg:text-5xl"

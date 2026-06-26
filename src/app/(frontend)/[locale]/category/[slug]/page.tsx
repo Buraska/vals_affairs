@@ -2,8 +2,10 @@ import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import { getPayload, type Where } from 'payload'
 import configPromise from '@payload-config'
-import type { Tag } from '@/payload-types'
+import type { Affair, Tag } from '@/payload-types'
 import { CategoryPageClient } from '@/app/components/CategoryPageClient'
+import CategoryPreview from '@/app/components/CategoryPreview'
+import { getCategoriesForLocale } from '@/app/lib/categoriesForLocale'
 import { getTranslations } from '@/app/lib/localization/translations'
 import type { Lang } from '@/app/lib/localization/translations'
 import { isValidLocale, Locale, locales } from '@/app/lib/localization/i18n'
@@ -83,6 +85,36 @@ export default async function CategoryPage({
 
   const baseUrl = `/${locale}/category/${categoryId}`
 
+  const allCategories = await getCategoriesForLocale(lang)
+  const otherCategories = allCategories.filter((c) => String(c.id) !== String(categoryId))
+  const otherCategoryIds = otherCategories.map((c) => c.id)
+  const otherAffairs =
+    otherCategoryIds.length > 0
+      ? (
+          await payload.find({
+            collection: 'Affair',
+            depth: 1,
+            overrideAccess: false,
+            locale: lang,
+            where: { category: { in: otherCategoryIds } },
+            limit: 500,
+          })
+        ).docs
+      : []
+
+  const affairsByCategory = new Map<string, Affair[]>()
+  for (const affair of otherAffairs) {
+    const catId =
+      typeof affair.category === 'object' && affair.category != null
+        ? affair.category.id
+        : affair.category
+    if (catId == null) continue
+    const key = String(catId)
+    const list = affairsByCategory.get(key) ?? []
+    list.push(affair)
+    affairsByCategory.set(key, list)
+  }
+
   return (
     <main className="min-h-screen">
       <div className="px-4 sm:px-8 lg:px-16 py-10">
@@ -105,6 +137,20 @@ export default async function CategoryPage({
           />
         </Suspense>
       </div>
+
+      {otherCategories.length > 0 && (
+        <div className="border-t border-[var(--border)] divide-y divide-[var(--border)]">
+          {otherCategories.map((c) => (
+            <CategoryPreview
+              key={c.id}
+              locale={lang}
+              categoryId={String(c.id)}
+              title={c.title}
+              affairs={affairsByCategory.get(String(c.id)) ?? []}
+            />
+          ))}
+        </div>
+      )}
     </main>
   )
 }

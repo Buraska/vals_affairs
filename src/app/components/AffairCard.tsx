@@ -70,23 +70,23 @@ export const AffairCard = ({ affair, locale, className = "", showCategory = fals
             {tagItems.map((tag) => (
               <span
                 key={tag.id}
-                className="text-[0.65rem] font-semibold tracking-widest uppercase px-2.5 py-1 rounded-sm bg-[var(--warm)]/15 text-[var(--warm)] shrink-0"
+                className="text-xs font-semibold tracking-widest uppercase px-2.5 py-1 rounded-sm bg-[var(--warm)]/15 text-[var(--warm)] shrink-0"
               >
                 {tag.name}
               </span>
             ))}
           </div>
         ) : null}
-        <h2 className="relative z-10 text-lg font-bold leading-tight text-[var(--dark)] mb-2" style={{ fontFamily: "var(--font-playfair)" }}>
+        <h2 className="relative z-10 text-xl font-bold leading-tight text-[var(--dark)] mb-2" style={{ fontFamily: "var(--font-playfair)" }}>
           {affair.title}
         </h2>
         {descriptionText ? (
-          <p className="relative z-10 line-clamp-2 text-sm text-[var(--muted)] font-light leading-relaxed mb-4">
+          <p className="relative z-10 line-clamp-2 text-base text-[var(--muted)] font-light leading-relaxed mb-4">
             {descriptionText}
           </p>
         ) : null}
         <div className="relative z-10 flex items-center justify-between mt-auto">
-          <div className="flex items-center gap-2 text-sm text-[var(--dark)] font-semibold">
+          <div className="flex items-center gap-2 text-base text-[var(--dark)] font-semibold">
             <span>{affair.price} €</span>
             {!isAvailable && (
               <span className="ml-2 text-[var(--rust)] font-medium">{t.card.noSlots}</span>

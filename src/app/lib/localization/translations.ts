@@ -15,7 +15,7 @@ const heroSchema = { statsTitle: '', schoolTours: '', familyTrips: '', celebrati
 const valueSchema = { title: '', variety: '', varietyDesc: '', newRoutes: '', savings: '', savingsDesc: '', quality: '', qualityDesc: '' }
 const contactSchema = { title: '', phone: '', addressLabel: '', nonProfit: '', forBusiness: '', team: '', hours: '', hoursValue: '', weekend: '' }
 const footerSchema = { more: '', schoolProjects: '', giftCards: '', charity: '', merch: '', documents: '', contract: '', privacy: '', reportError: '', aboutUs: '', philosophy: '', ourJourney: '', contacts: '', reviews: '', partners: '', press: '', account: '', tours: '', subscribe: '', subscribeSuccess: '', subscribeCta: '', websiteDevelopment: '' }
-const commonSchema = { back: '', backToEvent: '', notFoundEvent: '', notFoundOrder: '', additional: '', photoCount: '', openGallery: '', menu: '', termsPageTitle: '', aboutPageTitle: '', galleryPageTitle: '', showMore: '', contentNotAdded: '' }
+const commonSchema = { back: '', backToEvent: '', home: '', toCategory: '', notFoundEvent: '', notFoundOrder: '', additional: '', photoCount: '', openGallery: '', menu: '', termsPageTitle: '', aboutPageTitle: '', galleryPageTitle: '', showMore: '', contentNotAdded: '' }
 const affairSchema = { scheduleTitle: '', descriptionTitle: '', addToCalendar: '', calendarDetails: '', relatedTitle: '', seeMore: '', takePlace: '', ticket: '', yourOrder: '', total: '', noTicketsNote: '', participation: '', notAvailable: '' }
 const orderSchema = {
   pageTitle: '',
@@ -164,6 +164,8 @@ export const translations: Record<Lang, TranslationsSchema> = {
     common: {
       back: "Tagasi",
       backToEvent: "Tagasi ürituse juurde",
+      home: "Avalehele",
+      toCategory: "Kategooriasse",
       notFoundEvent: "Üritust ei leitud",
       notFoundOrder: "Tellimust ei leitud",
       additional: "Täiendavalt",
@@ -356,6 +358,8 @@ export const translations: Record<Lang, TranslationsSchema> = {
     common: {
       back: "Назад",
       backToEvent: "Назад к мероприятию",
+      home: "Домой",
+      toCategory: "К категории",
       notFoundEvent: "Мероприятие не найдено",
       notFoundOrder: "Заказ не найден",
       additional: "Дополнительно",
@@ -546,6 +550,8 @@ export const translations: Record<Lang, TranslationsSchema> = {
     common: {
       back: "Back",
       backToEvent: "Back to event",
+      home: "Home",
+      toCategory: "To category",
       notFoundEvent: "Event not found",
       notFoundOrder: "Order not found",
       additional: "Additional",
@@ -736,6 +742,8 @@ export const translations: Record<Lang, TranslationsSchema> = {
     common: {
       back: "Takaisin",
       backToEvent: "Takaisin tapahtumaan",
+      home: "Etusivulle",
+      toCategory: "Kategoriaan",
       notFoundEvent: "Tapahtumaa ei löydy",
       notFoundOrder: "Tilausta ei löydy",
       additional: "Lisätietoja",
