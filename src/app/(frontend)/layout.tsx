@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Onest } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { defaultLocale } from "@/app/lib/localization/i18n";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -34,6 +35,12 @@ export default function FrontendLayout({
     <html lang={defaultLocale} className={`${playfair.variable} ${onest.variable}`} suppressHydrationWarning>
       <body className="min-h-screen font-sans antialiased bg-[var(--cream)] text-[var(--dark)]">
         {children}
+        <Script
+          defer
+          src="https://stat.thenextchance.eu/script.js"
+          data-website-id="e0b618cd-0c92-4873-975c-7ca5d6da35e6"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
