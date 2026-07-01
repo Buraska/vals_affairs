@@ -8,12 +8,17 @@ import { getTranslations } from '@/app/lib/localization/translations'
 import type { Lang } from '@/app/lib/localization/translations'
 import { isValidLocale, Locale, locales } from '@/app/lib/localization/i18n'
 import { formatDateRange } from '@/utilities/utility'
-import dynamic from 'next/dynamic'
 import { AffairOrderSummary } from '@/app/components/AffairOrderSummary'
+import AffairOrderForm from '@/app/components/AffairOrderForm'
+import { OrderContentSkeleton } from '@/app/components/OrderContentSkeleton'
+import type { Affair } from '@/payload-types'
 
 const payload = await getPayload({ config: configPromise })
 
-const AffairOrderForm = dynamic((() => (import('@/app/components/AffairOrderForm'))))
+// Transactional checkout page: keep it out of the index.
+export const metadata = {
+  robots: { index: false, follow: false },
+}
 
 
 export async function generateStaticParams() {
@@ -26,22 +31,6 @@ export async function generateStaticParams() {
   return locales.flatMap((locale) => ids.map((id) => ({ locale, id })))
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: Locale; id: string }>
-}) {
-  const { locale, id } = await params
-  const t = getTranslations(locale as Lang)
-  const affair = await payload
-    .findByID({ collection: 'Affair', id, depth: 0, locale: locale })
-    .catch(() => null)
-  if (!affair) return { title: t.common.notFoundOrder }
-  return {
-    title: `${t.order.pageTitle}: ${affair.title} | Vals`,
-    description: `${t.order.pageTitle} — "${affair.title}"`,
-  }
-}
 
 export default async function OrderPage({
   params,
@@ -51,21 +40,6 @@ export default async function OrderPage({
   const { locale, id } = await params
   const lang = (isValidLocale(locale) ? locale : 'ee') as Lang
   const t = getTranslations(lang)
-
-  const affair = await payload
-    .findByID({
-      collection: 'Affair',
-      id,
-      depth: 1,
-      locale: lang
-    })
-    .catch(() => null)
-
-  if (!affair) notFound()
-  if (!affair.title) notFound()
-
-  const tickets = affair.tickets ?? []
-  const dateRangeText = formatDateRange(affair['start date'], affair['end date'], locale)
 
   return (
     <main className="min-h-screen">
@@ -84,34 +58,70 @@ export default async function OrderPage({
           {t.order.pageTitle}
         </h1>
 
-        <div className="flex flex-col gap-8 lg:flex-row lg:gap-12">
-            <Suspense fallback={<p className="text-[var(--muted)]">{t.affair.noTicketsNote}</p>}>
-              <AffairOrderForm
-                affair={affair}
-                locale={locale}
-                tickets={tickets}
-                dateRangeText={dateRangeText}
-              />
-            </Suspense>
-            <div className="lg:w-[380px] lg:shrink-0">
-              <section className="sticky top-24 rounded border border-[var(--border)] bg-[var(--card-bg)] p-6">
-                <h2
-                  className="mb-4 text-lg font-semibold text-[var(--dark)]"
-                  style={{ fontFamily: 'var(--font-playfair)' }}>
-                  {t.affair.yourOrder}
-                </h2>
-                <Suspense>
-                <AffairOrderSummary
-                  affairTitle={affair.title}
-                  affairPrice={affair.price}
-                  dateRangeText={dateRangeText}
-                  tickets={tickets}
-                />
-                </Suspense>
-              </section>
-            </div>
-          </div>
-        </div>
+        <Suspense fallback={<OrderContentSkeleton orderLabel={t.affair.yourOrder} />}>
+          <OrderContent id={id} locale={locale} lang={lang} />
+        </Suspense>
+      </div>
     </main>
+  )
+}
+
+async function OrderContent({
+  id,
+  locale,
+  lang,
+}: {
+  id: string
+  locale: Locale
+  lang: Lang
+}) {
+  const t = getTranslations(lang)
+
+  const affair = await payload
+    .findByID({
+      collection: 'Affair',
+      id,
+      depth: 1,
+      locale: lang,
+      select: {
+        title: true,
+        price: true,
+        'start date': true,
+        'end date': true,
+        tickets: true,
+      },
+    })
+    .catch(() => null)
+
+  if (!affair) notFound()
+  if (!affair.title) notFound()
+
+  const tickets = affair.tickets ?? []
+  const dateRangeText = formatDateRange(affair['start date'], affair['end date'], locale)
+
+  return (
+    <div className="flex flex-col gap-8 lg:flex-row lg:gap-12">
+      <AffairOrderForm
+        affair={affair as Affair}
+        locale={locale}
+        tickets={tickets}
+        dateRangeText={dateRangeText}
+      />
+      <div className="lg:w-[380px] lg:shrink-0">
+        <section className="sticky top-24 rounded border border-[var(--border)] bg-[var(--card-bg)] p-6">
+          <h2
+            className="mb-4 text-lg font-semibold text-[var(--dark)]"
+            style={{ fontFamily: 'var(--font-playfair)' }}>
+            {t.affair.yourOrder}
+          </h2>
+          <AffairOrderSummary
+            affairTitle={affair.title}
+            affairPrice={affair.price}
+            dateRangeText={dateRangeText}
+            tickets={tickets}
+          />
+        </section>
+      </div>
+    </div>
   )
 }

@@ -9,6 +9,8 @@ import { getCategoriesForLocale } from '@/app/lib/categoriesForLocale'
 import { getTranslations } from '@/app/lib/localization/translations'
 import type { Lang } from '@/app/lib/localization/translations'
 import { isValidLocale, Locale, locales } from '@/app/lib/localization/i18n'
+import { buildCategoryMetadata } from '@/utilities/seo'
+import { getSiteMeta } from '@/utilities/getSiteMeta'
 import { cacheLife, cacheTag } from 'next/cache'
 
 const payload = await getPayload({ config: configPromise })
@@ -21,6 +23,23 @@ export async function generateStaticParams() {
   })
   const slugs = categories.map((c) => c.id)
   return locales.flatMap((locale) => slugs.map((slug) => ({ locale, slug })))
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: Locale; slug: string }>
+}) {
+  const { locale, slug: categoryId } = await params
+  const t = getTranslations(locale)
+  const [category, { siteName, description }] = await Promise.all([
+    payload
+      .findByID({ collection: 'category', id: categoryId, depth: 1, locale })
+      .catch(() => null),
+    getSiteMeta(locale),
+  ])
+  if (!category) return { title: t.common.notFoundCategory }
+  return buildCategoryMetadata({ category, locale, siteName, defaultDescription: description })
 }
 
 async function getCategory(lang:Locale, categoryId: string|number){

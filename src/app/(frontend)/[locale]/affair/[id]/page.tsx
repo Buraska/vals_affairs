@@ -12,6 +12,9 @@ import { AffairDateTime } from '@/app/components/AffairDateTime'
 import { getTranslations } from '@/app/lib/localization/translations'
 import type { Lang } from '@/app/lib/localization/translations'
 import { isValidLocale, Locale, locales } from '@/app/lib/localization/i18n'
+import { buildAffairMetadata } from '@/utilities/seo'
+import { getSiteMeta } from '@/utilities/getSiteMeta'
+import { buildAffairEventJsonLd, buildBreadcrumbJsonLd } from '@/utilities/structuredData'
 
 const payload = await getPayload({ config: configPromise })
 
@@ -32,14 +35,12 @@ export async function generateMetadata({
 }) {
   const { locale, id } = await params
   const t = getTranslations(locale)
-  const affair = await payload
-    .findByID({ collection: 'Affair', id, depth: 0, locale: locale })
-    .catch(() => null)
+  const [affair, { siteName, description }] = await Promise.all([
+    payload.findByID({ collection: 'Affair', id, depth: 1, locale: locale }).catch(() => null),
+    getSiteMeta(locale),
+  ])
   if (!affair) return { title: t.common.notFoundEvent }
-  return {
-    title: `${affair.title} | Vals`,
-    description: affair.title,
-  }
+  return buildAffairMetadata({ affair, locale, siteName, defaultDescription: description })
 }
 
 export default async function AffairPage({
@@ -71,6 +72,15 @@ export default async function AffairPage({
       : null
   const descriptionHtml = lexicalToHtml(affair.description)
 
+  const { siteName, defaultLocation } = await getSiteMeta(lang)
+  const eventJsonLd = buildAffairEventJsonLd({ affair, locale: lang, siteName, defaultLocation })
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd({
+    locale: lang,
+    homeLabel: t.common.home,
+    category: typeof affair.category === 'object' ? affair.category : null,
+    affair,
+  })
+
   const related = (
     await payload.find({
       collection: 'Affair',
@@ -88,6 +98,14 @@ export default async function AffairPage({
 
   return (
     <main className="min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(eventJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-8 lg:px-16">
         <nav className="mb-6 flex items-center gap-4 text-sm text-[var(--muted)]">
           <Link

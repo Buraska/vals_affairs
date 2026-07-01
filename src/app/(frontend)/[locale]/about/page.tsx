@@ -5,6 +5,7 @@ import { lexicalToHtml } from '@/utilities/lexicalToHtml'
 import { isValidLocale, locales } from '@/app/lib/localization/i18n'
 import type { Locale } from '@/app/lib/localization/i18n'
 import { getTranslations } from '@/app/lib/localization/translations'
+import { buildAlternates } from '@/utilities/seo'
 import { cacheLife, cacheTag } from 'next/cache'
 
 
@@ -34,7 +35,10 @@ export async function generateMetadata({
   const { locale } = await params
   const lang = (isValidLocale(locale) ? locale : 'ee') as Locale
   const t = getTranslations(lang)
-  return { title: `${t.common.aboutPageTitle} | Vals` }
+  return {
+    title: t.common.aboutPageTitle,
+    alternates: buildAlternates(lang, '/about'),
+  }
 }
 
 export default async function AboutPage({

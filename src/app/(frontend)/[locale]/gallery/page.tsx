@@ -8,11 +8,26 @@ import YouTubePreview from '@/app/components/YouTubePreview'
 import SmartImage from '@/app/components/SmartImage'
 import SectionImageReveal from '@/app/components/SectionImageReveal'
 import { pickMediaSize } from '@/utilities/pickMediaSize'
+import { buildAlternates } from '@/utilities/seo'
 
 const payload = await getPayload({ config: configPromise })
 
 export async function generateStaticParams() {
   return locales.map((locale) => ({ locale }))
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  const lang = (isValidLocale(locale) ? locale : 'ee') as Locale
+  const t = getTranslations(lang as Lang)
+  return {
+    title: t.common.galleryPageTitle,
+    alternates: buildAlternates(lang, '/gallery'),
+  }
 }
 
 

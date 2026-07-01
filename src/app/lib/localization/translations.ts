@@ -15,7 +15,7 @@ const heroSchema = { statsTitle: '', schoolTours: '', familyTrips: '', celebrati
 const valueSchema = { title: '', variety: '', varietyDesc: '', newRoutes: '', savings: '', savingsDesc: '', quality: '', qualityDesc: '' }
 const contactSchema = { title: '', phone: '', addressLabel: '', nonProfit: '', forBusiness: '', team: '', hours: '', hoursValue: '', weekend: '' }
 const footerSchema = { more: '', schoolProjects: '', giftCards: '', charity: '', merch: '', documents: '', contract: '', privacy: '', reportError: '', aboutUs: '', philosophy: '', ourJourney: '', contacts: '', reviews: '', partners: '', press: '', account: '', tours: '', subscribe: '', subscribeSuccess: '', subscribeCta: '', websiteDevelopment: '' }
-const commonSchema = { back: '', backToEvent: '', home: '', toCategory: '', notFoundEvent: '', notFoundOrder: '', additional: '', photoCount: '', openGallery: '', menu: '', termsPageTitle: '', aboutPageTitle: '', galleryPageTitle: '', showMore: '', contentNotAdded: '' }
+const commonSchema = { back: '', backToEvent: '', home: '', toCategory: '', notFoundEvent: '', notFoundOrder: '', notFoundCategory: '', additional: '', photoCount: '', openGallery: '', menu: '', termsPageTitle: '', aboutPageTitle: '', galleryPageTitle: '', showMore: '', contentNotAdded: '' }
 const affairSchema = { scheduleTitle: '', descriptionTitle: '', addToCalendar: '', calendarDetails: '', relatedTitle: '', seeMore: '', takePlace: '', ticket: '', yourOrder: '', total: '', noTicketsNote: '', participation: '', notAvailable: '' }
 const orderSchema = {
   pageTitle: '',
@@ -168,6 +168,7 @@ export const translations: Record<Lang, TranslationsSchema> = {
       toCategory: "Kategooriasse",
       notFoundEvent: "Üritust ei leitud",
       notFoundOrder: "Tellimust ei leitud",
+      notFoundCategory: "Kategooriat ei leitud",
       additional: "Täiendavalt",
       photoCount: "pilti",
       openGallery: "Ava galerii",
@@ -362,6 +363,7 @@ export const translations: Record<Lang, TranslationsSchema> = {
       toCategory: "К категории",
       notFoundEvent: "Мероприятие не найдено",
       notFoundOrder: "Заказ не найден",
+      notFoundCategory: "Категория не найдена",
       additional: "Дополнительно",
       photoCount: "фото",
       openGallery: "Открыть галерею",
@@ -554,6 +556,7 @@ export const translations: Record<Lang, TranslationsSchema> = {
       toCategory: "To category",
       notFoundEvent: "Event not found",
       notFoundOrder: "Order not found",
+      notFoundCategory: "Category not found",
       additional: "Additional",
       photoCount: "photos",
       openGallery: "Open gallery",
@@ -746,6 +749,7 @@ export const translations: Record<Lang, TranslationsSchema> = {
       toCategory: "Kategoriaan",
       notFoundEvent: "Tapahtumaa ei löydy",
       notFoundOrder: "Tilausta ei löydy",
+      notFoundCategory: "Kategoriaa ei löydy",
       additional: "Lisätietoja",
       photoCount: "kuvaa",
       openGallery: "Avaa galleria",

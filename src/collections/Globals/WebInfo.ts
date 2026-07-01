@@ -26,13 +26,23 @@ export const WebInfo: GlobalConfig = {
         },
         {
           type: 'group',
+          name: 'siteTitle',
+          fields: locales.map((locale) => ({
+            name: locale,
+            type: 'text',
+            label: locale,
+            })),
+          admin: { description: 'SEO title used for the home page and as the default meta title.' },
+        },
+        {
+          type: 'group',
           name: 'siteDescription',
           fields: locales.map((locale) => ({
             name: locale,
             type: 'textarea',
             label: locale,
             })),
-          admin: { description: 'First block (e.g. intro).' },
+          admin: { description: 'First block (e.g. intro) and SEO description for the site.' },
         },
       ],
     },
@@ -67,6 +77,41 @@ export const WebInfo: GlobalConfig = {
           type: 'text',
           label: 'Facebook URL',
           admin: { description: 'e.g. https://facebook.com/yourpage' },
+        },
+      ],
+    },
+    {
+      name: 'defaultLocation',
+      type: 'group',
+      label: 'Default event location',
+      admin: {
+        description:
+          'Fallback venue/address used for Event structured data (SEO) when an affair has no location of its own.',
+      },
+      fields: [
+        {
+          name: 'venueName',
+          type: 'text',
+          admin: { description: 'e.g. Vabaduse väljak' },
+        },
+        {
+          type: 'row',
+          fields: [
+            { name: 'streetAddress', type: 'text' },
+            { name: 'city', type: 'text' },
+          ],
+        },
+        {
+          type: 'row',
+          fields: [
+            { name: 'postalCode', type: 'text' },
+            {
+              name: 'country',
+              type: 'text',
+              defaultValue: 'EE',
+              admin: { description: 'ISO country code, e.g. EE' },
+            },
+          ],
         },
       ],
     },

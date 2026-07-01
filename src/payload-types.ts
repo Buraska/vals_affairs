@@ -280,6 +280,14 @@ export interface Category {
     hasNextPage?: boolean;
     totalDocs?: number;
   };
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -349,6 +357,30 @@ export interface Affair {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Where the event takes place. Used for Event structured data (SEO). Falls back to the site default in Web info when left empty.
+   */
+  location?: {
+    /**
+     * e.g. Vabaduse väljak
+     */
+    venueName?: string | null;
+    streetAddress?: string | null;
+    city?: string | null;
+    postalCode?: string | null;
+    /**
+     * ISO country code, e.g. EE
+     */
+    country?: string | null;
+  };
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -919,6 +951,13 @@ export interface CategorySelect<T extends boolean = true> {
   'parent category'?: T;
   'child categories'?: T;
   affairs?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -959,6 +998,22 @@ export interface AffairSelect<T extends boolean = true> {
     | {
         tag?: T;
         id?: T;
+      };
+  location?:
+    | T
+    | {
+        venueName?: T;
+        streetAddress?: T;
+        city?: T;
+        postalCode?: T;
+        country?: T;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -1242,7 +1297,16 @@ export interface WebInfo {
    */
   siteName: string;
   /**
-   * First block (e.g. intro).
+   * SEO title used for the home page and as the default meta title.
+   */
+  siteTitle?: {
+    ee?: string | null;
+    ru?: string | null;
+    en?: string | null;
+    fi?: string | null;
+  };
+  /**
+   * First block (e.g. intro) and SEO description for the site.
    */
   siteDescription?: {
     ee?: string | null;
@@ -1266,6 +1330,22 @@ export interface WebInfo {
    * e.g. https://facebook.com/yourpage
    */
   facebookUrl?: string | null;
+  /**
+   * Fallback venue/address used for Event structured data (SEO) when an affair has no location of its own.
+   */
+  defaultLocation?: {
+    /**
+     * e.g. Vabaduse väljak
+     */
+    venueName?: string | null;
+    streetAddress?: string | null;
+    city?: string | null;
+    postalCode?: string | null;
+    /**
+     * ISO country code, e.g. EE
+     */
+    country?: string | null;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1579,6 +1659,14 @@ export interface GalleryInfo {
  */
 export interface WebInfoSelect<T extends boolean = true> {
   siteName?: T;
+  siteTitle?:
+    | T
+    | {
+        ee?: T;
+        ru?: T;
+        en?: T;
+        fi?: T;
+      };
   siteDescription?:
     | T
     | {
@@ -1591,6 +1679,15 @@ export interface WebInfoSelect<T extends boolean = true> {
   email?: T;
   instagramUrl?: T;
   facebookUrl?: T;
+  defaultLocation?:
+    | T
+    | {
+        venueName?: T;
+        streetAddress?: T;
+        city?: T;
+        postalCode?: T;
+        country?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

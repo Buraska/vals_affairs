@@ -39,13 +39,16 @@ export function Title({ heroImages = [] }: { heroImages?: string[] }) {
       />
 
       <div className="relative z-10 mx-auto w-full max-w-4xl rounded-2xl bg-black/35 px-8 py-10 text-center backdrop-blur-sm sm:px-14 sm:py-12">
-        <span aria-hidden className="mx-auto mb-6 flex items-center justify-center gap-3 text-[var(--warm)]">
-          <span className="h-px w-10 bg-[var(--warm)]/70" />
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor">
-            <path d="M5 0L6.2 3.8L10 5L6.2 6.2L5 10L3.8 6.2L0 5L3.8 3.8Z" />
-          </svg>
-          <span className="h-px w-10 bg-[var(--warm)]/70" />
-        </span>
+        <div className="mx-auto mb-6 flex items-center justify-center gap-3 sm:gap-4">
+          <span aria-hidden className="h-px w-10 sm:w-14 bg-[var(--warm)]/70" />
+          <p
+            className="text-[var(--warm)] text-sm sm:text-base italic tracking-[0.22em] tabular-nums"
+            style={{ fontFamily: "var(--font-playfair)" }}
+          >
+            anno&nbsp;2001
+          </p>
+          <span aria-hidden className="h-px w-10 sm:w-14 bg-[var(--warm)]/70" />
+        </div>
 
         <p
           className="mx-auto max-w-[42ch] text-pretty text-2xl font-medium italic leading-snug text-[var(--cream)] sm:text-3xl lg:text-4xl"

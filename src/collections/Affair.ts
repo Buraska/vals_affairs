@@ -115,6 +115,41 @@ export const Affair: CollectionConfig = {
         }
       ]
     },
+    {
+      name: 'location',
+      type: 'group',
+      admin: {
+        description:
+          'Where the event takes place. Used for Event structured data (SEO). Falls back to the site default in Web info when left empty.',
+      },
+      fields: [
+        {
+          name: 'venueName',
+          type: 'text',
+          localized: true,
+          admin: { description: 'e.g. Vabaduse väljak' },
+        },
+        {
+          type: 'row',
+          fields: [
+            { name: 'streetAddress', type: 'text' },
+            { name: 'city', type: 'text' },
+          ],
+        },
+        {
+          type: 'row',
+          fields: [
+            { name: 'postalCode', type: 'text' },
+            {
+              name: 'country',
+              type: 'text',
+              defaultValue: 'EE',
+              admin: { description: 'ISO country code, e.g. EE' },
+            },
+          ],
+        },
+      ],
+    },
   ],
   defaultPopulate: {
     slug: true,

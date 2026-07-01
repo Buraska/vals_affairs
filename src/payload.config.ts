@@ -26,6 +26,9 @@ import { GalleryInfo } from './collections/Globals/GalleryInfo'
 import { defaultLocale, locales } from './app/lib/localization/i18n'
 import { s3Storage } from '@payloadcms/storage-s3'
 import { mcpPlugin } from '@payloadcms/plugin-mcp'
+import { seoPlugin } from '@payloadcms/plugin-seo'
+import { lexicalToPlainText } from './utilities/lexicalToPlainText'
+import { SITE_NAME } from './utilities/seo'
 
 /** Display names for locales (used in language switcher, empty-categories block, etc.) */
 export const localeLabels: Record<string, string> = {
@@ -62,6 +65,49 @@ export default buildConfig({
   }),
   sharp,
   plugins: [
+    seoPlugin({
+      collections: ['Affair', 'category'],
+      uploadsCollection: 'media',
+      tabbedUI: true,
+      generateTitle: ({ doc }: { doc?: { title?: string } }) =>
+        doc?.title ? `${doc.title} | ${SITE_NAME}` : SITE_NAME,
+      generateDescription: ({
+        doc,
+      }: {
+        doc?: { description?: unknown }
+      }) => {
+        const description = doc?.description
+        if (typeof description === 'string') return description
+        // Affair descriptions are Lexical rich text.
+        const plain = lexicalToPlainText(
+          description as Parameters<typeof lexicalToPlainText>[0],
+        )
+        return plain.length > 160 ? `${plain.slice(0, 157)}...` : plain
+      },
+      // Pre-fill the meta image from the first gallery image when an editor uses
+      // the admin "auto-generate" button. The frontend applies the same fallback
+      // at render time, so this is purely an admin convenience.
+      generateImage: ({
+        doc,
+      }: {
+        doc?: { images?: { image?: unknown }[] }
+      }) => {
+        const first = doc?.images?.find((entry) => entry?.image != null)?.image
+        if (typeof first === 'string') return first
+        if (typeof first === 'object' && first != null && 'id' in first) {
+          return (first as { id: string | number }).id
+        }
+        return ''
+      },
+      // Make the meta fields localized so each locale has its own SEO copy.
+      fields: ({ defaultFields }) =>
+        defaultFields.map((field) =>
+          'name' in field &&
+          ['title', 'description', 'image'].includes(field.name)
+            ? { ...field, localized: true }
+            : field,
+        ),
+    }),
     mcpPlugin({
       collections: {
         users: { enabled: true },
