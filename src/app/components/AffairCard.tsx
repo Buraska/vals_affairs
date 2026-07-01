@@ -25,7 +25,7 @@ export const AffairCard = ({ affair, locale, className = "", showCategory = fals
 
   const categoryBadge =
     showCategory && categoryName ? (
-      <div className="absolute top-3 left-3 z-10 inline-flex items-center rounded-full bg-[var(--rust)]/90 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-[var(--cream)] shadow-md backdrop-blur-sm">
+      <div className="absolute bottom-3 left-3 z-10 inline-flex items-center rounded-full bg-[var(--rust)]/90 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-[var(--cream)] shadow-md backdrop-blur-sm">
         {categoryName}
       </div>
     ) : null
