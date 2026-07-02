@@ -130,8 +130,7 @@ export function buildAffairMetadata({
       ? affair.category.title
       : null
 
-  const autoTitle = [affair.title, categoryTitle].filter(Boolean).join(' – ')
-  const title = affair.meta?.title || `${autoTitle || affair.title} | ${siteName}`
+  const title = affair.meta?.title || `${affair.title} | ${siteName}`
 
   const autoDescription = truncate(lexicalToPlainText(affair.description))
   const description =

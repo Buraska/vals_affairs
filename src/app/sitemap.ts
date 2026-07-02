@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { getServerSideURL } from '@/utilities/getURL'
-import { HTML_LANG, locales } from '@/app/lib/localization/i18n'
+import { defaultLocale, HTML_LANG, locales } from '@/app/lib/localization/i18n'
 
 const base = getServerSideURL()
 
@@ -10,6 +10,9 @@ function languagesFor(path: string): Record<string, string> {
   const languages: Record<string, string> = {}
   for (const loc of locales) {
     languages[HTML_LANG[loc] ?? loc] = `${base}/${loc}${path}`
+  }
+  if (path === '') {
+    languages['x-default'] = `${base}/${defaultLocale}${path}`
   }
   return languages
 }
