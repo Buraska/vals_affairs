@@ -60,6 +60,25 @@ function toGoogleCalendarDate(dateStr: string): string {
   return new Date(dateStr).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '')
 }
 
+/** Formats a local calendar day as YYYYMMDD for all-day Google Calendar events. */
+function toGoogleCalendarAllDayDate(dateStr: string): string {
+  const d = new Date(dateStr)
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${y}${m}${day}`
+}
+
+/** Builds the dates param for an all-day event (end date is exclusive). */
+function buildGoogleCalendarAllDayDates(start: string, end?: string | null): string {
+  const startDay = toGoogleCalendarAllDayDate(start)
+  const endSource = end ?? start
+  const exclusiveEnd = new Date(endSource)
+  exclusiveEnd.setDate(exclusiveEnd.getDate() + 1)
+  const endDay = toGoogleCalendarAllDayDate(exclusiveEnd.toISOString())
+  return `${startDay}/${endDay}`
+}
+
 /** Builds an "Add to Google Calendar" template URL for an event. */
 export function buildGoogleCalendarUrl({
   title,
@@ -67,20 +86,28 @@ export function buildGoogleCalendarUrl({
   end,
   details,
   location,
+  allDay = false,
 }: {
   title: string
   start: string
   end?: string | null
   details?: string
   location?: string
+  allDay?: boolean
 }): string {
-  const startUtc = toGoogleCalendarDate(start)
-  const endSource = end ?? new Date(new Date(start).getTime() + 2 * 60 * 60 * 1000).toISOString()
-  const endUtc = toGoogleCalendarDate(endSource)
+  const dates = allDay
+    ? buildGoogleCalendarAllDayDates(start, end)
+    : (() => {
+        const startUtc = toGoogleCalendarDate(start)
+        const endSource =
+          end ?? new Date(new Date(start).getTime() + 2 * 60 * 60 * 1000).toISOString()
+        const endUtc = toGoogleCalendarDate(endSource)
+        return `${startUtc}/${endUtc}`
+      })()
   const params = new URLSearchParams({
     action: 'TEMPLATE',
     text: title,
-    dates: `${startUtc}/${endUtc}`,
+    dates,
   })
   if (details) params.set('details', details)
   if (location) params.set('location', location)

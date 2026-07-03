@@ -5,21 +5,33 @@ import { useMemo } from 'react'
 import { useLanguage } from '@/app/contexts/LanguageContext'
 import { Affair } from '@/payload-types'
 import type { TicketOrderDTO } from '@/app/lib/affairOrderTypes'
+import { buildGoogleCalendarUrl } from '@/utilities/utility'
 import { Ticket } from './AffairTicketsBlock'
 
 
 export function AffairOrderSummary({
   affairTitle,
   affairPrice,
+  startDate,
+  endDate,
   dateRangeText,
   tickets,
 }: {
   affairTitle: string | null | undefined
   affairPrice: number | null | undefined
+  startDate: string
+  endDate?: string | null
   dateRangeText: string
   tickets: Ticket[],
 }) {
   const { t } = useLanguage()
+  const calendarUrl = buildGoogleCalendarUrl({
+    title: affairTitle ?? '',
+    start: startDate,
+    end: endDate,
+    details: t.affair.calendarDetails,
+    allDay: true,
+  })
   const searchParams = useSearchParams()
   const qParam = searchParams.get('q') ?? ''
 
@@ -49,7 +61,18 @@ export function AffairOrderSummary({
   return (
     <>
       <p className="mb-1 font-medium text-[var(--dark)]">{affairTitle}</p>
-      <p className="mb-4 text-sm text-[var(--muted)]">{dateRangeText}</p>
+      <p className="mb-3 text-sm text-[var(--muted)]">{dateRangeText}</p>
+      <a
+        href={calendarUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mb-4 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-[var(--rust)] px-4 py-2.5 text-sm font-medium text-[var(--rust)] transition-colors hover:bg-[var(--rust)] hover:text-white"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        </svg>
+        {t.affair.addToCalendar}
+      </a>
       {tickets.length > 0 ? (
         <>
           <ul className="space-y-2 border-t border-[var(--border)] pt-4">

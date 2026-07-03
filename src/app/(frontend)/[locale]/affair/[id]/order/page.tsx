@@ -117,6 +117,8 @@ async function OrderContent({
           <AffairOrderSummary
             affairTitle={affair.title}
             affairPrice={affair.price}
+            startDate={affair['start date']}
+            endDate={affair['end date']}
             dateRangeText={dateRangeText}
             tickets={tickets}
           />

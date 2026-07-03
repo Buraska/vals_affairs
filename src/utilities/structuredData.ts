@@ -4,6 +4,7 @@ import { pickMediaSize } from '@/utilities/pickMediaSize'
 import { getMediaUrl } from '@/utilities/getMediaUrl'
 import { getServerSideURL } from '@/utilities/getURL'
 import { DEFAULT_OG_IMAGE } from '@/utilities/seo'
+import { a } from 'node_modules/vitest/dist/chunks/suite.d.BJWk38HB'
 
 /** ISO-4217 currency used for ticket prices. */
 const CURRENCY = 'EUR'
@@ -49,7 +50,7 @@ function resolvePlace(
   const source: Location | WebInfo['defaultLocation'] | undefined = [
     affair.location,
     defaultLocation ?? undefined,
-  ].find((loc) => loc && (loc.venueName || loc.streetAddress || loc.city))
+  ].find((loc) => loc && (loc.city))
 
   if (!source) return null
 
@@ -61,7 +62,7 @@ function resolvePlace(
 
   return {
     '@type': 'Place',
-    ...(source.venueName ? { name: source.venueName } : {}),
+    ...(source.venueName ? { name: source.venueName } : {name: source.city}),
     address,
   }
 }
@@ -124,6 +125,7 @@ export function buildAffairEventJsonLd({
     '@type': 'Event',
     name: affair.title ?? siteName,
     startDate: affair['start date'],
+    
     eventStatus: 'https://schema.org/EventScheduled',
     eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
     image: collectImageUrls(affair),
@@ -134,9 +136,14 @@ export function buildAffairEventJsonLd({
       name: siteName,
       url: base,
     },
+    performer: {
+      '@type': 'Organization',
+      name: siteName,
+      url: base,
+    },
   }
 
-  if (affair['end date']) jsonLd.endDate = affair['end date']
+  if (affair['end date']) jsonLd.endDate = affair['end date'] ?? affair['start date']
   if (description) jsonLd.description = description
   if (place) jsonLd.location = place
 

@@ -40,6 +40,7 @@ export function AffairDateTime({
     start: startDate,
     end: endDate,
     details,
+    allDay: true,
   })
 
   return (

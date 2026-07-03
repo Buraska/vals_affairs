@@ -4,6 +4,12 @@ import { defaultLocale, isValidLocale } from '@/app/lib/localization/i18n'
 
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
+
+  // BIMI logo + VMC certificate must stay at the site root (no locale prefix).
+  if (pathname.startsWith('/.well-known/')) {
+    return NextResponse.next()
+  }
+
   const segments = pathname.split('/').filter(Boolean)
 
   // First segment is locale?

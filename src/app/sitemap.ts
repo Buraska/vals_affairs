@@ -12,7 +12,7 @@ function languagesFor(path: string): Record<string, string> {
     languages[HTML_LANG[loc] ?? loc] = `${base}/${loc}${path}`
   }
   if (path === '') {
-    languages['x-default'] = `${base}/${defaultLocale}${path}`
+    languages['x-default'] = `${base}/`
   }
   return languages
 }
