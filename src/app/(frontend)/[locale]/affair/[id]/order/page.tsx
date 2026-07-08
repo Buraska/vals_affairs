@@ -41,7 +41,25 @@ export default async function OrderPage({
   const lang = (isValidLocale(locale) ? locale : 'ee') as Lang
   const t = getTranslations(lang)
 
-  return (
+  
+  const affair = await payload
+    .findByID({
+      collection: 'Affair',
+      id,
+      depth: 1,
+      locale: lang,
+      select: {
+        title: true,
+        price: true,
+        'start date': true,
+        'end date': true,
+        tickets: true,
+      },
+    })
+    .catch(() => null) as Affair | null
+    if (!affair) notFound()
+  
+      return (
     <main className="min-h-screen">
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-8 lg:px-16">
         <Link
@@ -59,7 +77,7 @@ export default async function OrderPage({
         </h1>
 
         <Suspense fallback={<OrderContentSkeleton orderLabel={t.affair.yourOrder} />}>
-          <OrderContent id={id} locale={locale} lang={lang} />
+          <OrderContent affair={affair} locale={locale} lang={lang} />
         </Suspense>
       </div>
     </main>
@@ -67,31 +85,16 @@ export default async function OrderPage({
 }
 
 async function OrderContent({
-  id,
+  affair,
   locale,
   lang,
 }: {
-  id: string
+  affair: Affair
   locale: Locale
   lang: Lang
 }) {
   const t = getTranslations(lang)
 
-  const affair = await payload
-    .findByID({
-      collection: 'Affair',
-      id,
-      depth: 1,
-      locale: lang,
-      select: {
-        title: true,
-        price: true,
-        'start date': true,
-        'end date': true,
-        tickets: true,
-      },
-    })
-    .catch(() => null)
 
   if (!affair) notFound()
   if (!affair.title) notFound()

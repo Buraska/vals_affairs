@@ -1,5 +1,5 @@
 import { revalidateAll } from "@/app/lib/hooks/hookUtility"
-import { NextRequest } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 
 export const payloadToken = 'payload-token'
 

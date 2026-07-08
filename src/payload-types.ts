@@ -118,11 +118,7 @@ export interface Config {
     defaultIDType: string;
   };
   fallbackLocale:
-    | ('false' | 'none' | 'null')
-    | false
-    | null
-    | ('ee' | 'ru' | 'en' | 'fi')
-    | ('ee' | 'ru' | 'en' | 'fi')[];
+    ('false' | 'none' | 'null') | false | null | ('ee' | 'ru' | 'en' | 'fi') | ('ee' | 'ru' | 'en' | 'fi')[];
   globals: {
     'web-info': WebInfo;
     'bank-credentials': BankCredential;
@@ -140,6 +136,9 @@ export interface Config {
     'gallery-info': GalleryInfoSelect<false> | GalleryInfoSelect<true>;
   };
   locale: 'ee' | 'ru' | 'en' | 'fi';
+  widgets: {
+    collections: CollectionsWidget;
+  };
   user: User | PayloadMcpApiKey;
   jobs: {
     tasks: unknown;
@@ -1805,6 +1804,16 @@ export interface GalleryInfoSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "collections_widget".
+ */
+export interface CollectionsWidget {
+  data?: {
+    [k: string]: unknown;
+  };
+  width: 'full';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
