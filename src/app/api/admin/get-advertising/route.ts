@@ -46,7 +46,7 @@ function affairToEvent(affair: Affair, locale: string): AdvertisingEvent | null 
     price,
     image: resolveAffairImage(affair),
     description: description || '—',
-    url: `${base}/${locale}/affair/${affair.id}`,
+    url: `${base}/${locale}/affair/${affair.slug ?? affair.id}`,
   }
 }
 

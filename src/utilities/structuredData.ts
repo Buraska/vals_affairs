@@ -4,7 +4,6 @@ import { pickMediaSize } from '@/utilities/pickMediaSize'
 import { getMediaUrl } from '@/utilities/getMediaUrl'
 import { getServerSideURL } from '@/utilities/getURL'
 import { DEFAULT_OG_IMAGE } from '@/utilities/seo'
-import { a } from 'node_modules/vitest/dist/chunks/suite.d.BJWk38HB'
 
 /** ISO-4217 currency used for ticket prices. */
 const CURRENCY = 'EUR'
@@ -116,7 +115,7 @@ export function buildAffairEventJsonLd({
   defaultLocation?: WebInfo['defaultLocation'] | null
 }): Record<string, unknown> {
   const base = getServerSideURL()
-  const url = `${base}/${locale}/affair/${affair.id}`
+  const url = `${base}/${locale}/affair/${affair.slug ?? affair.id}`
   const description = lexicalToPlainText(affair.description).replace(/\s+/g, ' ').trim()
   const place = resolvePlace(affair, defaultLocation)
 
@@ -161,8 +160,8 @@ export function buildBreadcrumbJsonLd({
 }: {
   locale: string
   homeLabel: string
-  category?: Pick<Category, 'id' | 'title'> | null
-  affair: Pick<Affair, 'id' | 'title'>
+  category?: Pick<Category, 'id' | 'title' | 'slug'> | null
+  affair: Pick<Affair, 'id' | 'title' | 'slug'>
 }): Record<string, unknown> {
   const base = getServerSideURL()
   const items: Record<string, unknown>[] = [
@@ -174,7 +173,7 @@ export function buildBreadcrumbJsonLd({
       '@type': 'ListItem',
       position: items.length + 1,
       name: category.title,
-      item: `${base}/${locale}/category/${category.id}`,
+      item: `${base}/${locale}/category/${category.slug ?? category.id}`,
     })
   }
 
@@ -182,7 +181,7 @@ export function buildBreadcrumbJsonLd({
     '@type': 'ListItem',
     position: items.length + 1,
     name: affair.title,
-    item: `${base}/${locale}/affair/${affair.id}`,
+    item: `${base}/${locale}/affair/${affair.slug ?? affair.id}`,
   })
 
   return {

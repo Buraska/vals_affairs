@@ -7,12 +7,12 @@ import { AffairCarousel } from "./AffairCarousel";
 export default function CategoryPreview({
   title,
   affairs,
-  categoryId,
+  categorySlug,
   locale,
 }: {
   title: string;
   affairs: Affair[];
-  categoryId: string;
+  categorySlug: string;
   locale: Locale;
 }) {
   const t = getTranslations(locale);
@@ -43,7 +43,7 @@ export default function CategoryPreview({
 
         <div className="mt-10 flex justify-center">
           <Link
-            href={`/${locale}/category/${categoryId}`}
+            href={`/${locale}/category/${categorySlug}`}
             className="inline-flex items-center gap-2 rounded-full border border-[var(--dark)]/40 bg-[var(--dark)]/5 px-8 py-3.5 text-sm font-bold uppercase tracking-wide text-[var(--dark)] transition hover:bg-[var(--dark)] hover:text-[var(--cream)]"
           >
             {t.common.showMore}

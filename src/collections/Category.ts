@@ -18,6 +18,18 @@ export const Category: CollectionConfig = {
       localized: true,
     },
     {
+      name: 'slug',
+      type: 'text',
+      index: true,
+      admin: {
+        position: 'sidebar',
+        description: 'URL slug. Use "Generate from title" or edit manually.',
+        components: {
+          Field: '/app/components/admin/SlugField',
+        },
+      },
+    },
+    {
       name: 'description',
       type: 'text',
       localized: true,

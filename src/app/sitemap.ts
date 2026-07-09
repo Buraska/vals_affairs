@@ -41,8 +41,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     ...staticPaths.flatMap((path) => entriesFor(path)),
     ...(categoriesRes?.docs ?? []).flatMap((c) =>
-      entriesFor(`/category/${c.id}`, c.updatedAt),
+      entriesFor(`/category/${c.slug ?? c.id}`, c.updatedAt),
     ),
-    ...(affairsRes?.docs ?? []).flatMap((a) => entriesFor(`/affair/${a.id}`, a.updatedAt)),
+    ...(affairsRes?.docs ?? []).flatMap((a) => entriesFor(`/affair/${a.slug ?? a.id}`, a.updatedAt)),
   ]
 }

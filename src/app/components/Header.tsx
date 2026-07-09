@@ -165,7 +165,7 @@ export function Header({
       <nav className="hidden lg:flex items-center justify-center gap-5 border-t border-[var(--border)] pt-3">
         {/* <NavItems items={navItemsHead.map(({ key, href }) => ({ name: t.nav[key], href: `/${lang}${href}` }))} />
         {galleryTitle ? <NavItems items={[{ name: galleryTitle, href: `/${lang}/gallery` }]} /> : null} */}
-        <NavItems items={categories.map(({ id, title }) => ({ name: title, href: `/${lang}/category/${id}` }))} />
+        <NavItems items={categories.map(({ id, slug, title }) => ({ name: title, href: `/${lang}/category/${slug ?? id}` }))} />
         <NavItems items={[{ name: aboutTitle, href: `/${lang}/about` }]} />
       </nav>
 
@@ -190,7 +190,7 @@ export function Header({
               </Link>
             ) : null} */}
             {categories.map((cat) => (
-              <Link key={cat.id} href={`/${lang}/category/${cat.id}`} onClick={() => setMobileOpen(false)} className="py-2.5 text-sm text-[var(--muted)] hover:text-[var(--dark)]">
+              <Link key={cat.id} href={`/${lang}/category/${cat.slug ?? cat.id}`} onClick={() => setMobileOpen(false)} className="py-2.5 text-sm text-[var(--muted)] hover:text-[var(--dark)]">
                 {cat.title}
               </Link>
             ))}

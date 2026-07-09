@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { Suspense } from 'react'
-import { notFound } from 'next/navigation'
+import { notFound, permanentRedirect } from 'next/navigation'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 
@@ -12,6 +12,7 @@ import { AffairOrderSummary } from '@/app/components/AffairOrderSummary'
 import AffairOrderForm from '@/app/components/AffairOrderForm'
 import { OrderContentSkeleton } from '@/app/components/OrderContentSkeleton'
 import type { Affair } from '@/payload-types'
+import { resolveBySlugOrId } from '@/app/lib/resolveDoc'
 
 const payload = await getPayload({ config: configPromise })
 
@@ -27,43 +28,35 @@ export async function generateStaticParams() {
     depth: 0,
     limit: 500,
   })
-  const ids = affairs.map((a) => a.id)
-  return locales.flatMap((locale) => ids.map((id) => ({ locale, id })))
+  const params = affairs.map((a) => a.slug ?? a.id)
+  return locales.flatMap((locale) => params.map((slug) => ({ locale, slug })))
 }
 
 
 export default async function OrderPage({
   params,
 }: {
-  params: Promise<{ locale: Locale; id: string }>
+  params: Promise<{ locale: Locale; slug: string }>
 }) {
-  const { locale, id } = await params
+  const { locale, slug } = await params
   const lang = (isValidLocale(locale) ? locale : 'ee') as Lang
   const t = getTranslations(lang)
 
-  
-  const affair = await payload
-    .findByID({
-      collection: 'Affair',
-      id,
-      depth: 1,
-      locale: lang,
-      select: {
-        title: true,
-        price: true,
-        'start date': true,
-        'end date': true,
-        tickets: true,
-      },
-    })
-    .catch(() => null) as Affair | null
-    if (!affair) notFound()
-  
+  const resolved = await resolveBySlugOrId({ payload, collection: 'Affair', param: slug, locale: lang })
+  if (!resolved) notFound()
+  // Old id-based URL: redirect to the canonical slug URL.
+  if (!resolved.matchedBySlug && resolved.doc.slug) {
+    permanentRedirect(`/${locale}/affair/${resolved.doc.slug}/order`)
+  }
+
+  const affair = resolved.doc
+  const slugForLinks = affair.slug ?? affair.id
+
       return (
     <main className="min-h-screen">
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-8 lg:px-16">
         <Link
-          href={`/${locale}/affair/${id}`}
+          href={`/${locale}/affair/${slugForLinks}`}
           className="mb-6 inline-flex items-center gap-2 text-sm text-[var(--muted)] hover:text-[var(--rust)] transition-colors"
         >
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">

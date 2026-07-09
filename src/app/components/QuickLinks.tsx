@@ -155,7 +155,7 @@ export function QuickLinks({
                 {categories.map((item) => (
                   <QuickLinkCard
                     key={item.id}
-                    href={`/${locale}/category/${item.id}`}
+                    href={`/${locale}/category/${item.slug ?? item.id}`}
                     image={item.image as unknown as MediaType}
                     title={item.title ?? ''}
                     description={item.description ?? ''}

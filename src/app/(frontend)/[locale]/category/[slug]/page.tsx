@@ -1,8 +1,8 @@
-import { notFound } from 'next/navigation'
+import { notFound, permanentRedirect } from 'next/navigation'
 import { Suspense } from 'react'
 import { getPayload, type Where } from 'payload'
 import configPromise from '@payload-config'
-import type { Affair, Tag } from '@/payload-types'
+import type { Affair, Category, Tag } from '@/payload-types'
 import { CategoryPageClient } from '@/app/components/CategoryPageClient'
 import CategoryPreview from '@/app/components/CategoryPreview'
 import { getCategoriesForLocale } from '@/app/lib/categoriesForLocale'
@@ -11,7 +11,7 @@ import type { Lang } from '@/app/lib/localization/translations'
 import { isValidLocale, Locale, locales } from '@/app/lib/localization/i18n'
 import { buildCategoryMetadata } from '@/utilities/seo'
 import { getSiteMeta } from '@/utilities/getSiteMeta'
-import { cacheLife, cacheTag } from 'next/cache'
+import { resolveBySlugOrId } from '@/app/lib/resolveDoc'
 
 const payload = await getPayload({ config: configPromise })
 
@@ -21,7 +21,7 @@ export async function generateStaticParams() {
     depth: 0,
     limit: 500,
   })
-  const slugs = categories.map((c) => c.id)
+  const slugs = categories.map((c) => c.slug ?? c.id)
   return locales.flatMap((locale) => slugs.map((slug) => ({ locale, slug })))
 }
 
@@ -30,32 +30,24 @@ export async function generateMetadata({
 }: {
   params: Promise<{ locale: Locale; slug: string }>
 }) {
-  const { locale, slug: categoryId } = await params
+  const { locale, slug } = await params
   const t = getTranslations(locale)
-  const [category, { siteName, description }] = await Promise.all([
-    payload
-      .findByID({ collection: 'category', id: categoryId, depth: 1, locale })
-      .catch(() => null),
+  const [resolved, { siteName, description }] = await Promise.all([
+    resolveBySlugOrId({ payload, collection: 'category', param: slug, locale }),
     getSiteMeta(locale),
   ])
-  if (!category) return { title: t.common.notFoundCategory }
-  return buildCategoryMetadata({ category, locale, siteName, defaultDescription: description })
+  if (!resolved) return { title: t.common.notFoundCategory }
+  return buildCategoryMetadata({ category: resolved.doc, locale, siteName, defaultDescription: description })
 }
 
-async function getCategory(lang:Locale, categoryId: string|number){
-  // "use cache"
-  // cacheLife('max')
-  // cacheTag(`${lang}-category-${categoryId}`)
-
-  const category = await payload
-  .findByID({
-    collection: 'category',
-    id: categoryId,
-    depth: 0,
-    locale: lang
-  })
-  .catch(() => notFound())
-  return category
+async function getCategory(lang: Locale, param: string, locale: string): Promise<Category> {
+  const resolved = await resolveBySlugOrId({ payload, collection: 'category', param, locale: lang })
+  if (!resolved) notFound()
+  // Old id-based URL: redirect to the canonical slug URL.
+  if (!resolved.matchedBySlug && resolved.doc.slug) {
+    permanentRedirect(`/${locale}/category/${resolved.doc.slug}`)
+  }
+  return resolved.doc
 }
 
 async function getAffairs(lang:Locale, whereClause: Where | undefined) {
@@ -78,10 +70,11 @@ export default async function CategoryPage({
 }: {
   params: Promise<{ locale: string; slug: string }>
 }) {
-  const { locale, slug: categoryId } = await params
+  const { locale, slug } = await params
   const lang = (isValidLocale(locale) ? locale : 'ee') as Lang
   const t = getTranslations(lang)
-  const category = await getCategory(lang, categoryId)
+  const category = await getCategory(lang, slug, locale)
+  const categoryId = category.id
   const whereClause: Where = { category: { equals: categoryId } }
   let affairs = await getAffairs(lang, whereClause)
 
@@ -102,7 +95,7 @@ export default async function CategoryPage({
     }
   })
 
-  const baseUrl = `/${locale}/category/${categoryId}`
+  const baseUrl = `/${locale}/category/${category.slug ?? categoryId}`
 
   const allCategories = await getCategoriesForLocale(lang)
   const otherCategories = allCategories.filter((c) => String(c.id) !== String(categoryId))
@@ -163,7 +156,7 @@ export default async function CategoryPage({
             <CategoryPreview
               key={c.id}
               locale={lang}
-              categoryId={String(c.id)}
+              categorySlug={c.slug ?? String(c.id)}
               title={c.title}
               affairs={affairsByCategory.get(String(c.id)) ?? []}
             />

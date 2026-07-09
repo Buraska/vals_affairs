@@ -142,13 +142,14 @@ export function buildAffairMetadata({
     { url: imageUrl, width: image?.width, height: image?.height, alt: image?.alt },
   ]
 
-  const url = `${getServerSideURL()}/${locale}/affair/${affair.id}`
+  const affairSlug = affair.slug ?? affair.id
+  const url = `${getServerSideURL()}/${locale}/affair/${affairSlug}`
 
   return {
     // `absolute` bypasses the layout's title template so the brand isn't duplicated.
     title: { absolute: title },
     description,
-    alternates: buildAlternates(locale, `/affair/${affair.id}`),
+    alternates: buildAlternates(locale, `/affair/${affairSlug}`),
     openGraph: {
       type: 'website',
       title,
@@ -227,13 +228,14 @@ export function buildCategoryMetadata({
     { url: imageUrl, width: image?.width, height: image?.height, alt: image?.alt },
   ]
 
-  const url = `${getServerSideURL()}/${locale}/category/${category.id}`
+  const categorySlug = category.slug ?? category.id
+  const url = `${getServerSideURL()}/${locale}/category/${categorySlug}`
 
   return {
     // `absolute` bypasses the layout's title template so the brand isn't duplicated.
     title: { absolute: title },
     description,
-    alternates: buildAlternates(locale, `/category/${category.id}`),
+    alternates: buildAlternates(locale, `/category/${categorySlug}`),
     openGraph: {
       type: 'website',
       title,

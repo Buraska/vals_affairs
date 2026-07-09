@@ -19,6 +19,18 @@ export const Affair: CollectionConfig = {
 
     },
     {
+      name: 'slug',
+      type: 'text',
+      index: true,
+      admin: {
+        position: 'sidebar',
+        description: 'URL slug. Use "Generate from title" or edit manually.',
+        components: {
+          Field: '/app/components/admin/SlugField',
+        },
+      },
+    },
+    {
       name: 'description',
       type: 'richText',
       localized: true,

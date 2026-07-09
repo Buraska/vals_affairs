@@ -80,7 +80,7 @@ export default async function HomePage({
           <CategoryPreview
             key={category.id}
             locale={lang}
-            categoryId={String(category.id)}
+            categorySlug={category.slug ?? String(category.id)}
             title={category.title}
             affairs={affairsByCategory.get(String(category.id)) ?? []}
           />

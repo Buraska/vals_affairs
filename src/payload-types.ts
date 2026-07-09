@@ -266,6 +266,10 @@ export interface Media {
 export interface Category {
   id: string;
   title: string;
+  /**
+   * URL slug. Auto-generated from the English title; editable.
+   */
+  slug?: string | null;
   description?: string | null;
   image: string | Media;
   'parent category'?: (string | null) | Category;
@@ -297,6 +301,10 @@ export interface Category {
 export interface Affair {
   id: string;
   title?: string | null;
+  /**
+   * URL slug. Auto-generated from the English title; editable.
+   */
+  slug?: string | null;
   description?: {
     root: {
       type: string;
@@ -945,6 +953,7 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface CategorySelect<T extends boolean = true> {
   title?: T;
+  slug?: T;
   description?: T;
   image?: T;
   'parent category'?: T;
@@ -966,6 +975,7 @@ export interface CategorySelect<T extends boolean = true> {
  */
 export interface AffairSelect<T extends boolean = true> {
   title?: T;
+  slug?: T;
   description?: T;
   images?:
     | T

@@ -1,5 +1,5 @@
 import { revalidateAll } from "@/app/lib/hooks/hookUtility"
-import { NextRequest, NextResponse } from "next/server"
+import { NextRequest } from "next/server"
 
 export const payloadToken = 'payload-token'
 
@@ -8,7 +8,7 @@ export async function GET( request: NextRequest
   const token = request.cookies.get(payloadToken)?.value
 
   if (!token) {
-    new Response('You are not allowed to preview this page', { status: 403 })
+    return new Response('You are not allowed to preview this page', { status: 403 })
   }
 
   const userReq = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/me`, {
@@ -24,6 +24,7 @@ export async function GET( request: NextRequest
   }
 
   revalidateAll()
+
 
   return new Response("The web was revaledated");
 }

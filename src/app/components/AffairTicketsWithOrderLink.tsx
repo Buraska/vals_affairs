@@ -6,11 +6,11 @@ import { AffairTicketsBlock, type Ticket } from './AffairTicketsBlock'
 import { useLanguage } from '@/app/contexts/LanguageContext'
 
 export function AffairTicketsWithOrderLink({
-  affairId,
+  affairSlug,
   tickets,
   locale,
 }: {
-  affairId: string
+  affairSlug: string
   tickets: Ticket[]
   locale: string
 }) {
@@ -20,8 +20,8 @@ export function AffairTicketsWithOrderLink({
   const hasAnyTickets = quantities.some((q) => q > 0)
   const orderHref =
      hasAnyTickets
-      ? `/${locale}/affair/${affairId}/order?q=${quantities.join(',')}`
-      : `/${locale}/affair/${affairId}/order`
+      ? `/${locale}/affair/${affairSlug}/order?q=${quantities.join(',')}`
+      : `/${locale}/affair/${affairSlug}/order`
   const isDisabled = !hasAnyTickets
 
   return (

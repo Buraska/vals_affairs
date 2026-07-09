@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
+import { notFound, permanentRedirect } from 'next/navigation'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { AffairAdditionalInfoTabs } from '@/app/components/AffairAdditionalInfoTabs'
@@ -15,6 +15,7 @@ import { isValidLocale, Locale, locales } from '@/app/lib/localization/i18n'
 import { buildAffairMetadata } from '@/utilities/seo'
 import { getSiteMeta } from '@/utilities/getSiteMeta'
 import { buildAffairEventJsonLd, buildBreadcrumbJsonLd } from '@/utilities/structuredData'
+import { resolveBySlugOrId } from '@/app/lib/resolveDoc'
 
 const payload = await getPayload({ config: configPromise })
 
@@ -24,48 +25,50 @@ export async function generateStaticParams() {
     depth: 0,
     limit: 500,
   })
-  const ids = affairs.map((a) => a.id)
-  return locales.flatMap((locale) => ids.map((id) => ({ locale, id })))
+  const params = affairs.map((a) => a.slug ?? a.id)
+  return locales.flatMap((locale) => params.map((slug) => ({ locale, slug })))
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: Locale; id: string }>
+  params: Promise<{ locale: Locale; slug: string }>
 }) {
-  const { locale, id } = await params
+  const { locale, slug } = await params
   const t = getTranslations(locale)
-  const [affair, { siteName, description }] = await Promise.all([
-    payload.findByID({ collection: 'Affair', id, depth: 1, locale: locale }).catch(() => null),
+  const [resolved, { siteName, description }] = await Promise.all([
+    resolveBySlugOrId({ payload, collection: 'Affair', param: slug, locale }),
     getSiteMeta(locale),
   ])
-  if (!affair) return { title: t.common.notFoundEvent }
-  return buildAffairMetadata({ affair, locale, siteName, defaultDescription: description })
+  if (!resolved) return { title: t.common.notFoundEvent }
+  return buildAffairMetadata({ affair: resolved.doc, locale, siteName, defaultDescription: description })
 }
 
 export default async function AffairPage({
   params,
 }: {
-  params: Promise<{ locale: string; id: string }>
+  params: Promise<{ locale: string; slug: string }>
 }) {
-  const { locale, id } = await params
+  const { locale, slug } = await params
   const lang = (isValidLocale(locale) ? locale : 'ee') as Lang
   const t = getTranslations(lang)
 
-  const affair = await payload
-    .findByID({
-      collection: 'Affair',
-      id,
-      depth: 1,
-      locale: lang,
-    })
-    .catch(() => null)
+  const resolved = await resolveBySlugOrId({ payload, collection: 'Affair', param: slug, locale: lang })
 
-  if (!affair) notFound()
+  if (!resolved) notFound()
+  // Old id-based URL: redirect to the canonical slug URL.
+  if (!resolved.matchedBySlug && resolved.doc.slug) {
+    permanentRedirect(`/${locale}/affair/${resolved.doc.slug}`)
+  }
+
+  const affair = resolved.doc
+  const id = affair.id
   if (!affair.title) notFound()
 
-  const categoryId =
-    typeof affair.category === 'string' ? affair.category : affair.category?.id
+  const categorySlug =
+    typeof affair.category === 'object' && affair.category != null
+      ? (affair.category.slug ?? affair.category.id)
+      : affair.category
   const categoryTitle =
     typeof affair.category === 'object' && affair.category != null
       ? affair.category.title
@@ -117,9 +120,9 @@ export default async function AffairPage({
             </svg>
             {t.common.home}
           </Link>
-          {categoryId && (
+          {categorySlug && (
             <Link
-              href={`/${locale}/category/${categoryId}`}
+              href={`/${locale}/category/${categorySlug}`}
               className="inline-flex items-center gap-1.5 transition-colors hover:text-[var(--rust)]"
             >
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
@@ -155,7 +158,7 @@ export default async function AffairPage({
             <div className="mb-6 border-b border-[var(--border)] pb-6">
               {affair.isAvailable === true ? (
                 <AffairTicketsWithOrderLink
-                  affairId={id}
+                  affairSlug={affair.slug ?? id}
                   tickets={affair.tickets}
                   locale={locale}
                 />

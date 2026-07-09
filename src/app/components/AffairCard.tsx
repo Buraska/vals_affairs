@@ -42,7 +42,7 @@ export const AffairCard = ({ affair, locale, className = "", showCategory = fals
 
   return (
     <Link
-      href={`/${locale}/affair/${affair.id}`}
+      href={`/${locale}/affair/${affair.slug ?? affair.id}`}
       className={clsx(className, "group relative flex flex-col bg-[var(--card-bg)] transition hover:bg-[#FFFDF6] overflow-hidden")}
     >
       {(firstImage && typeof firstImage !== 'string') ? (
