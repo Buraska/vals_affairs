@@ -41,7 +41,9 @@ const nextConfig = {
       },
     ],
   },
-  output: 'standalone',
+  // Standalone is for Docker/self-hosting only. On Vercel it conflicts with the
+  // platform's own file tracing and can fail with ENOENT on *.nft.json files.
+  ...(process.env.VERCEL ? {} : { output: 'standalone' }),
 }
 
 export default withPayload(nextConfig, { devBundleServerPackages: false })
