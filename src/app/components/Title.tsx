@@ -1,6 +1,8 @@
 "use client";
 
 import { useLanguage } from "@/app/contexts/LanguageContext";
+import SmartImage from "./SmartImage";
+import SectionImageReveal from "./SectionImageReveal";
 
 // Hero image: ballroom/waltz couple in warm golden-orange light. Swap later for a managed asset.
 const HERO_IMAGE_URL =
@@ -11,20 +13,29 @@ export function Title({ heroImages = [] }: { heroImages?: string[] }) {
   const hasCollage = heroImages.length >= 3;
 
   return (
-    <section className="relative isolate flex min-h-[42vh] flex-col justify-center overflow-hidden px-4 py-14 sm:px-8 sm:py-16 lg:min-h-[50vh] lg:px-16">
+    <section className="relative isolate flex min-h-[42vh] max-h-[52vh] flex-col justify-center overflow-hidden px-4 py-14 sm:px-8 sm:py-16 lg:min-h-[48vh] lg:max-h-[58vh] lg:px-16">
       {hasCollage ? (
-        <div className="absolute inset-0 -z-20 flex" aria-hidden>
-          {heroImages.map((url, i) => (
-            <div
-              key={i}
-              className={`min-w-0 flex-1 bg-cover bg-center ${i >= 3 ? "hidden sm:block" : ""}`}
-              style={{ backgroundImage: `url("${url}")` }}
-            />
-          ))}
-        </div>
+        <SectionImageReveal count={heroImages.length}>
+          <div className="absolute inset-0 -z-20 flex" aria-hidden>
+            {heroImages.map((url, i) => (
+              <div
+                key={i}
+                className={`relative min-w-0 flex-1 h-full ${i >= 3 ? "hidden sm:block" : ""}`}
+              >
+                <SmartImage
+                  src={url}
+                  alt={`Hero image ${i}`}
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  style={{ objectFit: "cover" }}
+                />
+              </div>
+            ))}
+          </div>
+        </SectionImageReveal>
       ) : (
         <div
-          className="absolute inset-0 -z-20 bg-cover bg-center"
+          className="absolute inset-0 -z-20 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url("${HERO_IMAGE_URL}")` }}
           aria-hidden
         />

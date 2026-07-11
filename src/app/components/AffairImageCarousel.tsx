@@ -67,7 +67,7 @@ export function AffairImageCarousel({
   const hasMultiple = slides.length > 1
   const coverResource = slides[0]
   const cover = pickMediaSize(coverResource, 'small')
-  const revealCount = slides.length + (coverResource ? 1 : 0)
+  const revealCount = slides.length === 1 ? 1: (slides.length + (coverResource ? 1 : 0))
 
   return (
     <>

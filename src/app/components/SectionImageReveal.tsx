@@ -47,27 +47,18 @@ type Props = {
  */
 export default function SectionImageReveal({
   count,
-  timeoutMs = 25,
+  timeoutMs = 2500,
   className,
   children,
 }: Props) {
   const [loaded, setLoaded] = useState(0)
   const [revealed, setRevealed] = useState(count <= 0)
-  const countRef = useRef(count)
 
-  useEffect(() => {
-    countRef.current = count
-    if (count <= 0) {
-      setRevealed(true)
-      return
-    }
-    setRevealed(false)
-    setLoaded(0)
-  }, [count])
+
 
   useEffect(() => {
     if (revealed) return
-    if (loaded >= countRef.current) setRevealed(true)
+    if (loaded >= count) setRevealed(true)
   }, [loaded, revealed])
 
   useEffect(() => {
@@ -78,6 +69,7 @@ export default function SectionImageReveal({
 
   const reportLoaded = useCallback(() => {
     setLoaded((prev) => prev + 1)
+
   }, [])
 
   const value = useMemo<SectionRevealValue>(

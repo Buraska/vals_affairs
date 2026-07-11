@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { Affair } from "@/payload-types";
 import type { Locale } from "../lib/localization/i18n";
 import { AffairCard } from "./AffairCard";
+import SectionImageReveal from "./SectionImageReveal";
 
 export function AffairCarousel({
   affairs,
@@ -55,6 +56,7 @@ export function AffairCarousel({
         ref={scrollerRef}
         className="flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
+        <SectionImageReveal count={affairs.length}>
         {affairs.map((affair) => (
           <div
             key={affair.id}
@@ -63,6 +65,8 @@ export function AffairCarousel({
             <AffairCard affair={affair} locale={locale} showCategory className="h-full rounded-lg border border-[var(--border)] shadow-sm" />
           </div>
         ))}
+        </SectionImageReveal>
+
       </div>
 
       {showArrows && (

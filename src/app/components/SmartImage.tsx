@@ -13,6 +13,7 @@ import type { Media } from '@/payload-types'
 import { pickMediaSize, type MediaSizeVariant } from '@/utilities/pickMediaSize'
 import { cn } from '@/utilities/ui'
 import { useRegisterImage } from '@/app/components/SectionImageReveal'
+import Image from 'next/image'
 
 /** Tiny SVG blur placeholder — needs `xmlns` for `<img>` / data URLs; base64 keeps `url(#id)` intact. */
 function shimmerSvg(w: number, h: number): string {
@@ -147,7 +148,7 @@ const SmartImage = forwardRef<HTMLImageElement, SmartImageProps>(function SmartI
     quality,
     placeholder: placeholder ?? 'blur',
     blurDataURL: blurDataURL ?? DEFAULT_BLUR,
-    onLoad: handleLoad,
+    onLoad: (event: SyntheticEvent<HTMLImageElement>) => {console.log("ONLOAD"); handleLoad(event)},
     onError: handleError,
     ref: setRefs,
     src: finalSrc,
@@ -170,7 +171,7 @@ const SmartImage = forwardRef<HTMLImageElement, SmartImageProps>(function SmartI
     return (
       <>
         {skeleton}
-        <NextImage {...commonProps} fill />
+        <Image  {...commonProps} fill />
       </>
     )
   }
@@ -178,7 +179,7 @@ const SmartImage = forwardRef<HTMLImageElement, SmartImageProps>(function SmartI
   return (
     <span className="relative inline-block w-full align-top">
       {skeleton}
-      <NextImage
+      <Image
         {...commonProps}
         width={finalWidth ?? 1200}
         height={finalHeight ?? 800}

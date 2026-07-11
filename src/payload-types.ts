@@ -267,7 +267,7 @@ export interface Category {
   id: string;
   title: string;
   /**
-   * URL slug. Auto-generated from the English title; editable.
+   * URL slug. Use "Generate from title" or edit manually.
    */
   slug?: string | null;
   description?: string | null;
@@ -302,7 +302,7 @@ export interface Affair {
   id: string;
   title?: string | null;
   /**
-   * URL slug. Auto-generated from the English title; editable.
+   * URL slug. Use "Generate from title" or edit manually.
    */
   slug?: string | null;
   description?: {
