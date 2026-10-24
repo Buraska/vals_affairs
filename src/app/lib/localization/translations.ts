@@ -16,7 +16,7 @@ const valueSchema = { title: '', variety: '', varietyDesc: '', newRoutes: '', sa
 const contactSchema = { title: '', phone: '', addressLabel: '', nonProfit: '', forBusiness: '', team: '', hours: '', hoursValue: '', weekend: '' }
 const footerSchema = { more: '', schoolProjects: '', giftCards: '', charity: '', merch: '', documents: '', contract: '', privacy: '', reportError: '', aboutUs: '', philosophy: '', ourJourney: '', contacts: '', reviews: '', partners: '', press: '', account: '', tours: '', subscribe: '', subscribeSuccess: '', subscribeCta: '', websiteDevelopment: '' }
 const commonSchema = { back: '', backToEvent: '', home: '', toCategory: '', notFoundEvent: '', notFoundOrder: '', notFoundCategory: '', additional: '', photoCount: '', openGallery: '', menu: '', termsPageTitle: '', aboutPageTitle: '', galleryPageTitle: '', showMore: '', contentNotAdded: '' }
-const affairSchema = { scheduleTitle: '', descriptionTitle: '', addToCalendar: '', calendarDetails: '', relatedTitle: '', seeMore: '', takePlace: '', ticket: '', yourOrder: '', total: '', noTicketsNote: '', participation: '', notAvailable: '' }
+const affairSchema = { scheduleTitle: '', descriptionTitle: '', addToCalendar: '', calendarDetails: '', relatedTitle: '', seeMore: '', takePlace: '', ticket: '', yourOrder: '', total: '', noTicketsNote: '', participation: '', notAvailable: '', archived: '', archivedNotice: '' }
 const orderSchema = {
   pageTitle: '',
   formName: '',
@@ -193,6 +193,8 @@ export const translations: Record<Lang, TranslationsSchema> = {
       noTicketsNote: "Piletite arv pole märgitud. Saate valida ürituse lehel.",
       participation: "Osalemine",
       notAvailable: "See üritus pole praegu broneerimiseks saadaval.",
+      archived: "Arhiveeritud",
+      archivedNotice: "See üritus on arhiveeritud ega ole enam saadaval.",
     },
     order: {
       pageTitle: "Esita tellimus",
@@ -388,6 +390,8 @@ export const translations: Record<Lang, TranslationsSchema> = {
       noTicketsNote: "Количество билетов не указано. Можно выбрать на странице мероприятия.",
       participation: "Участие",
       notAvailable: "Это мероприятие сейчас недоступно для бронирования.",
+      archived: "В архиве",
+      archivedNotice: "Мероприятие архивировано и больше недоступно.",
     },
     order: {
       pageTitle: "Оформить заявку",
@@ -581,6 +585,8 @@ export const translations: Record<Lang, TranslationsSchema> = {
       noTicketsNote: "No ticket quantity selected. You can select on the event page.",
       participation: "Participation",
       notAvailable: "This event is not available for booking at the moment.",
+      archived: "Archived",
+      archivedNotice: "This event has been archived and is no longer available.",
     },
     order: {
       pageTitle: "Submit request",
@@ -774,6 +780,8 @@ export const translations: Record<Lang, TranslationsSchema> = {
       noTicketsNote: "Lippumäärää ei ole valittu. Voit valita tapahtumasivulla.",
       participation: "Osallistuminen",
       notAvailable: "Tämä tapahtuma ei ole tällä hetkellä varattavissa.",
+      archived: "Arkistoitu",
+      archivedNotice: "Tämä tapahtuma on arkistoitu eikä ole enää saatavilla."
     },
     order: {
       pageTitle: "Lähetä tilaus",

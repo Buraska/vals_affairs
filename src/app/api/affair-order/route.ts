@@ -1,20 +1,11 @@
 import { NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
-import {
-  AffairOrderEmailParams,
-  buildAffairOrderEmailHtml,
-  buildAffairOrderEmailText,
-} from '@/app/lib/mail/affairOrderEmailTemplate'
-import { lexicalToHtml } from '@/utilities/lexicalToHtml'
-import { checkTypeAndSlice, generateOrderRef, isValidEmail } from '@/utilities/utility'
-import type { affairOrderPostJson, TicketOrderDTO } from '@/app/lib/affairOrderTypes'
-import { MAIL_ENDPOINT_SUBSCRIBE, MAIL_ENDPOINT_SUBSCRIBE_ARGS } from '../endpoints'
-import { MailServce } from '@/app/lib/mail/mailService'
 import { invoiceService } from '@/app/lib/ZohoClient/ZohoClient'
-import { CreateContactPerson } from '@trieb.work/zoho-ts/dist/types/contactPerson'
-import { CreateContact } from '@trieb.work/zoho-ts'
-import { CreateInvoice, Invoice } from '@trieb.work/zoho-ts/dist/types/invoice'
+import { MailServce } from '@/app/lib/mail/mailService'
+import type { affairOrderPostJson, TicketOrderDTO } from '@/app/lib/affairOrderTypes'
+import { checkTypeAndSlice, generateOrderRef, isValidEmail } from '@/utilities/utility'
+import type { Invoice } from '@trieb.work/zoho-ts/dist/types/invoice'
 
 const LIMITS = {
   name: 200,
@@ -64,6 +55,21 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Invalid email' }, { status: 400 })
   }
 
+  const payload = await getPayload({ config: configPromise })
+  const affairResult = await payload.find({
+    collection: 'Affair',
+    depth: 0,
+    limit: 1,
+    where: { id: { equals: affairId } },
+  })
+  const affair = affairResult.docs[0]
+  if (!affair) {
+    return NextResponse.json({ error: 'Affair not found' }, { status: 404 })
+  }
+  if (affair.archived === true) {
+    return NextResponse.json({ error: 'Affair is archived and no longer available' }, { status: 409 })
+  }
+
   MailServce.subscribeUser(email, name)
 
   const items = (ticketDTOs ?? [])
@@ -85,6 +91,34 @@ export async function POST(req: Request) {
     is_inclusive_tax: true},)
   
   await invoiceService.invoice.sentEmail(invoice.invoice_id)
+  await payload.sendEmail({
+    to: 'valseAffairs@gmail.com, gulnaravals@gmail.com',
+    subject: `Новая заявка: ${affairTitle} (${orderRef})`,
+    text: [
+      `Номер заявки: ${orderRef}`,
+      `Дата: ${date}`,
+      `Мероприятие: ${affairTitle}`,
+      `ID мероприятия: ${affairId}`,
+      '',
+      'Контактные данные:',
+      `Имя: ${name}`,
+      `Email: ${email}`,
+      `Телефон: ${phone}`,
+      `Возраст: ${age || 'не указан'}`,
+      `Дополнительная информация: ${notes || 'не указана'}`,
+      `Согласие: ${agree ? 'да' : 'нет'}`,
+      '',
+      'Билеты:',
+      ...(items.length
+        ? items.flatMap((item) => [
+            `${item.ticketName}`,
+            `  Количество: ${item.qty}`,
+            `  Цена: ${item.unitPrice}`,
+            `  Сумма: ${item.subtotal}`,
+          ])
+        : ['Билеты не выбраны']),
+    ].join('\n'),
+  })
 
   return NextResponse.json({ ok: true, orderRef })
 }

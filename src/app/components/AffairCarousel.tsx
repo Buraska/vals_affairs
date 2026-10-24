@@ -5,6 +5,7 @@ import type { Affair } from "@/payload-types";
 import type { Locale } from "../lib/localization/i18n";
 import { AffairCard } from "./AffairCard";
 import SectionImageReveal from "./SectionImageReveal";
+import { sortAffairs } from "@/utilities/sortAffairs";
 
 export function AffairCarousel({
   affairs,
@@ -48,6 +49,7 @@ export function AffairCarousel({
 
   if (affairs.length === 0) return null;
 
+  const orderedAffairs = sortAffairs(affairs);
   const showArrows = canScrollPrev || canScrollNext;
 
   return (
@@ -56,8 +58,8 @@ export function AffairCarousel({
         ref={scrollerRef}
         className="flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
-        <SectionImageReveal count={affairs.length}>
-        {affairs.map((affair) => (
+        <SectionImageReveal count={orderedAffairs.length}>
+        {orderedAffairs.map((affair) => (
           <div
             key={affair.id}
             className="w-full shrink-0 snap-start sm:w-[calc((100%-1.25rem)/2)] lg:w-[calc((100%-2.5rem)/3)]"

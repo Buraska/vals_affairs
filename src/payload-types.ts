@@ -330,6 +330,10 @@ export interface Affair {
    * Whether this affair is available for booking.
    */
   isAvailable?: boolean | null;
+  /**
+   * Archived affairs are shown after active affairs and cannot be booked.
+   */
+  archived?: boolean | null;
   'start date': string;
   'end date'?: string | null;
   tickets: {
@@ -986,6 +990,7 @@ export interface AffairSelect<T extends boolean = true> {
   category?: T;
   price?: T;
   isAvailable?: T;
+  archived?: T;
   'start date'?: T;
   'end date'?: T;
   tickets?:

@@ -9,6 +9,7 @@ import { TagFilters } from '@/app/components/TagFilters'
 import CategorySearch from '@/app/components/CategorySearch'
 import SectionImageReveal from '@/app/components/SectionImageReveal'
 import { useLanguage } from '../contexts/LanguageContext'
+import { sortAffairs } from '@/utilities/sortAffairs'
 
 type SortOption = { value: string; label: string }
 
@@ -65,7 +66,7 @@ export function CategoryPageClient({
         selectedTagIds.some((id) => getAffairTagIds(a).includes(id))
       )
     }
-    return [...list].sort((a, b) => compareAffairs(a, b, sort))
+    return sortAffairs(list, (a, b) => compareAffairs(a, b, sort))
   }, [initialAffairs, query, selectedTagIds.join(','), sort])
 
   const noResultsText = query.trim()

@@ -8,6 +8,7 @@ import configPromise from "@payload-config";
 import type { Affair, Media } from "@/payload-types";
 import CategoryPreview from "@/app/components/CategoryPreview";
 import { pickMediaSize } from "@/utilities/pickMediaSize";
+import { sortAffairs } from "@/utilities/sortAffairs";
 
 
 export function generateStaticParams() {
@@ -40,17 +41,19 @@ export default async function HomePage({
       : [];
 
   const nowIso = new Date().toISOString();
-  const upcoming = (
-    await payload.find({
+  const upcomingResult = await payload.find({
       collection: "Affair",
       depth: 1,
       overrideAccess: false,
       locale: lang,
       where: { "start date": { greater_than_equal: nowIso } },
       sort: "start date",
-      limit: 6,
+      limit: 500,
     })
-  ).docs;
+  const upcoming = sortAffairs(
+    upcomingResult.docs,
+    (a, b) => new Date(a["start date"]).getTime() - new Date(b["start date"]).getTime(),
+  ).slice(0, 6);
 
   const heroImages = upcoming
     .map((a) => a.images?.[0]?.image)

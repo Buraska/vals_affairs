@@ -51,6 +51,7 @@ export default async function OrderPage({
 
   const affair = resolved.doc
   const slugForLinks = affair.slug ?? affair.id
+  const affairArchived = affair.archived === true
 
       return (
     <main className="min-h-screen">
@@ -66,7 +67,7 @@ export default async function OrderPage({
         </Link>
 
         <h1 className="mb-8 text-2xl font-bold text-[var(--dark)]" style={{ fontFamily: "var(--font-playfair)" }}>
-          {t.order.pageTitle}
+          {affairArchived ? t.affair.archived : t.order.pageTitle}
         </h1>
 
         <Suspense fallback={<OrderContentSkeleton orderLabel={t.affair.yourOrder} />}>
@@ -97,12 +98,19 @@ async function OrderContent({
 
   return (
     <div className="flex flex-col gap-8 lg:flex-row lg:gap-12">
-      <AffairOrderForm
-        affair={affair as Affair}
-        locale={locale}
-        tickets={tickets}
-        dateRangeText={dateRangeText}
-      />
+      {affair.archived === true ? (
+        <div className="min-w-0 flex-1 self-start rounded-lg border border-amber-300 bg-amber-50 p-6 text-amber-950" role="status">
+          <p className="text-lg font-bold">{t.affair.archived}</p>
+          <p className="mt-2">{t.affair.archivedNotice}</p>
+        </div>
+      ) : (
+        <AffairOrderForm
+          affair={affair as Affair}
+          locale={locale}
+          tickets={tickets}
+          dateRangeText={dateRangeText}
+        />
+      )}
       <div className="lg:w-[380px] lg:shrink-0">
         <section className="sticky top-24 rounded border border-[var(--border)] bg-[var(--card-bg)] p-6">
           <h2
@@ -117,6 +125,7 @@ async function OrderContent({
             endDate={affair['end date']}
             dateRangeText={dateRangeText}
             tickets={tickets}
+            archived={affair.archived === true}
           />
         </section>
       </div>

@@ -16,6 +16,7 @@ import { buildAffairMetadata } from '@/utilities/seo'
 import { getSiteMeta } from '@/utilities/getSiteMeta'
 import { buildAffairEventJsonLd, buildBreadcrumbJsonLd } from '@/utilities/structuredData'
 import { resolveBySlugOrId } from '@/app/lib/resolveDoc'
+import { sortAffairs } from '@/utilities/sortAffairs'
 
 const payload = await getPayload({ config: configPromise })
 
@@ -93,7 +94,7 @@ export default async function AffairPage({
       limit: 50,
     })
   ).docs
-  const randomRelated = [...related].sort(() => Math.random() - 0.5).slice(0, 5)
+  const randomRelated = sortAffairs([...related].sort(() => Math.random() - 0.5)).slice(0, 5)
 
   const slides: MediaType[] = affair.images
     ? affair.images.map((i) => i.image).filter((i): i is MediaType => i != null && typeof i !== 'string')
@@ -156,14 +157,16 @@ export default async function AffairPage({
 
           <div className="lg:flex-[1] lg:min-w-0">
             <div className="mb-6 border-b border-[var(--border)] pb-6">
-              {affair.isAvailable === true ? (
+              {affair.archived !== true && affair.isAvailable === true ? (
                 <AffairTicketsWithOrderLink
                   affairSlug={affair.slug ?? id}
                   tickets={affair.tickets}
                   locale={locale}
                 />
               ) : (
-                <p className="text-[var(--muted)] font-medium">{t.affair.notAvailable}</p>
+                <p className="text-[var(--muted)] font-medium">
+                  {affair.archived === true ? t.affair.archivedNotice : t.affair.notAvailable}
+                </p>
               )}
             </div>
             <div>

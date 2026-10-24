@@ -9,7 +9,7 @@ export const Affair: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'category', 'description', 'isAvailable', 'start date', 'end date'],
+    defaultColumns: ['title', 'category', 'description', 'isAvailable', 'archived', 'start date', 'end date'],
   },
   fields: [
     {
@@ -63,6 +63,12 @@ export const Affair: CollectionConfig = {
       type: 'checkbox',
       defaultValue: true,
       admin: { description: 'Whether this affair is available for booking.' },
+    },
+    {
+      name: 'archived',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: { description: 'Archived affairs are shown after active affairs and cannot be booked.' },
     },
     {
       type: 'row',

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Locale } from "../lib/localization/i18n";
 import { getTranslations } from "../lib/localization/translations";
 import { AffairCarousel } from "./AffairCarousel";
+import { sortAffairs } from "@/utilities/sortAffairs";
 
 export default function CategoryPreview({
   title,
@@ -17,13 +18,11 @@ export default function CategoryPreview({
 }) {
   const t = getTranslations(locale);
 
-  const sorted = [...affairs]
-    .filter((a) => a["start date"] != null)
-    .sort(
-      (a, b) =>
-        new Date(a["start date"]).getTime() - new Date(b["start date"]).getTime()
-    )
-    .slice(0, 6);
+  const sorted = sortAffairs(
+    affairs.filter((a) => a["start date"] != null),
+    (a, b) =>
+      new Date(a["start date"]).getTime() - new Date(b["start date"]).getTime(),
+  ).slice(0, 6);
 
   if (sorted.length === 0) return null;
 

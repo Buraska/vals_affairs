@@ -12,7 +12,7 @@ import { pickMediaSize } from "@/utilities/pickMediaSize"
 export const AffairCard = ({ affair, locale, className = "", showCategory = false }: { affair: Affair; locale: string, className?: string, showCategory?: boolean }) => {
   const { t } = useLanguage()
   const firstImage = affair.images?.[0].image
-  const isAvailable = affair.isAvailable !== false
+  const isAvailable = affair.isAvailable !== false && affair.archived !== true
 
   const descriptionText = lexicalToPlainText(affair.description)
   const dateLabel = formatDayMonthRange(affair['start date'], affair['end date'], locale)
@@ -49,18 +49,29 @@ export const AffairCard = ({ affair, locale, className = "", showCategory = fals
         <div className="relative w-full aspect-[4/3] overflow-hidden bg-[var(--border)]">
           {categoryBadge}
           {dateBadge}
+          {affair.archived === true && (
+            <span className="absolute left-3 top-3 z-10 inline-flex items-center rounded-full border border-white/30 bg-[var(--dark)]/85 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-[var(--cream)] shadow-md backdrop-blur-sm">
+              {t.affair.archived}
+            </span>
+          )}
           <SmartImage
             src={pickMediaSize(firstImage, 'small').url || firstImage.url || ''}
             alt={firstImage.alt ?? ''}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             style={{ objectFit: 'cover' }}
+            className={clsx(affair.archived === true && 'grayscale opacity-70')}
           />
         </div>
       ) : (
-        <div className="relative w-full aspect-[16/9] flex items-center justify-center bg-[var(--border)] text-[var(--muted)]" aria-hidden>
+        <div className="relative w-full aspect-[16/9] flex items-center justify-center bg-[var(--border)] text-[var(--muted)]">
           {categoryBadge}
           {dateBadge}
+          {affair.archived === true && (
+            <span className="absolute left-3 top-3 z-10 inline-flex items-center rounded-full border border-white/30 bg-[var(--dark)]/85 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-[var(--cream)] shadow-md backdrop-blur-sm">
+              {t.affair.archived}
+            </span>
+          )}
         </div>
       )}
       <div className="relative flex flex-col p-6 overflow-hidden">
