@@ -39,3 +39,15 @@ R2 → your bucket → Settings → CORS Policy):
 Add any additional production / preview domains to `AllowedOrigins` as
 needed. Without this rule the browser PUT to R2 will be blocked and uploads
 will fail with a CORS error.
+## Automatic affair archiving
+
+Completed affairs are archived by a daily GitHub Actions workflow and are also
+treated as archived immediately by listings and booking checks. Expiration uses
+the end date when set, otherwise the start date. The workflow can also be run
+manually from the Actions tab.
+
+Configure the same non-empty `AFFAIR_ARCHIVE_CRON_SECRET` in the Vercel
+project's production environment variables and GitHub repository Actions
+secrets. Redeploy on Vercel after setting the runtime variable. The scheduled
+workflow calls `https://www.thenextchance.eu/api/cron/archive-past-affairs`.
+Update the workflow URL if the public deployment host changes.

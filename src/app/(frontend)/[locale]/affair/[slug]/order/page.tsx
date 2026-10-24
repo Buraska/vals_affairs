@@ -14,6 +14,7 @@ import { OrderContentSkeleton } from '@/app/components/OrderContentSkeleton'
 import type { Affair } from '@/payload-types'
 import { resolveBySlugOrId } from '@/app/lib/resolveDoc'
 
+import { isAffairArchived } from '@/utilities/affairStatus'
 const payload = await getPayload({ config: configPromise })
 
 // Transactional checkout page: keep it out of the index.
@@ -51,7 +52,7 @@ export default async function OrderPage({
 
   const affair = resolved.doc
   const slugForLinks = affair.slug ?? affair.id
-  const affairArchived = affair.archived === true
+  const affairArchived = isAffairArchived(affair)
 
       return (
     <main className="min-h-screen">
@@ -92,13 +93,14 @@ async function OrderContent({
 
   if (!affair) notFound()
   if (!affair.title) notFound()
+  const affairArchived = isAffairArchived(affair)
 
   const tickets = affair.tickets ?? []
   const dateRangeText = formatDateRange(affair['start date'], affair['end date'], locale)
 
   return (
     <div className="flex flex-col gap-8 lg:flex-row lg:gap-12">
-      {affair.archived === true ? (
+      {affairArchived ? (
         <div className="min-w-0 flex-1 self-start rounded-lg border border-amber-300 bg-amber-50 p-6 text-amber-950" role="status">
           <p className="text-lg font-bold">{t.affair.archived}</p>
           <p className="mt-2">{t.affair.archivedNotice}</p>
@@ -125,7 +127,7 @@ async function OrderContent({
             endDate={affair['end date']}
             dateRangeText={dateRangeText}
             tickets={tickets}
-            archived={affair.archived === true}
+            archived={affairArchived}
           />
         </section>
       </div>

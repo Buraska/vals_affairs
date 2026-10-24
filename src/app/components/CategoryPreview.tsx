@@ -4,6 +4,7 @@ import { Locale } from "../lib/localization/i18n";
 import { getTranslations } from "../lib/localization/translations";
 import { AffairCarousel } from "./AffairCarousel";
 import { sortAffairs } from "@/utilities/sortAffairs";
+import { isAffairArchived } from "@/utilities/affairStatus";
 
 export default function CategoryPreview({
   title,
@@ -19,7 +20,7 @@ export default function CategoryPreview({
   const t = getTranslations(locale);
 
   const sorted = sortAffairs(
-    affairs.filter((a) => a["start date"] != null),
+    affairs.filter((a) => a["start date"] != null && !isAffairArchived(a)),
     (a, b) =>
       new Date(a["start date"]).getTime() - new Date(b["start date"]).getTime(),
   ).slice(0, 6);

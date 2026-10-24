@@ -1,0 +1,19 @@
+name: Archive past affairs
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Archive completed affairs
+        env:
+          AFFAIR_ARCHIVE_CRON_SECRET: ${{ secrets.AFFAIR_ARCHIVE_CRON_SECRET }}
+        run: |
+          curl --fail --silent --show-error \
+            --request POST \
+            --header "Authorization: Bearer ${AFFAIR_ARCHIVE_CRON_SECRET}" \
+            https://www.thenextchance.eu/api/cron/archive-past-affairs

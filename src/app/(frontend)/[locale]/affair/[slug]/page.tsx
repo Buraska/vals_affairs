@@ -18,6 +18,7 @@ import { buildAffairEventJsonLd, buildBreadcrumbJsonLd } from '@/utilities/struc
 import { resolveBySlugOrId } from '@/app/lib/resolveDoc'
 import { sortAffairs } from '@/utilities/sortAffairs'
 
+import { isAffairArchived } from '@/utilities/affairStatus'
 const payload = await getPayload({ config: configPromise })
 
 export async function generateStaticParams() {
@@ -157,7 +158,7 @@ export default async function AffairPage({
 
           <div className="lg:flex-[1] lg:min-w-0">
             <div className="mb-6 border-b border-[var(--border)] pb-6">
-              {affair.archived !== true && affair.isAvailable === true ? (
+              {!isAffairArchived(affair) && affair.isAvailable === true ? (
                 <AffairTicketsWithOrderLink
                   affairSlug={affair.slug ?? id}
                   tickets={affair.tickets}
@@ -165,7 +166,7 @@ export default async function AffairPage({
                 />
               ) : (
                 <p className="text-[var(--muted)] font-medium">
-                  {affair.archived === true ? t.affair.archivedNotice : t.affair.notAvailable}
+                  {isAffairArchived(affair) ? t.affair.archivedNotice : t.affair.notAvailable}
                 </p>
               )}
             </div>

@@ -9,6 +9,7 @@ import type { Affair, Media } from "@/payload-types";
 import CategoryPreview from "@/app/components/CategoryPreview";
 import { pickMediaSize } from "@/utilities/pickMediaSize";
 import { sortAffairs } from "@/utilities/sortAffairs";
+import { isAffairArchived } from "@/utilities/affairStatus";
 
 
 export function generateStaticParams() {
@@ -46,12 +47,17 @@ export default async function HomePage({
       depth: 1,
       overrideAccess: false,
       locale: lang,
-      where: { "start date": { greater_than_equal: nowIso } },
+      where: {
+        and: [
+          { "start date": { greater_than_equal: nowIso } },
+          { archived: { not_equals: true } },
+        ],
+      },
       sort: "start date",
       limit: 500,
     })
   const upcoming = sortAffairs(
-    upcomingResult.docs,
+    upcomingResult.docs.filter((affair) => !isAffairArchived(affair)),
     (a, b) => new Date(a["start date"]).getTime() - new Date(b["start date"]).getTime(),
   ).slice(0, 6);
 

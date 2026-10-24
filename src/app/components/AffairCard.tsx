@@ -8,11 +8,13 @@ import clsx from 'clsx'
 import SmartImage from "@/app/components/SmartImage"
 import { pickMediaSize } from "@/utilities/pickMediaSize"
 
+import { isAffairArchived } from "@/utilities/affairStatus"
 
 export const AffairCard = ({ affair, locale, className = "", showCategory = false }: { affair: Affair; locale: string, className?: string, showCategory?: boolean }) => {
   const { t } = useLanguage()
+  const isArchived = isAffairArchived(affair)
+  const isAvailable = affair.isAvailable !== false && !isArchived
   const firstImage = affair.images?.[0].image
-  const isAvailable = affair.isAvailable !== false && affair.archived !== true
 
   const descriptionText = lexicalToPlainText(affair.description)
   const dateLabel = formatDayMonthRange(affair['start date'], affair['end date'], locale)
@@ -43,13 +45,13 @@ export const AffairCard = ({ affair, locale, className = "", showCategory = fals
   return (
     <Link
       href={`/${locale}/affair/${affair.slug ?? affair.id}`}
-      className={clsx(className, "group relative flex flex-col bg-[var(--card-bg)] transition hover:bg-[#FFFDF6] overflow-hidden")}
+      className={clsx(className, "group relative flex flex-col bg-[var(--card-bg)] transition hover:bg-[#FFFDF6] overflow-hidden", isArchived && "grayscale opacity-70")}
     >
       {(firstImage && typeof firstImage !== 'string') ? (
         <div className="relative w-full aspect-[4/3] overflow-hidden bg-[var(--border)]">
           {categoryBadge}
           {dateBadge}
-          {affair.archived === true && (
+          {isArchived && (
             <span className="absolute left-3 top-3 z-10 inline-flex items-center rounded-full border border-white/30 bg-[var(--dark)]/85 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-[var(--cream)] shadow-md backdrop-blur-sm">
               {t.affair.archived}
             </span>
@@ -60,14 +62,13 @@ export const AffairCard = ({ affair, locale, className = "", showCategory = fals
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             style={{ objectFit: 'cover' }}
-            className={clsx(affair.archived === true && 'grayscale opacity-70')}
           />
         </div>
       ) : (
         <div className="relative w-full aspect-[16/9] flex items-center justify-center bg-[var(--border)] text-[var(--muted)]">
           {categoryBadge}
           {dateBadge}
-          {affair.archived === true && (
+          {isArchived && (
             <span className="absolute left-3 top-3 z-10 inline-flex items-center rounded-full border border-white/30 bg-[var(--dark)]/85 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-[var(--cream)] shadow-md backdrop-blur-sm">
               {t.affair.archived}
             </span>

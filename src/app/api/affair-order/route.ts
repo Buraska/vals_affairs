@@ -6,6 +6,7 @@ import { MailServce } from '@/app/lib/mail/mailService'
 import type { affairOrderPostJson, TicketOrderDTO } from '@/app/lib/affairOrderTypes'
 import { checkTypeAndSlice, generateOrderRef, isValidEmail } from '@/utilities/utility'
 import type { Invoice } from '@trieb.work/zoho-ts/dist/types/invoice'
+import { isAffairArchived } from '@/utilities/affairStatus'
 
 const LIMITS = {
   name: 200,
@@ -66,7 +67,7 @@ export async function POST(req: Request) {
   if (!affair) {
     return NextResponse.json({ error: 'Affair not found' }, { status: 404 })
   }
-  if (affair.archived === true) {
+  if (isAffairArchived(affair)) {
     return NextResponse.json({ error: 'Affair is archived and no longer available' }, { status: 409 })
   }
 

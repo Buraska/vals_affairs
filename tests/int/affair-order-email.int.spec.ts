@@ -1,12 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-const { getPayload, contactCreate, contactPersonCreate, invoiceCreate, invoiceSentEmail, sendEmail } = vi.hoisted(() => ({
+const { getPayload, contactCreate, contactPersonCreate, invoiceCreate, invoiceSentEmail, sendEmail, subscribeUser } = vi.hoisted(() => ({
   getPayload: vi.fn(),
   contactCreate: vi.fn(),
   contactPersonCreate: vi.fn(),
   invoiceCreate: vi.fn(),
   invoiceSentEmail: vi.fn(),
   sendEmail: vi.fn(),
+  subscribeUser: vi.fn(),
 }))
 
 vi.mock('payload', () => ({
@@ -24,7 +25,7 @@ vi.mock('@/app/lib/ZohoClient/ZohoClient', () => ({
 }))
 
 vi.mock('@/app/lib/mail/mailService', () => ({
-  MailServce: { subscribeUser: vi.fn() },
+  MailServce: { subscribeUser },
 }))
 
 import { POST } from '@/app/api/affair-order/route'
@@ -74,4 +75,35 @@ describe('affair order notification email', () => {
     expect(email.text).toContain('Spring Concert: Adult')
     expect(email.text).toContain('Количество: 2')
   })
+  it('rejects completed affairs before contact, invoice, or email side effects', async () => {
+    getPayload.mockResolvedValue({
+      find: vi.fn().mockResolvedValue({ docs: [{ archived: false, 'start date': '2020-01-01', 'end date': '2020-01-02' }] }),
+      sendEmail,
+    })
+
+    const response = await POST(
+      new Request('http://localhost/api/affair-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          affairId: 'affair-1',
+          affairTitle: 'Spring Concert',
+          customerName: 'Alex Example',
+          email: 'alex@example.com',
+          phone: '+3725550100',
+          agree: true,
+          ticketDTOs: [{ name: 'Adult', qty: 2, price: 25, subtotal: 50 }],
+        }),
+      }),
+    )
+
+    expect(response.status).toBe(409)
+    expect(contactCreate).not.toHaveBeenCalled()
+    expect(contactPersonCreate).not.toHaveBeenCalled()
+    expect(invoiceCreate).not.toHaveBeenCalled()
+    expect(invoiceSentEmail).not.toHaveBeenCalled()
+    expect(subscribeUser).not.toHaveBeenCalled()
+    expect(sendEmail).not.toHaveBeenCalled()
+  })
 })
+
