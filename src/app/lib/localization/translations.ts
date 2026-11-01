@@ -38,6 +38,8 @@ const orderSchema = {
 }
 /** Order confirmation email (affair-order); {site} = site name placeholder */
 const orderEmailSchema = {
+  applicationReceivedSubject: '',
+  applicationReceivedBody: '',
   hello: '',
   thanksHtml: '',
   thanksPlain: '',
@@ -211,13 +213,14 @@ export const translations: Record<Lang, TranslationsSchema> = {
       placeholderAge: "ürituse ajal",
       placeholderNotes: "Näiteks teiste osalejate andmed (perekonnanimi, eesnimi, vanus) või soovid",
       submitSending: "Saadan…",
-      submitSuccess:
-        "Peaaegu valmis! Oleme saatnud teile e-kirja maksejuhistega. Tehke makse ja teie koht registreeritakse.",
+      submitSuccess: "Oleme teie avalduse kätte saanud. Võtame teiega peagi ühendust.",
       submitError: "Saatmine ebaõnnestus. Proovige uuesti või helistage.",
       goHome: "Avalehele",
     },
     orderEmail: {
       hello: "Tere",
+      applicationReceivedSubject: "Saime teie avalduse kätte",
+      applicationReceivedBody: "Oleme teie avalduse kätte saanud. Võtame teiega peagi ühendust.",
       thanksHtml: "Täname tellimuse eest saidil <strong>{site}</strong>!",
       thanksPlain: "Täname tellimuse eest saidil {site}!",
       orderDetails: "Tellimuse üksikasjad",
@@ -408,13 +411,14 @@ export const translations: Record<Lang, TranslationsSchema> = {
       placeholderAge: "на момент участия в мероприятии",
       placeholderNotes: "Например, данные других участников (фамилия, имя и возраст) или пожелания к заказу",
       submitSending: "Отправка…",
-      submitSuccess:
-        "Почти всё! Письмо с инструкцией по оплате отправлено вам на почту. Совершите оплату, и ваше место будет зарегистрировано.",
+      submitSuccess: "Заявка отправлена. Мы свяжемся с вами.",
       submitError: "Не удалось отправить. Попробуйте снова или позвоните нам.",
       goHome: "На главную страницу",
     },
     orderEmail: {
       hello: "Здравствуйте",
+      applicationReceivedSubject: "Заявка получена",
+      applicationReceivedBody: "Мы получили вашу заявку. Мы свяжемся с вами.",
       thanksHtml: "Спасибо за заявку на <strong>{site}</strong>!",
       thanksPlain: "Спасибо за заявку на {site}!",
       orderDetails: "Детали заказа",
@@ -603,13 +607,14 @@ export const translations: Record<Lang, TranslationsSchema> = {
       placeholderAge: "at the time of the event",
       placeholderNotes: "E.g. other participants' details (name, age) or special requests",
       submitSending: "Sending…",
-      submitSuccess:
-        "Almost done! We’ve emailed you the payment instructions. Complete the payment and your spot will be reserved.",
+      submitSuccess: "Your application has been sent. We’ll be in touch.",
       submitError: "Could not send. Please try again or call us.",
       goHome: "Go to homepage",
     },
     orderEmail: {
       hello: "Hello",
+      applicationReceivedSubject: "Application received",
+      applicationReceivedBody: "We’ve received your application. We’ll be in touch.",
       thanksHtml: "Thank you for your request at <strong>{site}</strong>!",
       thanksPlain: "Thank you for your request at {site}!",
       orderDetails: "Order details",
@@ -798,13 +803,14 @@ export const translations: Record<Lang, TranslationsSchema> = {
       placeholderAge: "tapahtuman aikana",
       placeholderNotes: "Esim. muiden osallistujien tiedot tai toiveet",
       submitSending: "Lähetetään…",
-      submitSuccess:
-        "Melkein valmista! Olemme lähettäneet sinulle sähköpostitse maksutusohjeet. Suorita maksu, niin paikkasi rekisteröidään.",
+      submitSuccess: "Hakemuksesi on lähetetty. Otamme sinuun yhteyttä.",
       submitError: "Lähetys epäonnistui. Yritä uudelleen tai soita.",
       goHome: "Etusivulle",
     },
     orderEmail: {
       hello: "Hei",
+      applicationReceivedSubject: "Hakemus vastaanotettu",
+      applicationReceivedBody: "Olemme vastaanottaneet hakemuksesi. Otamme sinuun yhteyttä.",
       thanksHtml: "Kiitos tilauksestasi sivustolla <strong>{site}</strong>!",
       thanksPlain: "Kiitos tilauksestasi sivustolla {site}!",
       orderDetails: "Tilauksen tiedot",

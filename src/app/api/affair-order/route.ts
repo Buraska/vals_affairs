@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
-import { invoiceService } from '@/app/lib/ZohoClient/ZohoClient'
+import { defaultLocale, isValidLocale } from '@/app/lib/localization/i18n'
+import { getTranslations } from '@/app/lib/localization/translations'
+import { mailTemplateText } from '@/app/lib/mail/mailTemplate'
 import { MailServce } from '@/app/lib/mail/mailService'
 import type { affairOrderPostJson, TicketOrderDTO } from '@/app/lib/affairOrderTypes'
 import { checkTypeAndSlice, generateOrderRef, isValidEmail } from '@/utilities/utility'
-import type { Invoice } from '@trieb.work/zoho-ts/dist/types/invoice'
 import { isAffairArchived } from '@/utilities/affairStatus'
 
 const LIMITS = {
@@ -82,16 +83,20 @@ export async function POST(req: Request) {
       subtotal: t.subtotal ?? 0,
     }))
 
-  const con = await invoiceService.contact.create({contact_name: `${name}`, customer_sub_type: 'individual', phone})
-  const conPerson = await invoiceService.contactperson.create({contact_id: con.contact_id, email, phone, last_name: name})
-
-  const invoice: Invoice = await invoiceService.invoice.create({
-    customer_id: con.contact_id,
-    contact_persons: [conPerson.contact_person_id],
-    line_items: items.map((i) => ({item_id: "", name: i.ticketName, quantity: i.qty, rate: i.unitPrice})),
-    is_inclusive_tax: true},)
-  
-  await invoiceService.invoice.sentEmail(invoice.invoice_id)
+  const locale = isValidLocale(String(b.locale)) ? b.locale : defaultLocale
+  const translations = getTranslations(locale).orderEmail
+  const webInfo = await payload.findGlobal({ slug: 'web-info', depth: 0 })
+  const confirmationText = mailTemplateText(
+    translations.applicationReceivedBody,
+    translations.applicationReceivedSubject,
+    locale,
+    { siteName: webInfo.siteName, email: webInfo.email, phone: webInfo.phone },
+  )
+  await payload.sendEmail({
+    to: email,
+    subject: translations.applicationReceivedSubject,
+    text: confirmationText,
+  })
   await payload.sendEmail({
     to: 'valseAffairs@gmail.com, gulnaravals@gmail.com',
     subject: `Новая заявка: ${affairTitle} (${orderRef})`,
