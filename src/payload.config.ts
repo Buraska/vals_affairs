@@ -135,10 +135,8 @@ export default buildConfig({
             description:
               'Invalidate the root layout cache after Payload content changes so localized pages can render fresh data.',
             parameters: {},
-            handler: async (_args, req) => {
-              if (!req.user) {
-                throw new Error('An authenticated Payload user is required to revalidate pages.')
-              }
+            handler: async () => {
+              // MCP validates the bearer key and only registers this tool when its API-key allowlist permits it.
 
               revalidateAll()
 
