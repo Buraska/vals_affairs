@@ -170,7 +170,7 @@ export default buildConfig({
   ],
   email: nodemailerAdapter({
     defaultFromAddress: 'info@thenextchance.eu',
-    defaultFromName: 'Payload',
+    defaultFromName: 'Waltz & Vals Voyage Capital',
 
     transport: nodemailer.createTransport({
     host: process.env.MAIL_HOST,

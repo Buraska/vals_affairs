@@ -40,33 +40,33 @@ export default async function HomePage({
           })
         ).docs
       : [];
-
   const nowIso = new Date().toISOString();
   const upcomingResult = await payload.find({
-      collection: "Affair",
-      depth: 1,
-      overrideAccess: false,
-      locale: lang,
-      where: {
-        and: [
-          { "start date": { greater_than_equal: nowIso } },
-          { archived: { not_equals: true } },
-        ],
-      },
-      sort: "start date",
-      limit: 500,
-    })
+    collection: "Affair",
+    depth: 1,
+    overrideAccess: false,
+    locale: lang,
+    where: {
+      and: [
+        { "start date": { greater_than_equal: nowIso } },
+        { archived: { not_equals: true } },
+      ],
+    },
+    sort: "start date",
+    limit: 500,
+  });
   const upcoming = sortAffairs(
     upcomingResult.docs.filter((affair) => !isAffairArchived(affair)),
     (a, b) => new Date(a["start date"]).getTime() - new Date(b["start date"]).getTime(),
   ).slice(0, 6);
 
   const heroImages = upcoming
-    .map((a) => a.images?.[0]?.image)
-    .filter((img): img is Media => img != null && typeof img !== "string")
-    .map((img) => pickMediaSize(img, "medium").url || img.url || "")
+    .map((affair) => affair.images?.[0]?.image)
+    .filter((image): image is Media => image != null && typeof image !== "string")
+    .map((image) => pickMediaSize(image, "medium").url || image.url || "")
     .filter(Boolean)
     .slice(0, 6);
+
 
   const affairsByCategory = new Map<string, Affair[]>();
   for (const affair of affairs) {

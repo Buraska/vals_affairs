@@ -4,10 +4,6 @@ import { useLanguage } from "@/app/contexts/LanguageContext";
 import SmartImage from "./SmartImage";
 import SectionImageReveal from "./SectionImageReveal";
 
-// Hero image: ballroom/waltz couple in warm golden-orange light. Swap later for a managed asset.
-const HERO_IMAGE_URL =
-  "https://images.unsplash.com/photo-1775467398304-d1936dedad7f?auto=format&fit=crop&w=2000&q=80";
-
 export function Title({ heroImages = [] }: { heroImages?: string[] }) {
   const { t, siteDescription } = useLanguage();
   const hasCollage = heroImages.length >= 3;
@@ -35,8 +31,15 @@ export function Title({ heroImages = [] }: { heroImages?: string[] }) {
         </SectionImageReveal>
       ) : (
         <div
-          className="absolute inset-0 -z-20 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url("${HERO_IMAGE_URL}")` }}
+          className="absolute inset-0 -z-20 bg-cover bg-center"
+          style={{
+            background: `
+              radial-gradient(ellipse 90% 70% at 50% 80%, rgba(255, 132, 159, 0.25) 0%, rgba(230, 154, 123, 0.12) 40%, transparent 70%),
+              radial-gradient(ellipse 70% 50% at 75% 30%, rgba(255, 165, 80, 0.2) 0%, transparent 50%),
+              radial-gradient(ellipse 60% 40% at 20% 50%, rgba(255, 255, 255, 0.15) 0%, transparent 45%),
+              linear-gradient(180deg,rgb(170, 126, 91) 0%,rgb(200, 155, 115) 50%,rgb(255, 184, 136) 100%)
+            `,
+          }}
           aria-hidden
         />
       )}
