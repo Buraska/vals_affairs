@@ -29,6 +29,7 @@ import { mcpPlugin } from '@payloadcms/plugin-mcp'
 import { seoPlugin } from '@payloadcms/plugin-seo'
 import { lexicalToPlainText } from './utilities/lexicalToPlainText'
 import { SITE_NAME } from './utilities/seo'
+import { revalidateAll } from './app/lib/hooks/hookUtility'
 
 /** Display names for locales (used in language switcher, empty-categories block, etc.) */
 export const localeLabels: Record<string, string> = {
@@ -126,6 +127,32 @@ export default buildConfig({
         'about-us': { enabled: true },
         team: { enabled: true },
         'gallery-info': { enabled: true },
+      },
+      mcp: {
+        tools: [
+          {
+            name: 'revalidateAllPages',
+            description:
+              'Invalidate the root layout cache after Payload content changes so localized pages can render fresh data.',
+            parameters: {},
+            handler: async (_args, req) => {
+              if (!req.user) {
+                throw new Error('An authenticated Payload user is required to revalidate pages.')
+              }
+
+              revalidateAll()
+
+              return {
+                content: [
+                  {
+                    type: 'text',
+                    text: 'Root layout revalidation was triggered. Reload the public page to verify the updated content.',
+                  },
+                ],
+              }
+            },
+          },
+        ],
       },
     }),
     // R2: set R2_BUCKET, R2_ENDPOINT (https://<ACCOUNT_ID>.r2.cloudflarestorage.com), R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY

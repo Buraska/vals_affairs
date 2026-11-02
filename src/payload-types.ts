@@ -744,6 +744,12 @@ export interface PayloadMcpApiKey {
      */
     update?: boolean | null;
   };
+  'payload-mcp-tool'?: {
+    /**
+     * Invalidate the root layout cache after Payload content changes so localized pages can render fresh data.
+     */
+    revalidateAllPages?: boolean | null;
+  };
   updatedAt: string;
   createdAt: string;
   enableAPIKey?: boolean | null;
@@ -1251,6 +1257,11 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
     | {
         find?: T;
         update?: T;
+      };
+  'payload-mcp-tool'?:
+    | T
+    | {
+        revalidateAllPages?: T;
       };
   updatedAt?: T;
   createdAt?: T;
