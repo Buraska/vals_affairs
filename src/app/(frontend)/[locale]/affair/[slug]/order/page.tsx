@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import { Suspense } from 'react'
 import { notFound, permanentRedirect } from 'next/navigation'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
@@ -10,7 +9,6 @@ import { isValidLocale, Locale, locales } from '@/app/lib/localization/i18n'
 import { formatDateRange } from '@/utilities/utility'
 import { AffairOrderSummary } from '@/app/components/AffairOrderSummary'
 import AffairOrderForm from '@/app/components/AffairOrderForm'
-import { OrderContentSkeleton } from '@/app/components/OrderContentSkeleton'
 import type { Affair } from '@/payload-types'
 import { resolveBySlugOrId } from '@/app/lib/resolveDoc'
 
@@ -71,15 +69,13 @@ export default async function OrderPage({
           {affairArchived ? t.affair.archived : t.order.pageTitle}
         </h1>
 
-        <Suspense fallback={<OrderContentSkeleton orderLabel={t.affair.yourOrder} />}>
-          <OrderContent affair={affair} locale={locale} lang={lang} />
-        </Suspense>
+        <OrderContent affair={affair} locale={locale} lang={lang} />
       </div>
     </main>
   )
 }
 
-async function OrderContent({
+function OrderContent({
   affair,
   locale,
   lang,
@@ -107,10 +103,10 @@ async function OrderContent({
         </div>
       ) : (
         <AffairOrderForm
-          affair={affair as Affair}
+          affairId={affair.id}
+          affairTitle={affair.title}
           locale={locale}
           tickets={tickets}
-          dateRangeText={dateRangeText}
         />
       )}
       <div className="lg:w-[380px] lg:shrink-0">

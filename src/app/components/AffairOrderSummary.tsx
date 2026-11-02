@@ -1,12 +1,11 @@
 'use client'
 
+import { Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { useMemo } from 'react'
 import { useLanguage } from '@/app/contexts/LanguageContext'
-import { Affair } from '@/payload-types'
-import type { TicketOrderDTO } from '@/app/lib/affairOrderTypes'
+import { getTicketOrder } from '@/app/lib/affairOrderTypes'
 import { buildGoogleCalendarUrl } from '@/utilities/utility'
-import { Ticket } from './AffairTicketsBlock'
+import type { Ticket } from './AffairTicketsBlock'
 
 
 export function AffairOrderSummary({
@@ -23,8 +22,8 @@ export function AffairOrderSummary({
   startDate: string
   endDate?: string | null
   dateRangeText: string
-  tickets: Ticket[],
-  archived?: boolean,
+  tickets: Ticket[]
+  archived?: boolean
 }) {
   const { t } = useLanguage()
   const calendarUrl = buildGoogleCalendarUrl({
@@ -34,38 +33,13 @@ export function AffairOrderSummary({
     details: t.affair.calendarDetails,
     allDay: true,
   })
-  const searchParams = useSearchParams()
-  const qParam = searchParams.get('q') ?? ''
-
-
-  const {ticketDTOs, totalPrice} = useMemo(() => {
-    const quantities = qParam
-      ? qParam.split(',').map((s) => Math.max(0, parseInt(s, 10) || 0))
-      : tickets.map(() => 0)
-    const paddedQuantities = tickets.map((_, i) => quantities[i] ?? 0)
-    let totalPrice = 0
-    const ticketDTOs: TicketOrderDTO[] = tickets.map((ticket, i) => {
-      const qty = paddedQuantities[i] ?? 0
-      const price = ticket['ticket price'] ?? 0
-      const subtotal = qty * price
-      const name = typeof ticket.ticket === 'string' ? '—' : ticket.ticket.name ?? '—'
-      totalPrice += subtotal
-      return {
-        name,
-        qty,
-        price,
-        subtotal,
-      }
-    })
-    return {ticketDTOs, totalPrice}
-  }, [qParam])
 
   return (
     <>
       {archived && (
         <div className="mb-4 flex items-start gap-3 rounded-lg border border-amber-300 bg-amber-50 p-4 text-amber-950" role="status">
           <svg className="mt-0.5 shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M12 8v4m0 4h.01M10.3 3.86 2.7 17a2 2 0 0 0 1.73 3h15.14a2 2 0 0 0 1.73-3l-7.6-13.14a2 2 0 0 0-3.46 0Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M12 8v4m0 4h.01M10.3 3.86 2.7 17a2 2 0 0 0 1.73 3h15.14a2 2 0 0 0-3.46 0Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
           <div>
             <p className="font-bold">{t.affair.archived}</p>
@@ -87,40 +61,38 @@ export function AffairOrderSummary({
         {t.affair.addToCalendar}
       </a>
       {tickets.length > 0 ? (
-        <>
-          <ul className="space-y-2 border-t border-[var(--border)] pt-4">
-            {ticketDTOs.map((ticket, i) => {
-              if (ticket.qty === 0) return null
-              return (
-                <li
-                  key={i}
-                  className="flex justify-between gap-4 text-sm text-[var(--muted)]"
-                >
-                  <span>
-                    {ticket.name} × {ticket.qty}
-                  </span>
-                  <span className="font-medium text-[var(--dark)]">
-                    {ticket.subtotal} €
-                  </span>
-                </li>
-              )
-            })}
-          </ul>
-          {tickets.length !== 0 ? (
-            <p className="mt-3 border-t border-[var(--border)] pt-3 text-right font-semibold text-[var(--dark)]">
-              {t.affair.total}: {totalPrice.toFixed(2)} €
-            </p>
-          ) : (
-            <p className="mt-3 text-sm text-[var(--muted)]">
-              {t.affair.noTicketsNote}
-            </p>
-          )}
-        </>
+        <Suspense fallback={<p className="border-t border-[var(--border)] pt-4 text-sm text-[var(--muted)]">…</p>}>
+          <SelectedTicketLines tickets={tickets} totalLabel={t.affair.total} />
+        </Suspense>
       ) : (
         <p className="text-[var(--muted)]">
           {t.affair.participation}: <strong className="text-[var(--dark)]">{affairPrice} €</strong>
         </p>
       )}
+    </>
+  )
+}
+
+function SelectedTicketLines({ tickets, totalLabel }: { tickets: Ticket[]; totalLabel: string }) {
+  const qParam = useSearchParams().get('q') ?? ''
+  const { ticketDTOs, totalPrice } = getTicketOrder(tickets, qParam)
+
+  return (
+    <>
+      <ul className="space-y-2 border-t border-[var(--border)] pt-4">
+        {ticketDTOs.map((ticket, i) => {
+          if (ticket.qty === 0) return null
+          return (
+            <li key={i} className="flex justify-between gap-4 text-sm text-[var(--muted)]">
+              <span>{ticket.name} × {ticket.qty}</span>
+              <span className="font-medium text-[var(--dark)]">{ticket.subtotal} €</span>
+            </li>
+          )
+        })}
+      </ul>
+      <p className="mt-3 border-t border-[var(--border)] pt-3 text-right font-semibold text-[var(--dark)]">
+        {totalLabel}: {totalPrice.toFixed(2)} €
+      </p>
     </>
   )
 }

@@ -51,3 +51,20 @@ project's production environment variables and GitHub repository Actions
 secrets. Redeploy on Vercel after setting the runtime variable. The scheduled
 workflow calls `https://www.thenextchance.eu/api/cron/archive-past-affairs`.
 Update the workflow URL if the public deployment host changes.
+
+## Optional affair start time
+
+Affairs may set the optional `start time` field in 24-hour `HH:mm` format
+(for example, `07:00`). The event page displays this value when present and
+does not infer a time from the date when the field is empty.
+
+## Affair order page
+
+The order form and event details are prerendered so they appear in the initial
+HTML. Only the selected ticket quantities and total read the `q` URL parameter
+on the client. The submit button stays disabled until that selection is ready,
+then the same quantities are used for the summary and submitted order.
+
+## Advertising HTML endpoint
+
+`GET /api/admin/get-advertising` returns the Russian HTML used for newsletter campaigns. It includes affairs that are available (`isAvailable` is not false), not explicitly archived, and not expired. Expiration uses the end date when set, otherwise the start date. Responses are not cached, so expired events are not served from stale HTML. The email header uses inline text/background styles and a solid `bgcolor` fallback; the gradient is an enhancement for clients that support it.

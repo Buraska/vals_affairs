@@ -2,29 +2,42 @@
 
 import PhoneInput from 'react-phone-number-input'
 import 'react-phone-number-input/style.css'
-import { useMemo, useState, type FormEvent } from 'react'
+import { Suspense, useState, type FormEvent } from 'react'
 import Link from 'next/link'
 import { useLanguage } from '@/app/contexts/LanguageContext'
-import type { affairOrderPostJson, TicketOrderDTO } from '@/app/lib/affairOrderTypes'
-import { AffairOrderSummary } from './AffairOrderSummary'
-import { Affair} from '@/payload-types'
+import { getTicketOrder, type affairOrderPostJson } from '@/app/lib/affairOrderTypes'
+import type { Affair } from '@/payload-types'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Locale } from '../lib/localization/i18n'
+import type { Locale } from '../lib/localization/i18n'
 
 type Ticket = Affair['tickets'][0]
 
-export type { TicketOrderDTO } from '@/app/lib/affairOrderTypes'
+function SelectedOrderSubmit({ disabled, label }: { disabled: boolean; label: string }) {
+  const qParam = useSearchParams().get('q') ?? ''
+  return (
+    <>
+      <input type="hidden" name="q" value={qParam} />
+      <button
+        type="submit"
+        disabled={disabled}
+        className="rounded bg-[var(--dark)] px-6 py-3 text-sm font-medium text-[var(--cream)] transition hover:bg-[var(--rust)] disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        {label}
+      </button>
+    </>
+  )
+}
 
 export default function AffairOrderForm({
-  affair,
+  affairId,
+  affairTitle,
   locale,
   tickets,
-  dateRangeText,
 }: {
-  affair: Affair
+  affairId: string
+  affairTitle: string | null | undefined
   locale: Locale
   tickets: Ticket[]
-  dateRangeText: string
 }) {
   const { t, lang } = useLanguage()
   const router = useRouter()
@@ -40,6 +53,8 @@ export default function AffairOrderForm({
     e.preventDefault()
     const form = e.currentTarget
     const fd = new FormData(form)
+    if (!fd.has('q')) return
+    const { ticketDTOs } = getTicketOrder(tickets, String(fd.get('q') ?? ''))
 
     const customerName = String(fd.get('name') ?? '').trim()
     const email = String(fd.get('email') ?? '').trim()
@@ -53,18 +68,17 @@ export default function AffairOrderForm({
     }
     
     const postBody: affairOrderPostJson = {
-      affairId: String(affair.id),
+      affairId,
       customerName,
       email,
       phone: phone.trim(),
       age,
       notes,
       agree: true,
-      affairTitle: affair.title ?? "---",
+      affairTitle: affairTitle ?? "---",
       locale,
       ticketDTOs
     }
-
     setStatus('sending')
     try {
       const res = await fetch('/api/affair-order', {
@@ -86,32 +100,6 @@ export default function AffairOrderForm({
       setStatus('error')
     }
   }
-
-  const searchParams = useSearchParams()
-  const qParam = searchParams.get('q') ?? ''
-
-
-  const {ticketDTOs, totalPrice} = useMemo(() => {
-    const quantities = qParam
-      ? qParam.split(',').map((s) => Math.max(0, parseInt(s, 10) || 0))
-      : tickets.map(() => 0)
-    const paddedQuantities = tickets.map((_, i) => quantities[i] ?? 0)
-    let totalPrice = 0
-    const ticketDTOs: TicketOrderDTO[] = tickets.map((ticket, i) => {
-      const qty = paddedQuantities[i] ?? 0
-      const price = ticket['ticket price'] ?? 0
-      const subtotal = qty * price
-      const name = typeof ticket.ticket === 'string' ? '—' : ticket.ticket.name ?? '—'
-      totalPrice += subtotal
-      return {
-        name,
-        qty,
-        price,
-        subtotal,
-      }
-    })
-    return {ticketDTOs, totalPrice}
-  }, [qParam])
 
   return (
     <div className="flex flex-col gap-8 lg:flex-row lg:gap-12">
@@ -222,13 +210,13 @@ export default function AffairOrderForm({
         )}
 
         <div className="flex flex-wrap gap-3 pt-2">
-          <button
-            type="submit"
-            disabled={status === 'sending'}
-            className="rounded bg-[var(--dark)] px-6 py-3 text-sm font-medium text-[var(--cream)] transition hover:bg-[var(--rust)] disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {status === 'sending' ? t.order.submitSending : t.order.submit}
-          </button>
+          <Suspense fallback={
+            <button type="submit" disabled className="rounded bg-[var(--dark)] px-6 py-3 text-sm font-medium text-[var(--cream)] opacity-60">
+              {t.order.submit}
+            </button>
+          }>
+            <SelectedOrderSubmit disabled={status === 'sending'} label={status === 'sending' ? t.order.submitSending : t.order.submit} />
+          </Suspense>
         </div>
 
         <p className="text-sm text-[var(--muted)]">{t.order.rules}</p>
