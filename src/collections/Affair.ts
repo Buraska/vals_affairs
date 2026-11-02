@@ -9,7 +9,7 @@ export const Affair: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'category', 'description', 'isAvailable', 'archived', 'start date', 'end date'],
+    defaultColumns: ['title', 'category', 'description', 'isAvailable', 'archived', 'start date', 'start time', 'end date'],
   },
   fields: [
     {
@@ -72,8 +72,7 @@ export const Affair: CollectionConfig = {
     },
     {
       type: 'row',
-      fields: 
-      [
+      fields: [
         {
           name: 'start date',
           type: 'date',
@@ -82,8 +81,22 @@ export const Affair: CollectionConfig = {
         {
           name: 'end date',
           type: 'date',
-        }
-      ]
+        },
+      ],
+    },
+    {
+      name: 'start time',
+      type: 'text',
+      admin: {
+        description: 'Optional start time in 24-hour HH:mm format.',
+      },
+      validate: (value: unknown) => {
+        if (value == null || value === '') return true
+        return (
+          (typeof value === 'string' && /^([01]\d|2[0-3]):[0-5]\d$/.test(value)) ||
+          'Use 24-hour time in HH:mm format.'
+        )
+      },
     },
     {
       name: 'tickets',

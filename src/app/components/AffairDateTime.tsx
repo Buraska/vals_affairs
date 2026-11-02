@@ -1,8 +1,9 @@
-import { buildGoogleCalendarUrl, formatFullDate, formatTime } from '@/utilities/utility'
+import { buildGoogleCalendarUrl, formatFullDate } from '@/utilities/utility'
 
 type AffairDateTimeProps = {
   startDate: string
   endDate?: string | null
+  eventTime?: string | null
   locale: string
   label: string
   addToCalendarLabel: string
@@ -23,6 +24,7 @@ function isSameDay(a: string, b: string): boolean {
 export function AffairDateTime({
   startDate,
   endDate,
+  eventTime,
   locale,
   label,
   addToCalendarLabel,
@@ -30,9 +32,8 @@ export function AffairDateTime({
   details,
 }: AffairDateTimeProps) {
   const startFull = formatFullDate(startDate, locale)
-  const startTime = formatTime(startDate, locale)
+  const startTime = eventTime?.trim() || null
   const endFull = endDate ? formatFullDate(endDate, locale) : null
-  const endTime = endDate ? formatTime(endDate, locale) : null
   const singleDay = !endDate || isSameDay(startDate, endDate)
 
   const calendarUrl = buildGoogleCalendarUrl({
@@ -62,11 +63,8 @@ export function AffairDateTime({
             {singleDay ? (
               <>
                 <p className="font-semibold capitalize text-[var(--dark)]">{startFull}</p>
-                {(startTime || endTime) && (
-                  <p className="mt-0.5 text-sm text-[var(--muted)]">
-                    {startTime}
-                    {startTime && endTime ? ` – ${endTime}` : ''}
-                  </p>
+                {startTime && (
+                  <p className="mt-0.5 text-sm text-[var(--muted)]">{startTime}</p>
                 )}
               </>
             ) : (
@@ -77,7 +75,6 @@ export function AffairDateTime({
                 </p>
                 <p className="text-sm text-[var(--muted)]">
                   <span className="text-[var(--rust)]">→</span> {endFull}
-                  {endTime ? ` · ${endTime}` : ''}
                 </p>
               </div>
             )}

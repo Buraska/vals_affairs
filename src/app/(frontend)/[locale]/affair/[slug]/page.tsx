@@ -174,6 +174,7 @@ export default async function AffairPage({
               <AffairDateTime
                 startDate={affair['start date']}
                 endDate={affair['end date']}
+                eventTime={affair['start time']}
                 locale={locale}
                 label={t.affair.scheduleTitle}
                 addToCalendarLabel={t.affair.addToCalendar}

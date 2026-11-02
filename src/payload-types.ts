@@ -336,6 +336,10 @@ export interface Affair {
   archived?: boolean | null;
   'start date': string;
   'end date'?: string | null;
+  /**
+   * Optional start time in 24-hour HH:mm format.
+   */
+  'start time'?: string | null;
   tickets: {
     ticket: string | Ticket;
     'ticket price': number;
@@ -999,6 +1003,7 @@ export interface AffairSelect<T extends boolean = true> {
   archived?: T;
   'start date'?: T;
   'end date'?: T;
+  'start time'?: T;
   tickets?:
     | T
     | {

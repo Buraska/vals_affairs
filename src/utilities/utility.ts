@@ -46,14 +46,6 @@ export function formatFullDate(dateStr: string | null | undefined, locale?: stri
   return d.toLocaleDateString(loc, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
 }
 
-/** Time of day (e.g. "10:30"). Returns null when the timestamp is midnight (date-only). */
-export function formatTime(dateStr: string | null | undefined, locale?: string): string | null {
-  if (!dateStr) return null
-  const d = new Date(dateStr)
-  if (d.getHours() === 0 && d.getMinutes() === 0) return null
-  const loc = locale ? getLocaleForDate(locale) : 'et-EE'
-  return d.toLocaleTimeString(loc, { hour: '2-digit', minute: '2-digit' })
-}
 
 /** Formats a date as the UTC basic format Google Calendar expects (e.g. "20260626T103000Z"). */
 function toGoogleCalendarDate(dateStr: string): string {
